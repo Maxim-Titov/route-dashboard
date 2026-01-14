@@ -1,0 +1,482 @@
+@import 'variables';
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    color: $foreground;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    overflow-y: scroll;
+}
+
+* {
+    box-sizing: border-box;
+    // border: 1px solid greenyellow;
+}
+
+#root {
+    display: flex;
+
+    .wrapper {
+        flex: 1 1 auto;
+        order: 2;
+        background-color: $background;
+    }
+
+    aside {
+        order: 1;
+    }
+}
+
+.container {
+    // max-width: $desktopL;
+    margin: 0 auto;
+    padding: 24px;
+}
+
+p {
+    margin: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+    margin: 0;
+}
+
+.site-branding {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 150px;
+
+    .logo {
+        position: relative;
+        display: flex;
+        border-radius: $radius;
+        height: auto;
+        background-color: $primary;
+        width: 2rem;
+        height: 2rem;
+        padding: 8px;
+
+        svg {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        img {
+            width: 100%;
+            height: auto;
+        }
+    }
+
+    .title {
+        h1 {
+            font-weight: $font-weight-medium;
+            font-size: $text-xl;
+            line-height: 1.5;
+
+            &.on-header {
+                position: absolute;
+                top: 50%;
+                transform: translateY(-50%);
+            }
+        }
+    }
+
+    .sub-title {
+        p {
+            font-size: $font-size;
+            color: $muted-foreground;
+        }
+    }
+}
+
+.progress-bar {
+    display: flex;
+    flex-direction: column;
+    align-items: start !important;
+
+    &--header {
+        width: 100%;
+        margin-bottom: 16px;
+        font-size: $font-size;
+        display: flex;
+        justify-content: space-between;
+
+        &-label {
+            color: $muted-foreground;
+        }
+    }
+
+    &--bar {
+        width: 100%;
+        height: 8px;
+        background-color: $muted;
+        border-radius: 9999px;
+        overflow: hidden;
+
+        &-value {
+            height: 8px;
+            transition: width 0.3s ease;
+            border-radius: 9999px;
+        }
+    }
+}
+
+.view-header {
+    h2 {
+        margin-bottom: 15px;
+        font-weight: $font-weight-medium;
+    }
+
+    p {
+        color: $muted-foreground;
+    }
+}
+
+.add-route-button,
+.add-trip-button,
+.add-passenger-button,
+.save-settings-button {
+    background-color: $primary;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    color: $foreground;
+    border-radius: 0.5rem;
+    width: 100%;
+    transition: background-color 0.2s ease;
+    cursor: pointer;
+    border: none;
+
+    &:hover {
+        background-color: rgba($primary, 0.9);
+    }
+
+    svg {
+        width: 20px;
+        height: 20px;
+    }
+
+    p {
+        font-weight: $font-weight-medium;
+        font-size: $font-size;
+    }
+}
+
+.filter-button {
+    background-color: $secondary;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    color: $foreground;
+    border-radius: 0.5rem;
+    width: 100%;
+    transition: background-color 0.2s ease;
+    cursor: pointer;
+    border: none;
+
+    &:hover {
+        background-color: rgba($secondary, 0.9);
+    }
+
+    svg {
+        width: 20px;
+        height: 20px;
+    }
+
+    p {
+        font-weight: $font-weight-medium;
+        font-size: $font-size;
+    }
+}
+
+.modal-wrapper,
+.additional-modal-wrapper,
+.message-modal-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba($foreground, .5);
+}
+
+.modal-wrapper {
+    z-index: 995;
+}
+
+.additional-modal-wrapper {
+    z-index: 996;
+}
+
+.message-modal-wrapper {
+    z-index: 997;
+}
+
+.filters-wrapper {
+    max-width: 100%;
+
+    .card {
+        background-color: $component-background;
+        border-radius: $radius;
+        padding: 1.5rem;
+        border: 1px solid $border;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        transition: box-shadow 0.3s ease;
+
+        &:hover {
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: start !important;
+            gap: 12px;
+            margin-bottom: 16px;
+
+            svg {
+                width: 24px;
+                height: 24px; 
+                color: $primary;
+            }
+
+            h3 {
+                font-size: $font-size;
+                font-weight: $font-weight-normal;
+            }
+        }
+
+        .content {                   
+            display: flex;
+
+            #filters {
+                width: 100%;
+                
+                .settings-wrapper {
+                    display: flex;
+                    align-items: center;
+                    margin-bottom: 16px;
+
+                    button {
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        gap: 0.5rem;
+                        padding: 0.75rem 1.5rem;
+                        color: $foreground;
+                        border-radius: 0.5rem;
+                        transition: background-color 0.2s ease;
+                        cursor: pointer;
+                        border: none;
+                        margin-right: 16px;
+
+                        &:last-child {
+                            margin-right: 0;
+                        }
+
+                        span {
+                            font-weight: $font-weight-medium;
+                            font-size: $font-size;
+                        }
+
+                        svg {
+                            width: 20px;
+                            height: 20px;
+                            transition: all 0.2s ease;
+                        }
+
+                        &.desc {
+                            svg {
+                                transform: rotate(270deg);
+                            }
+                        }
+
+                        &.asc {
+                            svg {
+                                transform: rotate(90deg);
+                            }
+                        }
+                    }
+
+                    .buttons {
+                        display: flex;
+                        flex: 1 1 auto;
+
+                        .sort-toggle {
+                            background-color: $secondary;
+
+                            &:hover {
+                                background-color: rgba($secondary, 0.9);
+                            }
+                        }
+
+                        .reset-filters {
+                            background-color: $accent;
+
+                            &:hover {
+                                background-color: rgba($accent, 0.9);
+                            }
+                        }
+
+                        .apply-filters {
+                            background-color: $primary;
+
+                            &:hover {
+                                background-color: rgba($primary, 0.9);
+                            }
+                        }
+                    }
+
+                    .view {
+                        display: flex;
+                        align-items: center;
+
+                        p {
+                            color: $muted-foreground;
+                            font-size: $font-size;
+                            margin-right: 16px;
+                        }
+
+                        button {
+                            background-color: $accent;
+
+                            &:hover {
+                                background-color: rgba($accent, 0.9);
+                            }
+                        }
+                    }
+                }
+
+                .form-row {
+                    display: grid;
+                    grid-template-columns: repeat(2, 1fr);
+                    gap: 16px;
+                    margin-bottom: 16px;
+
+                    &:last-child {
+                        margin-bottom: 0;
+                    }
+
+                    &.column {
+                        grid-template-columns: 1fr;
+                    }
+
+                    .form-group {
+                        display: flex;
+                        flex-direction: column;
+                        position: relative;
+
+                        label {
+                            display: block;
+                            margin-bottom: 8px;
+                            color: $muted-foreground;
+                            font-size: $font-size;
+                            display: flex;
+                            align-items: end;
+
+                            input {
+                                &[type="checkbox"] {
+                                    width: 25px;
+                                    height: 25px;
+                                    padding: 0 !important;
+                                    appearance: none;
+                                    border: 1px solid $border;
+                                    border-radius: 4px;
+                                    cursor: pointer;
+                                }
+
+                                &[type="checkbox"]:checked {
+                                    background: $primary;
+                                    position: relative;
+                                }
+
+                                &[type="checkbox"]:checked::after {
+                                    content: "✓";
+                                    color: white;
+                                    position: absolute;
+                                    left: 50%;
+                                    top: 50%;
+                                    transform: translate(-50%, -50%);
+                                    font-size: $font-size;
+                                }
+                            }
+                        }
+
+                        input {
+                            width: 100%;
+                            padding: 8px 16px;
+                            background-color: $input-background;
+                            border: 1px solid $border;
+                            border-radius: $radius;
+                            font-size: $font-size;
+                            color: $foreground;
+
+                            &:focus {
+                                outline: none;
+                                border-color: $primary;
+                                box-shadow: 0 0 0 2px rgba($primary,.3);
+                            }
+
+                            &::placeholder {
+                                color: rgba($muted-foreground, .7);;
+                            }
+
+                            &.free-seats {
+                                width: auto;
+                            }
+                        }
+
+                        .buttons {
+                            display: grid;
+                            grid-template-columns: repeat(4, 1fr);
+                            gap: 16px;
+
+                            button {
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                gap: 0.5rem;
+                                padding: 0.75rem 1.5rem;
+                                background-color: $sidebar-accent;
+                                color: $foreground;
+                                border-radius: 0.5rem;
+                                width: 100%;
+                                transition: background-color 0.2s ease;
+                                cursor: pointer;
+                                border: none;
+                                font-weight: $font-weight-medium;
+                                font-size: $font-size;
+
+                                &:hover {
+                                    background-color: rgba($primary, 0.5);
+                                }
+
+                                &.active {
+                                    background-color: $primary;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,96 @@
+@import '../global/variables';
+@import '../global/mixins';
+
+header {
+    background-color: $component-background;
+    border-bottom: 1px solid $border;
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 24px;
+
+    .search-panel {
+        position: relative;
+        max-width: 28rem;
+        flex: 1 1 auto;
+
+        .search-icon {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 1.25rem;
+            height: 1.25rem;
+            color: $muted-foreground;
+        }
+
+        input {
+            width: 100%;
+            height: 42px;
+            padding-left: 2.5rem;
+            padding-right: 1rem;
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+            background-color: $input-background;
+            border-radius: 0.5rem;
+            border: 1px solid $border;
+            font-size: $font-size;
+            color: $foreground;
+
+            &:focus {
+                outline: none;
+                box-shadow: 0 0 0 2px $primary;
+            }
+        }
+
+        .autocomplete-dropdown {
+            @include li-reset;
+
+            position: absolute;
+            top: calc(100% + $gutterS);
+            left: 0;
+            right: 0;
+            background-color: $component-background;
+            border: 1px solid $border;
+            border-bottom-left-radius: $radius;
+            border-bottom-right-radius: $radius;
+            max-height: 200px;
+            overflow-y: auto;
+            margin: 0;
+            padding: 0;
+            z-index: 10;
+
+            li {
+                cursor: pointer;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 0 16px;
+
+                span {
+                    padding: 16px;
+                    height: 100%;
+                    width: 60%;
+                    border-left: 1px solid $primary;
+                    margin-left: 16px;
+                    text-align: center;
+                }
+            }
+        }
+    }
+
+    .user-logo {
+        width: 40px;
+        height: 40px;
+        background-color: rgba($primary, 0.2);
+        border-radius: 9999px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: $primary;
+    }
+}

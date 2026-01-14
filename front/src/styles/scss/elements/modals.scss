@@ -1,0 +1,605 @@
+@import '../global/variables';
+@import '../global/mixins';
+
+.add-route-modal,
+.add-trip-modal,
+.trip-passenger-list-modal,
+.trip-station-list-modal,
+.add-passanger-modal,
+.confirm-modal,
+.message-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 448px;
+    width: 100%;
+    max-height: calc(90vh + 1px);
+    overflow-y: auto;
+    background-color: $component-background;
+    border: 1px solid $border;
+    border-radius: $radius;
+    box-shadow: 0 20px 25px rgba(0,0,0,.15);
+    z-index: 996;
+
+    .header {
+        position: sticky;
+        top: 0;
+        background-color: $component-background;
+        padding: 24px;
+        border-bottom: 1px solid $border;
+        z-index: 10;
+
+        h2 {
+            font-size: $text-lg;
+            font-weight: $font-weight-medium;
+        }
+    }
+
+    .body {
+        padding: 24px;
+
+        p {
+            span {
+                color: $muted-foreground;
+            }
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+
+            .form-group {
+                position: relative;
+
+                &.row {
+                    display: grid;
+                    grid-template-columns: repeat(2, 1fr);
+                    gap: 16px;
+                }
+
+                label {
+                    display: block;
+                    margin-bottom: 8px;
+                    color: $muted-foreground;
+                    font-size: $font-size;
+
+                    span {
+                        color: $destructive;
+                    }
+                }
+
+                input, textarea, select {
+                    width: 100%;
+                    padding: 8px 16px;
+                    background-color: $input-background;
+                    border: 1px solid $border;
+                    border-radius: $radius;
+                    font-size: $font-size;
+                    color: $foreground;
+                    
+                    &::placeholder {
+                        color: rgba($muted-foreground, .7);
+                    }
+
+                    &:focus {
+                        outline: none;
+                        border-color: $primary;
+                        box-shadow: 0 0 0 2px rgba($primary,.3);
+                    }
+
+                    &::placeholder {
+                        color: rgba($muted-foreground, .7);;
+                    }
+
+                    &.required {
+                        border-color: $destructive;
+                    }
+
+                    &.not-valid {
+                        border-color: $destructive;
+                        background-color: rgba($destructive, .2);
+                        box-shadow: 0 0 0 2px rgba($destructive,.3);
+                    }
+                }
+
+                textarea {
+                    resize: none;
+                }
+
+                button {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 0.5rem;
+                    padding: 0.75rem 1.5rem;
+                    background-color: $secondary;
+                    color: $foreground;
+                    border-radius: 0.5rem;
+                    width: 100%;
+                    transition: background-color 0.2s ease;
+                    cursor: pointer;
+                    border: none;
+                    font-weight: $font-weight-medium;
+                    font-size: $font-size;
+
+                    &:hover {
+                        background-color: rgba($secondary, 0.9);
+                    }
+                }
+
+                .error-popup {
+                    position: absolute;
+                    top: -20px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    border: 1px solid $border;
+                    border-radius: $radius;
+                    padding: $gutterS $gutterM;
+                    background-color: $input-background;
+                }
+            }
+        }
+    }
+
+    .footer {
+        position: sticky;
+        bottom: 0;
+        background-color: $component-background;
+        border-top: 1px solid $border;
+        padding: 24px;
+        display: flex;
+        gap: 12px;
+
+        button {
+            flex: 1;
+            padding: 12px 16px;
+            border-radius: $radius;
+            border: none;
+            cursor: pointer;
+            font-size: $font-size;
+            transition: background-color .2s ease;
+
+            &.no {
+                background-color: $muted;
+                color: $foreground;
+
+                &:hover {
+                    background-color: rgba($muted, .8);
+                }
+            }
+
+            &.yes {
+                background-color: $primary;
+                color: $foreground;
+                display: flex;
+                justify-content: center;
+                gap: 8px;
+
+                svg {
+                    width: 16px;
+                    height: 16px;
+                }
+
+                &:hover {
+                    background-color: rgba($primary, .9);
+                }
+            }
+        }
+    }
+}
+
+.trip-passenger-list-modal {
+    max-width: 600px;
+    z-index: 997 !important;
+
+    .body {
+        form {
+            .form-group {
+                &.search {
+                    pointer-events: none;
+                    opacity: .3;
+                    transition: opacity 200ms ease;
+                }
+
+                &.active {
+                    pointer-events: all;
+                    opacity: 1;
+                }
+
+                .search-panel {
+                    margin: 0 auto;
+                    position: relative;
+                    flex: 1 1 auto;
+
+                    .search-icon {
+                        position: absolute;
+                        left: 0.75rem;
+                        top: 50%;
+                        transform: translateY(-50%);
+                        width: 1.25rem;
+                        height: 1.25rem;
+                        color: $muted-foreground;
+                    }
+
+                    input {
+                        width: 100%;
+                        height: 42px;
+                        padding-left: 2.5rem;
+                        padding-right: 1rem;
+                        padding-top: 0.5rem;
+                        padding-bottom: 0.5rem;
+                        background-color: $input-background;
+                        border-radius: 0.5rem;
+                        border: 1px solid $border;
+                        font-size: $font-size;
+                        color: $foreground;
+
+                        &:focus {
+                            outline: none;
+                            box-shadow: 0 0 0 2px $primary;
+                        }
+                    }
+
+                    .autocomplete-dropdown {
+                        @include li-reset;
+
+                        position: absolute;
+                        top: calc(100% + $gutterS);
+                        left: 0;
+                        right: 0;
+                        background-color: $component-background;
+                        border: 1px solid $border;
+                        border-bottom-left-radius: $radius;
+                        border-bottom-right-radius: $radius;
+                        max-height: 200px;
+                        overflow-y: auto;
+                        margin: 0;
+                        padding: 0;
+                        z-index: 10;
+
+                        li {
+                            cursor: pointer;
+                            display: flex;
+                            justify-content: space-between;
+                            align-items: center;
+                            padding: 0 16px;
+
+                            span {
+                                padding: 16px;
+                                height: 100%;
+                                width: 60%;
+                                border-left: 1px solid $primary;
+                                margin-left: 16px;
+                                text-align: center;
+                            }
+                        }
+                    }
+                }
+
+                .selected-passengers {
+                    @include li-reset;
+
+                    margin-top: 16px;
+                    display: grid;
+                    grid-template-columns: repeat(2, 1fr);
+                    gap: 16px;
+
+                    li {
+                        display: flex;
+                        align-items: center;
+                        gap: 8px;
+
+                        button {
+                            border: 1px solid $border;
+                            border-radius: $radius;
+                            width: fit-content;
+                            background-color: $input-background;
+
+                            svg {
+                                width: 16px;
+                                height: 16px;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+.trip-station-list-modal {
+    max-width: 600px;
+    z-index: 997 !important;
+
+    .body {
+        form {
+            .form-group {
+                .row {
+                    display: grid;
+                    grid-template-columns: 1fr 50px;
+                    gap: 1rem;
+
+                    .search-input {
+                        flex: 1 1 auto;
+                        height: fit-content;
+                        position: relative;
+
+                        .autocomplete-dropdown {
+                            @include li-reset;
+
+                            position: absolute;
+                            top: calc(100% + $gutterS);
+                            left: 0;
+                            right: 0;
+                            background-color: $component-background;
+                            border: 1px solid $border;
+                            border-bottom-left-radius: $radius;
+                            border-bottom-right-radius: $radius;
+                            max-height: 200px;
+                            overflow-y: auto;
+                            margin: 0;
+                            padding: 0;
+                            z-index: 10;
+
+                            li {
+                                cursor: pointer;
+                                align-items: center;
+                                padding: 8px 16px;
+                                transition: background-color 200ms ease-in-out;
+
+                                span {
+                                    padding: 16px;
+                                    height: 100%;
+                                    width: 60%;
+                                    border-left: 1px solid $primary;
+                                    margin-left: 16px;
+                                    text-align: center;
+                                }
+
+                                &:hover {
+                                    background-color: $input-background;
+                                }
+                            }
+                        }
+                    }
+
+                    .remove-button {
+                        background-color: $accent;
+                        padding: 0;
+                    }
+                }
+            }
+
+            .add-button {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 0.5rem;
+                padding: 0.75rem 1.5rem;
+                background-color: $secondary;
+                color: $foreground;
+                border-radius: 0.5rem;
+                width: 100%;
+                transition: background-color 0.2s ease;
+                cursor: pointer;
+                border: none;
+                font-weight: $font-weight-medium;
+                font-size: $font-size;
+
+                &:hover {
+                    background-color: rgba($secondary, 0.9);
+                }
+            }
+        }
+    }
+}
+
+.message-modal {
+    z-index: 999 !important;
+}
+
+.trip-details-modal {
+    height: 100vh;
+    max-width: 600px;
+    width: 100%;
+    background-color: $component-background;
+    overflow-y: auto;
+    border: 1px solid $border;
+    border-top-left-radius: $radius;
+    border-bottom-left-radius: $radius;
+    box-shadow: 0 20px 25px rgba(0,0,0,.15);
+    z-index: 996;
+    float: right;
+    padding-right: 16px;
+    display: flex;
+    flex-direction: column;
+
+    .header {
+        position: sticky;
+        top: 0;
+        background-color: $component-background;
+        padding: 24px;
+        border-bottom: 1px solid $border;
+        z-index: 10;
+        align-items: baseline !important;
+
+        .title {
+            h2 {
+                font-size: $text-lg;
+                font-weight: $font-weight-medium;
+                margin-bottom: .5rem;
+            }
+
+            p {
+                color: $muted-foreground;
+                font-size: $text-sm;
+            }
+        }
+
+        .icon-wrapper {
+            cursor: pointer;
+        }
+    }
+
+    .body {
+        padding: 24px;
+        flex: 1 1 auto;
+
+        .info-card {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+
+            .time, .passengers {
+                background-color: $background;
+                border-radius: $radius;
+                padding: 1rem;
+                border: 1px solid $border;
+                transition: box-shadow .2s ease;
+
+                &:hover {
+                    box-shadow: 0 4px 6px rgba(0,0,0,.1);
+                }
+
+                p {
+                    color: $muted-foreground;
+                    font-size: $text-sm;
+                    margin-bottom: .5rem;
+                }
+
+                div {
+                    display: flex;
+                    gap: 4px;
+
+                    svg {
+                        width: 16px;
+                        height: 16px;
+                    }
+                }
+            }
+        }
+
+        .route-card {
+            background-color: $background;
+            border-radius: $radius;
+            padding: 1rem;
+            border: 1px solid $border;
+            transition: box-shadow .2s ease;
+            margin-bottom: 1.5rem;
+
+            &:hover {
+                box-shadow: 0 4px 6px rgba(0,0,0,.1);
+            }
+
+            .title {
+                color: $muted-foreground;
+                font-size: $text-sm;
+                margin-bottom: .5rem;
+            }
+
+            .from {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                margin-bottom: .5rem;
+
+                svg {
+                    color: $primary;
+                }
+            }
+
+            .stations {
+                .station {
+                    display: flex;
+                    align-items: center;
+                    gap: 12px;
+                    margin-bottom: .8rem;
+                    
+                    &:last-child {
+                        margin-bottom: none;
+                    }
+                    
+                    svg {
+                        scale: 1.5;
+                    }
+                }
+            }
+
+            .to {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                margin-top: -.4rem;
+
+                svg {
+                    color: $secondary;
+                }
+            }
+        }
+
+        .passengers-card {
+            background-color: $background;
+            border-radius: $radius;
+            padding: 1rem;
+            border: 1px solid $border;
+            transition: box-shadow .2s ease;
+
+            &:hover {
+                box-shadow: 0 4px 6px rgba(0,0,0,.1);
+            }
+
+            .title {
+                color: $muted-foreground;
+                font-size: $text-sm;
+                margin-bottom: .5rem;
+            }
+
+            .passengers {
+                .passenger {
+                    padding-left: 24px;
+
+                    li {
+                        p {
+                            display: grid;
+                            grid-template-columns: repeat(3, 1fr);
+
+                            span {
+                                &:nth-child(2), &:last-child {
+                                    font-size: $text-sm;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .footer {
+        position: sticky;
+        bottom: 0;
+        background-color: $component-background;
+        border-top: 1px solid $border;
+        padding: 24px;
+        display: flex;
+        gap: 12px;
+
+        button {
+            flex: 1;
+            padding: 12px 16px;
+            border-radius: $radius;
+            border: none;
+            cursor: pointer;
+            font-size: $font-size;
+            transition: background-color .2s ease;
+            background-color: $destructive;
+
+            &:hover {
+                background-color: rgba($destructive, .8);
+            }
+        }
+    }
+}

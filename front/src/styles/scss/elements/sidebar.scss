@@ -1,0 +1,50 @@
+@import '../global/variables';
+@import '../global/mixins';
+
+aside {
+    flex-direction: column;
+    width: 16rem;
+    height: 100vh;
+    position: sticky;
+    top: 0;
+    background-color: $component-background;
+    border-right: 1px solid $border;
+
+    .site-branding {
+        padding: 1.5rem;
+    }
+
+    .navigation {
+        nav {
+            flex: 1;
+            padding: 0 0.75rem;
+  
+            ul {
+                @include li_reset;
+
+                li {
+                    width: 100%;
+                    display: flex;
+                    align-items: center;
+                    gap: 0.75rem;
+                    padding: 0.75rem 1rem;
+                    border-radius: 0.5rem;
+                    background: none;
+                    border: none;
+                    cursor: pointer;
+                    margin-bottom: 0.25rem;
+                    transition: background-color 0.2s ease-in-out;
+
+                    &:hover, &.active {
+                        background-color: rgba(37, 99, 235, 0.08);
+                    }
+
+                    svg {
+                        width: 1.25rem;
+                        height: 1.25rem;
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,199 @@
+@import '../global/variables';
+
+.settings-wrapper {
+    .container {
+        & > * + * {
+            margin-top: 1.5rem;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            .buttons-wrapper {
+                display: grid;
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+        }
+
+        .settings-block {
+            &.card {
+                background-color: $component-background;
+                border-radius: $radius;
+                padding: 1.5rem;
+                border: 1px solid $border;
+                box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+                align-items: flex-start;
+                transition: box-shadow 0.3s ease;
+
+                &:hover {
+                    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+                }
+
+                .header {
+                    padding-bottom: 24px;
+                    z-index: 10;
+                    display: flex;
+                    align-items: center;
+                    justify-content: start;
+
+                    .icon {
+                        width: fit-content;
+                        height: auto;
+                        margin-right: 12px;
+
+                        svg {
+                            width: 1.5rem;
+                            height: 1.5rem;
+                            color: $primary;
+                        }
+                    }
+
+                    h3 {
+                        font-size: $text-lg;
+                        font-weight: $font-weight-medium;
+                    }
+                }
+
+                .content {
+                    display: grid;
+                    grid-template-columns: repeat(1, 1fr);
+                    gap: 1.5rem;
+                    
+                    .form-row {
+                        display: flex;
+                        flex-direction: column;
+                        
+                        label {
+                            display: block;
+                            margin-bottom: 8px;
+                            color: $muted-foreground;
+                            font-weight: $font-weight-normal;
+                            font-size: $font-size;
+                            display: flex;
+                            align-items: end;
+
+                            input {
+                                &[type="checkbox"] {
+                                    width: 25px;
+                                    height: 25px;
+                                    padding: 0 !important;
+                                    appearance: none;
+                                    border: 1px solid $border;
+                                    border-radius: 4px;
+                                    cursor: pointer;
+                                    margin-right: 8px;
+                                }
+
+                                &[type="checkbox"]:checked {
+                                    background: $primary;
+                                    position: relative;
+                                }
+
+                                &[type="checkbox"]:checked::after {
+                                    content: "✓";
+                                    color: white;
+                                    position: absolute;
+                                    left: 50%;
+                                    top: 50%;
+                                    transform: translate(-50%, -50%);
+                                    font-size: $font-size;
+                                }
+                            }
+                        }
+
+                        input, select {
+                            width: 100%;
+                            max-width: 450px;
+                            padding: 8px 16px;
+                            background-color: $input-background;
+                            border: 1px solid $border;
+                            border-radius: $radius;
+                            font-size: $font-size;
+                            color: $foreground;
+                            
+                            &::placeholder {
+                                color: rgba($muted-foreground, .7);
+                            }
+
+                            &:focus {
+                                outline: none;
+                                border-color: $primary;
+                                box-shadow: 0 0 0 2px rgba($primary,.3);
+                            }
+
+                            &::placeholder {
+                                color: rgba($muted-foreground, .7);;
+                            }
+
+                            &.required {
+                                border-color: $destructive;
+                            }
+
+                            &.not-valid {
+                                border-color: $destructive;
+                                background-color: rgba($destructive, .2);
+                                box-shadow: 0 0 0 2px rgba($destructive,.3);
+                            }
+                        }
+                    }
+
+                    button {
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        gap: 0.5rem;
+                        padding: 0.75rem 1.5rem;
+                        background-color: $primary;
+                        color: $foreground;
+                        border-radius: 0.5rem;
+                        width: 100%;
+                        max-width: 450px;
+                        transition: background-color 0.2s ease;
+                        cursor: pointer;
+                        border: none;
+                        font-weight: $font-weight-medium;
+                        font-size: $font-size;
+
+                        &:hover {
+                            background-color: rgba($primary, 0.9);
+                        }
+                    }
+                }
+            }
+
+            &.danger-zone {
+                &.card {
+                    color: $destructive;
+
+                    .header {
+                        .icon {
+                            svg {
+                                color: $destructive
+                            }
+                        }
+                    }
+
+                    .content {
+                        .buttons-wrapper {
+                            display: grid;
+                            grid-template-columns: repeat(2, 1fr);
+                            gap: 1.5rem;
+
+                            button {
+                                background-color: $destructive;
+                                max-width: 100%;
+
+                                &:hover {
+                                    background-color: rgba($destructive, 0.9);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

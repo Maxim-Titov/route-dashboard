@@ -1,0 +1,2145 @@
+@charset "UTF-8";
+.inter-font {
+  font-family: "Inter", sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  color: #3D4551;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  overflow-y: scroll;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+#root {
+  display: flex;
+}
+#root .wrapper {
+  flex: 1 1 auto;
+  order: 2;
+  background-color: #F5F7FA;
+}
+#root aside {
+  order: 1;
+}
+
+.container {
+  margin: 0 auto;
+  padding: 24px;
+}
+
+p {
+  margin: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+  margin: 0;
+}
+
+.site-branding {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 150px;
+}
+.site-branding .logo {
+  position: relative;
+  display: flex;
+  border-radius: 0.75rem;
+  height: auto;
+  background-color: #A3C4F3;
+  width: 2rem;
+  height: 2rem;
+  padding: 8px;
+}
+.site-branding .logo svg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.site-branding .logo img {
+  width: 100%;
+  height: auto;
+}
+.site-branding .title h1 {
+  font-weight: 500;
+  font-size: 1.25rem;
+  line-height: 1.5;
+}
+.site-branding .title h1.on-header {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.site-branding .sub-title p {
+  font-size: 16px;
+  color: #6B7280;
+}
+
+.progress-bar {
+  display: flex;
+  flex-direction: column;
+  align-items: start !important;
+}
+.progress-bar--header {
+  width: 100%;
+  margin-bottom: 16px;
+  font-size: 16px;
+  display: flex;
+  justify-content: space-between;
+}
+.progress-bar--header-label {
+  color: #6B7280;
+}
+.progress-bar--bar {
+  width: 100%;
+  height: 8px;
+  background-color: #E8EDF2;
+  border-radius: 9999px;
+  overflow: hidden;
+}
+.progress-bar--bar-value {
+  height: 8px;
+  transition: width 0.3s ease;
+  border-radius: 9999px;
+}
+
+.view-header h2 {
+  margin-bottom: 15px;
+  font-weight: 500;
+}
+.view-header p {
+  color: #6B7280;
+}
+
+.add-route-button,
+.add-trip-button,
+.add-passenger-button,
+.save-settings-button {
+  background-color: #A3C4F3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  color: #3D4551;
+  border-radius: 0.5rem;
+  width: 100%;
+  transition: background-color 0.2s ease;
+  cursor: pointer;
+  border: none;
+}
+.add-route-button:hover,
+.add-trip-button:hover,
+.add-passenger-button:hover,
+.save-settings-button:hover {
+  background-color: rgba(163, 196, 243, 0.9);
+}
+.add-route-button svg,
+.add-trip-button svg,
+.add-passenger-button svg,
+.save-settings-button svg {
+  width: 20px;
+  height: 20px;
+}
+.add-route-button p,
+.add-trip-button p,
+.add-passenger-button p,
+.save-settings-button p {
+  font-weight: 500;
+  font-size: 16px;
+}
+
+.filter-button {
+  background-color: #76B5A9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  color: #3D4551;
+  border-radius: 0.5rem;
+  width: 100%;
+  transition: background-color 0.2s ease;
+  cursor: pointer;
+  border: none;
+}
+.filter-button:hover {
+  background-color: rgba(118, 181, 169, 0.9);
+}
+.filter-button svg {
+  width: 20px;
+  height: 20px;
+}
+.filter-button p {
+  font-weight: 500;
+  font-size: 16px;
+}
+
+.modal-wrapper,
+.additional-modal-wrapper,
+.message-modal-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(61, 69, 81, 0.5);
+}
+
+.modal-wrapper {
+  z-index: 995;
+}
+
+.additional-modal-wrapper {
+  z-index: 996;
+}
+
+.message-modal-wrapper {
+  z-index: 997;
+}
+
+.filters-wrapper {
+  max-width: 100%;
+}
+.filters-wrapper .card {
+  background-color: #FFFFFF;
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.3s ease;
+}
+.filters-wrapper .card:hover {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+.filters-wrapper .card .header {
+  display: flex;
+  align-items: center;
+  justify-content: start !important;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.filters-wrapper .card .header svg {
+  width: 24px;
+  height: 24px;
+  color: #A3C4F3;
+}
+.filters-wrapper .card .header h3 {
+  font-size: 16px;
+  font-weight: 400;
+}
+.filters-wrapper .card .content {
+  display: flex;
+}
+.filters-wrapper .card .content #filters {
+  width: 100%;
+}
+.filters-wrapper .card .content #filters .settings-wrapper {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+}
+.filters-wrapper .card .content #filters .settings-wrapper button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  color: #3D4551;
+  border-radius: 0.5rem;
+  transition: background-color 0.2s ease;
+  cursor: pointer;
+  border: none;
+  margin-right: 16px;
+}
+.filters-wrapper .card .content #filters .settings-wrapper button:last-child {
+  margin-right: 0;
+}
+.filters-wrapper .card .content #filters .settings-wrapper button span {
+  font-weight: 500;
+  font-size: 16px;
+}
+.filters-wrapper .card .content #filters .settings-wrapper button svg {
+  width: 20px;
+  height: 20px;
+  transition: all 0.2s ease;
+}
+.filters-wrapper .card .content #filters .settings-wrapper button.desc svg {
+  transform: rotate(270deg);
+}
+.filters-wrapper .card .content #filters .settings-wrapper button.asc svg {
+  transform: rotate(90deg);
+}
+.filters-wrapper .card .content #filters .settings-wrapper .buttons {
+  display: flex;
+  flex: 1 1 auto;
+}
+.filters-wrapper .card .content #filters .settings-wrapper .buttons .sort-toggle {
+  background-color: #76B5A9;
+}
+.filters-wrapper .card .content #filters .settings-wrapper .buttons .sort-toggle:hover {
+  background-color: rgba(118, 181, 169, 0.9);
+}
+.filters-wrapper .card .content #filters .settings-wrapper .buttons .reset-filters {
+  background-color: #F7EEDB;
+}
+.filters-wrapper .card .content #filters .settings-wrapper .buttons .reset-filters:hover {
+  background-color: rgba(247, 238, 219, 0.9);
+}
+.filters-wrapper .card .content #filters .settings-wrapper .buttons .apply-filters {
+  background-color: #A3C4F3;
+}
+.filters-wrapper .card .content #filters .settings-wrapper .buttons .apply-filters:hover {
+  background-color: rgba(163, 196, 243, 0.9);
+}
+.filters-wrapper .card .content #filters .settings-wrapper .view {
+  display: flex;
+  align-items: center;
+}
+.filters-wrapper .card .content #filters .settings-wrapper .view p {
+  color: #6B7280;
+  font-size: 16px;
+  margin-right: 16px;
+}
+.filters-wrapper .card .content #filters .settings-wrapper .view button {
+  background-color: #F7EEDB;
+}
+.filters-wrapper .card .content #filters .settings-wrapper .view button:hover {
+  background-color: rgba(247, 238, 219, 0.9);
+}
+.filters-wrapper .card .content #filters .form-row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.filters-wrapper .card .content #filters .form-row:last-child {
+  margin-bottom: 0;
+}
+.filters-wrapper .card .content #filters .form-row.column {
+  grid-template-columns: 1fr;
+}
+.filters-wrapper .card .content #filters .form-row .form-group {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+.filters-wrapper .card .content #filters .form-row .form-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: #6B7280;
+  font-size: 16px;
+  display: flex;
+  align-items: end;
+}
+.filters-wrapper .card .content #filters .form-row .form-group label input[type=checkbox] {
+  width: 25px;
+  height: 25px;
+  padding: 0 !important;
+  appearance: none;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 4px;
+  cursor: pointer;
+}
+.filters-wrapper .card .content #filters .form-row .form-group label input[type=checkbox]:checked {
+  background: #A3C4F3;
+  position: relative;
+}
+.filters-wrapper .card .content #filters .form-row .form-group label input[type=checkbox]:checked::after {
+  content: "✓";
+  color: white;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 16px;
+}
+.filters-wrapper .card .content #filters .form-row .form-group input {
+  width: 100%;
+  padding: 8px 16px;
+  background-color: #FAFBFC;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 0.75rem;
+  font-size: 16px;
+  color: #3D4551;
+}
+.filters-wrapper .card .content #filters .form-row .form-group input:focus {
+  outline: none;
+  border-color: #A3C4F3;
+  box-shadow: 0 0 0 2px rgba(163, 196, 243, 0.3);
+}
+.filters-wrapper .card .content #filters .form-row .form-group input::placeholder {
+  color: rgba(107, 114, 128, 0.7);
+}
+.filters-wrapper .card .content #filters .form-row .form-group input.free-seats {
+  width: auto;
+}
+.filters-wrapper .card .content #filters .form-row .form-group .buttons {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+.filters-wrapper .card .content #filters .form-row .form-group .buttons button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background-color: #F5F7FA;
+  color: #3D4551;
+  border-radius: 0.5rem;
+  width: 100%;
+  transition: background-color 0.2s ease;
+  cursor: pointer;
+  border: none;
+  font-weight: 500;
+  font-size: 16px;
+}
+.filters-wrapper .card .content #filters .form-row .form-group .buttons button:hover {
+  background-color: rgba(163, 196, 243, 0.5);
+}
+.filters-wrapper .card .content #filters .form-row .form-group .buttons button.active {
+  background-color: #A3C4F3;
+}
+
+.dashboard-wrapper .container > * + * {
+  margin-top: 1.5rem;
+}
+.dashboard-wrapper .container .general-statistics {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+  max-width: 100%;
+}
+.dashboard-wrapper .container .general-statistics .card {
+  background-color: #FFFFFF;
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  transition: box-shadow 0.3s ease;
+}
+.dashboard-wrapper .container .general-statistics .card:hover {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+.dashboard-wrapper .container .general-statistics .card .content {
+  flex: 1;
+}
+.dashboard-wrapper .container .general-statistics .card .content .label {
+  color: #6B7280;
+  margin-bottom: 0.5rem;
+  font-weight: 400;
+  font-size: 16px;
+}
+.dashboard-wrapper .container .general-statistics .card .content .value {
+  margin-bottom: 0.25rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+.dashboard-wrapper .container .general-statistics .card .icon {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 0.5rem;
+  background-color: rgba(163, 196, 243, 0.1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.dashboard-wrapper .container .general-statistics .card .icon svg {
+  width: 1.5rem;
+  height: 1.5rem;
+  color: #A3C4F3;
+}
+.dashboard-wrapper .container .quick-actions {
+  background-color: #FFFFFF;
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.3s ease;
+}
+.dashboard-wrapper .container .quick-actions:hover {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+.dashboard-wrapper .container .quick-actions h2 {
+  margin-bottom: 1rem;
+  font-size: 1.25rem;
+  font-weight: 500;
+  font-size: 16px;
+}
+.dashboard-wrapper .container .quick-actions .actions {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+}
+.dashboard-wrapper .container .quick-actions .actions button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  color: #3D4551;
+  border-radius: 0.5rem;
+  width: 100%;
+  transition: background-color 0.2s ease;
+  cursor: pointer;
+  border: none;
+  font-weight: 500;
+  font-size: 16px;
+}
+.dashboard-wrapper .container .popular-routes .card {
+  background-color: #FFFFFF;
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.3s ease;
+}
+.dashboard-wrapper .container .popular-routes .card:hover {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+.dashboard-wrapper .container .popular-routes .card h3 {
+  margin-bottom: 1rem;
+  font-size: 1.125rem;
+  font-weight: 500;
+}
+.dashboard-wrapper .container .popular-routes .card .content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.dashboard-wrapper .container .popular-routes .card .content div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+}
+.dashboard-wrapper .container .popular-routes .card .content div .value {
+  color: #6B7280;
+}
+.dashboard-wrapper .container .popular-routes .card .content div.finished .progress-bar--bar-value {
+  background-color: #A3C4F3;
+}
+.dashboard-wrapper .container .popular-routes .card .content div.in-progress .progress-bar--bar-value {
+  background-color: #76B5A9;
+}
+
+.cities-wrapper .container > * + * {
+  margin-top: 1.5rem;
+}
+.cities-wrapper .container .header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.cities-wrapper .container .header .buttons-wrapper {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+.cities-wrapper .container .cities-list {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+}
+.cities-wrapper .container .cities-list .card {
+  background-color: #FFFFFF;
+  border-radius: 0.75rem;
+  padding: 24px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.2s ease;
+  display: grid;
+  gap: 1.5rem;
+}
+.cities-wrapper .container .cities-list .card:hover {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+.cities-wrapper .container .cities-list .card .header {
+  display: flex;
+  font-size: 1.125rem;
+  font-weight: 500;
+}
+.cities-wrapper .container .cities-list .card .header .actions {
+  display: flex;
+  gap: 8px;
+}
+.cities-wrapper .container .cities-list .card .header .actions .icon-wrapper {
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  border-radius: 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+.cities-wrapper .container .cities-list .card .header .actions .icon-wrapper:hover {
+  background-color: #E8EDF2;
+}
+.cities-wrapper .container .cities-list .card .header .actions .icon-wrapper svg {
+  width: 16px;
+  height: 16px;
+}
+.cities-wrapper .container .cities-list .card .header .actions .icon-wrapper.trash svg {
+  color: #EF9A9A;
+}
+.cities-wrapper .container .cities-list .card .details {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.cities-wrapper .container .cities-list .card .details p {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+.cities-wrapper .container .cities-list .card .details p span {
+  color: #6B7280;
+}
+
+.routes-wrapper .container > * + * {
+  margin-top: 1.5rem;
+}
+.routes-wrapper .container .header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.routes-wrapper .container .header .buttons-wrapper {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+.routes-wrapper .container .routes-list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+.routes-wrapper .container .routes-list .card {
+  background-color: #FFFFFF;
+  border-radius: 0.75rem;
+  padding: 24px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.2s ease;
+  display: grid;
+  gap: 1.5rem;
+}
+.routes-wrapper .container .routes-list .card:hover {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+.routes-wrapper .container .routes-list .card .header {
+  display: flex;
+  font-size: 1.125rem;
+  font-weight: 500;
+}
+.routes-wrapper .container .routes-list .card .header .actions {
+  display: flex;
+  gap: 8px;
+}
+.routes-wrapper .container .routes-list .card .header .actions .icon-wrapper {
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  border-radius: 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+.routes-wrapper .container .routes-list .card .header .actions .icon-wrapper:hover {
+  background-color: #E8EDF2;
+}
+.routes-wrapper .container .routes-list .card .header .actions .icon-wrapper svg {
+  width: 16px;
+  height: 16px;
+}
+.routes-wrapper .container .routes-list .card .header .actions .icon-wrapper.trash svg {
+  color: #EF9A9A;
+}
+.routes-wrapper .container .routes-list .card .details {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.routes-wrapper .container .routes-list .card .details p {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+.routes-wrapper .container .routes-list .card .details p span {
+  color: #6B7280;
+}
+
+.trips-wrapper .container > * + * {
+  margin-top: 1.5rem;
+}
+.trips-wrapper .container .header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.trips-wrapper .container .header .buttons-wrapper {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+.trips-wrapper .container .trips-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+.trips-wrapper .container .trips-list .card {
+  background-color: #FFFFFF;
+  border-radius: 0.75rem;
+  padding: 24px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.2s ease;
+  display: grid;
+  gap: 1.5rem;
+}
+.trips-wrapper .container .trips-list .card:hover {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+.trips-wrapper .container .trips-list .card .header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+.trips-wrapper .container .trips-list .card .header .route {
+  display: flex;
+  align-items: center;
+}
+.trips-wrapper .container .trips-list .card .header .route .info {
+  font-size: 1.125rem;
+  font-weight: 500;
+  margin-right: 0.5rem;
+}
+.trips-wrapper .container .trips-list .card .header .route .status {
+  color: #6B7280;
+  font-size: 0.875rem;
+  background-color: #E8EDF2;
+  height: fit-content;
+  border-radius: 0.75rem;
+  padding: 5px 8px;
+}
+.trips-wrapper .container .trips-list .card .header .actions {
+  display: flex;
+  gap: 8px;
+}
+.trips-wrapper .container .trips-list .card .header .actions .icon-wrapper {
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  border-radius: 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+.trips-wrapper .container .trips-list .card .header .actions .icon-wrapper:hover {
+  background-color: #E8EDF2;
+}
+.trips-wrapper .container .trips-list .card .header .actions .icon-wrapper svg {
+  width: 16px;
+  height: 16px;
+}
+.trips-wrapper .container .trips-list .card .header .actions .icon-wrapper.info svg {
+  color: #76B5A9;
+}
+.trips-wrapper .container .trips-list .card .header .actions .icon-wrapper.edit svg {
+  color: #A3C4F3;
+}
+.trips-wrapper .container .trips-list .card .header .actions .icon-wrapper.trash svg {
+  color: #EF9A9A;
+}
+.trips-wrapper .container .trips-list .card .content {
+  display: flex;
+  align-items: center;
+  color: #6B7280;
+  gap: 1.5rem;
+}
+.trips-wrapper .container .trips-list .card .content .date, .trips-wrapper .container .trips-list .card .content .time, .trips-wrapper .container .trips-list .card .content .passengers-count {
+  display: flex;
+  gap: 5px;
+}
+.trips-wrapper .container .trips-list .card .content .date svg, .trips-wrapper .container .trips-list .card .content .time svg, .trips-wrapper .container .trips-list .card .content .passengers-count svg {
+  width: 16px;
+  height: 16px;
+}
+.trips-wrapper .container .trips-list .card .content .date span, .trips-wrapper .container .trips-list .card .content .time span, .trips-wrapper .container .trips-list .card .content .passengers-count span {
+  font-size: 14px;
+}
+
+.passengers-wrapper .container > * + * {
+  margin-top: 1.5rem;
+}
+.passengers-wrapper .container .header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.passengers-wrapper .container .header .buttons-wrapper {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+.passengers-wrapper .container .general-statistics {
+  max-width: 100%;
+}
+.passengers-wrapper .container .general-statistics .card {
+  background-color: #FFFFFF;
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.3s ease;
+}
+.passengers-wrapper .container .general-statistics .card:hover {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+.passengers-wrapper .container .general-statistics .card .header {
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.passengers-wrapper .container .general-statistics .card .header svg {
+  width: 24px;
+  height: 24px;
+  color: #A3C4F3;
+}
+.passengers-wrapper .container .general-statistics .card .header h3 {
+  font-size: 16px;
+  font-weight: 400;
+}
+.passengers-wrapper .container .general-statistics .card .content {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+.passengers-wrapper .container .general-statistics .card .content .statistic .label {
+  color: #6B7280;
+  margin-bottom: 0.5rem;
+  font-weight: 400;
+  font-size: 16px;
+}
+.passengers-wrapper .container .general-statistics .card .content .statistic .value {
+  font-size: 1.5rem;
+  font-weight: 400;
+}
+.passengers-wrapper .container .passengers-list.flex {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+.passengers-wrapper .container .passengers-list.flex .card .content {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  align-items: center;
+}
+.passengers-wrapper .container .passengers-list.flex .card .content .details {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.passengers-wrapper .container .passengers-list.flex .card .content .details p {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+.passengers-wrapper .container .passengers-list.flex .card .content .details p span {
+  color: #6B7280;
+}
+.passengers-wrapper .container .passengers-list.flex .card .content .note {
+  background-color: rgba(247, 238, 219, 0.5);
+  border-radius: 0.75rem;
+  padding: 12px;
+}
+.passengers-wrapper .container .passengers-list.flex .card .content .note-title {
+  margin-bottom: 4px;
+  color: #6B7280;
+  font-size: 16px;
+}
+.passengers-wrapper .container .passengers-list.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+.passengers-wrapper .container .passengers-list.grid .card .content {
+  display: flex;
+  flex-direction: column;
+}
+.passengers-wrapper .container .passengers-list.grid .card .content .details {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.passengers-wrapper .container .passengers-list.grid .card .content .details p {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+.passengers-wrapper .container .passengers-list.grid .card .content .details p span {
+  color: #6B7280;
+}
+.passengers-wrapper .container .passengers-list.grid .card .content .note {
+  margin-top: 1.5rem;
+  background-color: rgba(247, 238, 219, 0.5);
+  border-radius: 0.75rem;
+  padding: 12px;
+}
+.passengers-wrapper .container .passengers-list.grid .card .content .note-title {
+  margin-bottom: 4px;
+  color: #6B7280;
+  font-size: 16px;
+}
+.passengers-wrapper .container .passengers-list .card {
+  background-color: #FFFFFF;
+  border-radius: 0.75rem;
+  padding: 24px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.2s ease;
+  display: grid;
+  gap: 1.5rem;
+}
+.passengers-wrapper .container .passengers-list .card:hover {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+.passengers-wrapper .container .passengers-list .card .header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+.passengers-wrapper .container .passengers-list .card .header .info .full-name {
+  margin-bottom: 0.6rem;
+  font-size: 1.125rem;
+  font-weight: 500;
+}
+.passengers-wrapper .container .passengers-list .card .header .info .trips-count {
+  color: #6B7280;
+  font-size: 16px;
+}
+.passengers-wrapper .container .passengers-list .card .header .actions {
+  display: flex;
+  gap: 8px;
+}
+.passengers-wrapper .container .passengers-list .card .header .actions .icon-wrapper {
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  border-radius: 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+.passengers-wrapper .container .passengers-list .card .header .actions .icon-wrapper:hover {
+  background-color: #E8EDF2;
+}
+.passengers-wrapper .container .passengers-list .card .header .actions .icon-wrapper svg {
+  width: 16px;
+  height: 16px;
+}
+.passengers-wrapper .container .passengers-list .card .header .actions .icon-wrapper.edit svg {
+  color: #A3C4F3;
+}
+.passengers-wrapper .container .passengers-list .card .header .actions .icon-wrapper.trash svg {
+  color: #EF9A9A;
+}
+
+.settings-wrapper .container > * + * {
+  margin-top: 1.5rem;
+}
+.settings-wrapper .container .header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.settings-wrapper .container .header .buttons-wrapper {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+.settings-wrapper .container .settings-block.card {
+  background-color: #FFFFFF;
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  align-items: flex-start;
+  transition: box-shadow 0.3s ease;
+}
+.settings-wrapper .container .settings-block.card:hover {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+.settings-wrapper .container .settings-block.card .header {
+  padding-bottom: 24px;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: start;
+}
+.settings-wrapper .container .settings-block.card .header .icon {
+  width: fit-content;
+  height: auto;
+  margin-right: 12px;
+}
+.settings-wrapper .container .settings-block.card .header .icon svg {
+  width: 1.5rem;
+  height: 1.5rem;
+  color: #A3C4F3;
+}
+.settings-wrapper .container .settings-block.card .header h3 {
+  font-size: 1.125rem;
+  font-weight: 500;
+}
+.settings-wrapper .container .settings-block.card .content {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 1.5rem;
+}
+.settings-wrapper .container .settings-block.card .content .form-row {
+  display: flex;
+  flex-direction: column;
+}
+.settings-wrapper .container .settings-block.card .content .form-row label {
+  display: block;
+  margin-bottom: 8px;
+  color: #6B7280;
+  font-weight: 400;
+  font-size: 16px;
+  display: flex;
+  align-items: end;
+}
+.settings-wrapper .container .settings-block.card .content .form-row label input[type=checkbox] {
+  width: 25px;
+  height: 25px;
+  padding: 0 !important;
+  appearance: none;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 8px;
+}
+.settings-wrapper .container .settings-block.card .content .form-row label input[type=checkbox]:checked {
+  background: #A3C4F3;
+  position: relative;
+}
+.settings-wrapper .container .settings-block.card .content .form-row label input[type=checkbox]:checked::after {
+  content: "✓";
+  color: white;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 16px;
+}
+.settings-wrapper .container .settings-block.card .content .form-row input, .settings-wrapper .container .settings-block.card .content .form-row select {
+  width: 100%;
+  max-width: 450px;
+  padding: 8px 16px;
+  background-color: #FAFBFC;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 0.75rem;
+  font-size: 16px;
+  color: #3D4551;
+}
+.settings-wrapper .container .settings-block.card .content .form-row input::placeholder, .settings-wrapper .container .settings-block.card .content .form-row select::placeholder {
+  color: rgba(107, 114, 128, 0.7);
+}
+.settings-wrapper .container .settings-block.card .content .form-row input:focus, .settings-wrapper .container .settings-block.card .content .form-row select:focus {
+  outline: none;
+  border-color: #A3C4F3;
+  box-shadow: 0 0 0 2px rgba(163, 196, 243, 0.3);
+}
+.settings-wrapper .container .settings-block.card .content .form-row input::placeholder, .settings-wrapper .container .settings-block.card .content .form-row select::placeholder {
+  color: rgba(107, 114, 128, 0.7);
+}
+.settings-wrapper .container .settings-block.card .content .form-row input.required, .settings-wrapper .container .settings-block.card .content .form-row select.required {
+  border-color: #EF9A9A;
+}
+.settings-wrapper .container .settings-block.card .content .form-row input.not-valid, .settings-wrapper .container .settings-block.card .content .form-row select.not-valid {
+  border-color: #EF9A9A;
+  background-color: rgba(239, 154, 154, 0.2);
+  box-shadow: 0 0 0 2px rgba(239, 154, 154, 0.3);
+}
+.settings-wrapper .container .settings-block.card .content button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background-color: #A3C4F3;
+  color: #3D4551;
+  border-radius: 0.5rem;
+  width: 100%;
+  max-width: 450px;
+  transition: background-color 0.2s ease;
+  cursor: pointer;
+  border: none;
+  font-weight: 500;
+  font-size: 16px;
+}
+.settings-wrapper .container .settings-block.card .content button:hover {
+  background-color: rgba(163, 196, 243, 0.9);
+}
+.settings-wrapper .container .settings-block.danger-zone.card {
+  color: #EF9A9A;
+}
+.settings-wrapper .container .settings-block.danger-zone.card .header .icon svg {
+  color: #EF9A9A;
+}
+.settings-wrapper .container .settings-block.danger-zone.card .content .buttons-wrapper {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+}
+.settings-wrapper .container .settings-block.danger-zone.card .content .buttons-wrapper button {
+  background-color: #EF9A9A;
+  max-width: 100%;
+}
+.settings-wrapper .container .settings-block.danger-zone.card .content .buttons-wrapper button:hover {
+  background-color: rgba(239, 154, 154, 0.9);
+}
+
+header {
+  background-color: #FFFFFF;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+}
+header .search-panel {
+  position: relative;
+  max-width: 28rem;
+  flex: 1 1 auto;
+}
+header .search-panel .search-icon {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1.25rem;
+  height: 1.25rem;
+  color: #6B7280;
+}
+header .search-panel input {
+  width: 100%;
+  height: 42px;
+  padding-left: 2.5rem;
+  padding-right: 1rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  background-color: #FAFBFC;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  font-size: 16px;
+  color: #3D4551;
+}
+header .search-panel input:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px #A3C4F3;
+}
+header .search-panel .autocomplete-dropdown {
+  padding: 0;
+  margin: 0;
+}
+header .search-panel .autocomplete-dropdown li {
+  list-style: none;
+}
+header .search-panel .autocomplete-dropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 0;
+  right: 0;
+  background-color: #FFFFFF;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-bottom-left-radius: 0.75rem;
+  border-bottom-right-radius: 0.75rem;
+  max-height: 200px;
+  overflow-y: auto;
+  margin: 0;
+  padding: 0;
+  z-index: 10;
+}
+header .search-panel .autocomplete-dropdown li {
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 16px;
+}
+header .search-panel .autocomplete-dropdown li span {
+  padding: 16px;
+  height: 100%;
+  width: 60%;
+  border-left: 1px solid #A3C4F3;
+  margin-left: 16px;
+  text-align: center;
+}
+header .user-logo {
+  width: 40px;
+  height: 40px;
+  background-color: rgba(163, 196, 243, 0.2);
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #A3C4F3;
+}
+
+aside {
+  flex-direction: column;
+  width: 16rem;
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  background-color: #FFFFFF;
+  border-right: 1px solid rgba(0, 0, 0, 0.06);
+}
+aside .site-branding {
+  padding: 1.5rem;
+}
+aside .navigation nav {
+  flex: 1;
+  padding: 0 0.75rem;
+}
+aside .navigation nav ul {
+  padding: 0;
+  margin: 0;
+}
+aside .navigation nav ul li {
+  list-style: none;
+}
+aside .navigation nav ul li {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-bottom: 0.25rem;
+  transition: background-color 0.2s ease-in-out;
+}
+aside .navigation nav ul li:hover, aside .navigation nav ul li.active {
+  background-color: rgba(37, 99, 235, 0.08);
+}
+aside .navigation nav ul li svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.add-route-modal,
+.add-trip-modal,
+.trip-passenger-list-modal,
+.trip-station-list-modal,
+.add-passanger-modal,
+.confirm-modal,
+.message-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 448px;
+  width: 100%;
+  max-height: calc(90vh + 1px);
+  overflow-y: auto;
+  background-color: #FFFFFF;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 0.75rem;
+  box-shadow: 0 20px 25px rgba(0, 0, 0, 0.15);
+  z-index: 996;
+}
+.add-route-modal .header,
+.add-trip-modal .header,
+.trip-passenger-list-modal .header,
+.trip-station-list-modal .header,
+.add-passanger-modal .header,
+.confirm-modal .header,
+.message-modal .header {
+  position: sticky;
+  top: 0;
+  background-color: #FFFFFF;
+  padding: 24px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  z-index: 10;
+}
+.add-route-modal .header h2,
+.add-trip-modal .header h2,
+.trip-passenger-list-modal .header h2,
+.trip-station-list-modal .header h2,
+.add-passanger-modal .header h2,
+.confirm-modal .header h2,
+.message-modal .header h2 {
+  font-size: 1.125rem;
+  font-weight: 500;
+}
+.add-route-modal .body,
+.add-trip-modal .body,
+.trip-passenger-list-modal .body,
+.trip-station-list-modal .body,
+.add-passanger-modal .body,
+.confirm-modal .body,
+.message-modal .body {
+  padding: 24px;
+}
+.add-route-modal .body p span,
+.add-trip-modal .body p span,
+.trip-passenger-list-modal .body p span,
+.trip-station-list-modal .body p span,
+.add-passanger-modal .body p span,
+.confirm-modal .body p span,
+.message-modal .body p span {
+  color: #6B7280;
+}
+.add-route-modal .body form,
+.add-trip-modal .body form,
+.trip-passenger-list-modal .body form,
+.trip-station-list-modal .body form,
+.add-passanger-modal .body form,
+.confirm-modal .body form,
+.message-modal .body form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.add-route-modal .body form .form-group,
+.add-trip-modal .body form .form-group,
+.trip-passenger-list-modal .body form .form-group,
+.trip-station-list-modal .body form .form-group,
+.add-passanger-modal .body form .form-group,
+.confirm-modal .body form .form-group,
+.message-modal .body form .form-group {
+  position: relative;
+}
+.add-route-modal .body form .form-group.row,
+.add-trip-modal .body form .form-group.row,
+.trip-passenger-list-modal .body form .form-group.row,
+.trip-station-list-modal .body form .form-group.row,
+.add-passanger-modal .body form .form-group.row,
+.confirm-modal .body form .form-group.row,
+.message-modal .body form .form-group.row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+.add-route-modal .body form .form-group label,
+.add-trip-modal .body form .form-group label,
+.trip-passenger-list-modal .body form .form-group label,
+.trip-station-list-modal .body form .form-group label,
+.add-passanger-modal .body form .form-group label,
+.confirm-modal .body form .form-group label,
+.message-modal .body form .form-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: #6B7280;
+  font-size: 16px;
+}
+.add-route-modal .body form .form-group label span,
+.add-trip-modal .body form .form-group label span,
+.trip-passenger-list-modal .body form .form-group label span,
+.trip-station-list-modal .body form .form-group label span,
+.add-passanger-modal .body form .form-group label span,
+.confirm-modal .body form .form-group label span,
+.message-modal .body form .form-group label span {
+  color: #EF9A9A;
+}
+.add-route-modal .body form .form-group input, .add-route-modal .body form .form-group textarea, .add-route-modal .body form .form-group select,
+.add-trip-modal .body form .form-group input,
+.add-trip-modal .body form .form-group textarea,
+.add-trip-modal .body form .form-group select,
+.trip-passenger-list-modal .body form .form-group input,
+.trip-passenger-list-modal .body form .form-group textarea,
+.trip-passenger-list-modal .body form .form-group select,
+.trip-station-list-modal .body form .form-group input,
+.trip-station-list-modal .body form .form-group textarea,
+.trip-station-list-modal .body form .form-group select,
+.add-passanger-modal .body form .form-group input,
+.add-passanger-modal .body form .form-group textarea,
+.add-passanger-modal .body form .form-group select,
+.confirm-modal .body form .form-group input,
+.confirm-modal .body form .form-group textarea,
+.confirm-modal .body form .form-group select,
+.message-modal .body form .form-group input,
+.message-modal .body form .form-group textarea,
+.message-modal .body form .form-group select {
+  width: 100%;
+  padding: 8px 16px;
+  background-color: #FAFBFC;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 0.75rem;
+  font-size: 16px;
+  color: #3D4551;
+}
+.add-route-modal .body form .form-group input::placeholder, .add-route-modal .body form .form-group textarea::placeholder, .add-route-modal .body form .form-group select::placeholder,
+.add-trip-modal .body form .form-group input::placeholder,
+.add-trip-modal .body form .form-group textarea::placeholder,
+.add-trip-modal .body form .form-group select::placeholder,
+.trip-passenger-list-modal .body form .form-group input::placeholder,
+.trip-passenger-list-modal .body form .form-group textarea::placeholder,
+.trip-passenger-list-modal .body form .form-group select::placeholder,
+.trip-station-list-modal .body form .form-group input::placeholder,
+.trip-station-list-modal .body form .form-group textarea::placeholder,
+.trip-station-list-modal .body form .form-group select::placeholder,
+.add-passanger-modal .body form .form-group input::placeholder,
+.add-passanger-modal .body form .form-group textarea::placeholder,
+.add-passanger-modal .body form .form-group select::placeholder,
+.confirm-modal .body form .form-group input::placeholder,
+.confirm-modal .body form .form-group textarea::placeholder,
+.confirm-modal .body form .form-group select::placeholder,
+.message-modal .body form .form-group input::placeholder,
+.message-modal .body form .form-group textarea::placeholder,
+.message-modal .body form .form-group select::placeholder {
+  color: rgba(107, 114, 128, 0.7);
+}
+.add-route-modal .body form .form-group input:focus, .add-route-modal .body form .form-group textarea:focus, .add-route-modal .body form .form-group select:focus,
+.add-trip-modal .body form .form-group input:focus,
+.add-trip-modal .body form .form-group textarea:focus,
+.add-trip-modal .body form .form-group select:focus,
+.trip-passenger-list-modal .body form .form-group input:focus,
+.trip-passenger-list-modal .body form .form-group textarea:focus,
+.trip-passenger-list-modal .body form .form-group select:focus,
+.trip-station-list-modal .body form .form-group input:focus,
+.trip-station-list-modal .body form .form-group textarea:focus,
+.trip-station-list-modal .body form .form-group select:focus,
+.add-passanger-modal .body form .form-group input:focus,
+.add-passanger-modal .body form .form-group textarea:focus,
+.add-passanger-modal .body form .form-group select:focus,
+.confirm-modal .body form .form-group input:focus,
+.confirm-modal .body form .form-group textarea:focus,
+.confirm-modal .body form .form-group select:focus,
+.message-modal .body form .form-group input:focus,
+.message-modal .body form .form-group textarea:focus,
+.message-modal .body form .form-group select:focus {
+  outline: none;
+  border-color: #A3C4F3;
+  box-shadow: 0 0 0 2px rgba(163, 196, 243, 0.3);
+}
+.add-route-modal .body form .form-group input::placeholder, .add-route-modal .body form .form-group textarea::placeholder, .add-route-modal .body form .form-group select::placeholder,
+.add-trip-modal .body form .form-group input::placeholder,
+.add-trip-modal .body form .form-group textarea::placeholder,
+.add-trip-modal .body form .form-group select::placeholder,
+.trip-passenger-list-modal .body form .form-group input::placeholder,
+.trip-passenger-list-modal .body form .form-group textarea::placeholder,
+.trip-passenger-list-modal .body form .form-group select::placeholder,
+.trip-station-list-modal .body form .form-group input::placeholder,
+.trip-station-list-modal .body form .form-group textarea::placeholder,
+.trip-station-list-modal .body form .form-group select::placeholder,
+.add-passanger-modal .body form .form-group input::placeholder,
+.add-passanger-modal .body form .form-group textarea::placeholder,
+.add-passanger-modal .body form .form-group select::placeholder,
+.confirm-modal .body form .form-group input::placeholder,
+.confirm-modal .body form .form-group textarea::placeholder,
+.confirm-modal .body form .form-group select::placeholder,
+.message-modal .body form .form-group input::placeholder,
+.message-modal .body form .form-group textarea::placeholder,
+.message-modal .body form .form-group select::placeholder {
+  color: rgba(107, 114, 128, 0.7);
+}
+.add-route-modal .body form .form-group input.required, .add-route-modal .body form .form-group textarea.required, .add-route-modal .body form .form-group select.required,
+.add-trip-modal .body form .form-group input.required,
+.add-trip-modal .body form .form-group textarea.required,
+.add-trip-modal .body form .form-group select.required,
+.trip-passenger-list-modal .body form .form-group input.required,
+.trip-passenger-list-modal .body form .form-group textarea.required,
+.trip-passenger-list-modal .body form .form-group select.required,
+.trip-station-list-modal .body form .form-group input.required,
+.trip-station-list-modal .body form .form-group textarea.required,
+.trip-station-list-modal .body form .form-group select.required,
+.add-passanger-modal .body form .form-group input.required,
+.add-passanger-modal .body form .form-group textarea.required,
+.add-passanger-modal .body form .form-group select.required,
+.confirm-modal .body form .form-group input.required,
+.confirm-modal .body form .form-group textarea.required,
+.confirm-modal .body form .form-group select.required,
+.message-modal .body form .form-group input.required,
+.message-modal .body form .form-group textarea.required,
+.message-modal .body form .form-group select.required {
+  border-color: #EF9A9A;
+}
+.add-route-modal .body form .form-group input.not-valid, .add-route-modal .body form .form-group textarea.not-valid, .add-route-modal .body form .form-group select.not-valid,
+.add-trip-modal .body form .form-group input.not-valid,
+.add-trip-modal .body form .form-group textarea.not-valid,
+.add-trip-modal .body form .form-group select.not-valid,
+.trip-passenger-list-modal .body form .form-group input.not-valid,
+.trip-passenger-list-modal .body form .form-group textarea.not-valid,
+.trip-passenger-list-modal .body form .form-group select.not-valid,
+.trip-station-list-modal .body form .form-group input.not-valid,
+.trip-station-list-modal .body form .form-group textarea.not-valid,
+.trip-station-list-modal .body form .form-group select.not-valid,
+.add-passanger-modal .body form .form-group input.not-valid,
+.add-passanger-modal .body form .form-group textarea.not-valid,
+.add-passanger-modal .body form .form-group select.not-valid,
+.confirm-modal .body form .form-group input.not-valid,
+.confirm-modal .body form .form-group textarea.not-valid,
+.confirm-modal .body form .form-group select.not-valid,
+.message-modal .body form .form-group input.not-valid,
+.message-modal .body form .form-group textarea.not-valid,
+.message-modal .body form .form-group select.not-valid {
+  border-color: #EF9A9A;
+  background-color: rgba(239, 154, 154, 0.2);
+  box-shadow: 0 0 0 2px rgba(239, 154, 154, 0.3);
+}
+.add-route-modal .body form .form-group textarea,
+.add-trip-modal .body form .form-group textarea,
+.trip-passenger-list-modal .body form .form-group textarea,
+.trip-station-list-modal .body form .form-group textarea,
+.add-passanger-modal .body form .form-group textarea,
+.confirm-modal .body form .form-group textarea,
+.message-modal .body form .form-group textarea {
+  resize: none;
+}
+.add-route-modal .body form .form-group button,
+.add-trip-modal .body form .form-group button,
+.trip-passenger-list-modal .body form .form-group button,
+.trip-station-list-modal .body form .form-group button,
+.add-passanger-modal .body form .form-group button,
+.confirm-modal .body form .form-group button,
+.message-modal .body form .form-group button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background-color: #76B5A9;
+  color: #3D4551;
+  border-radius: 0.5rem;
+  width: 100%;
+  transition: background-color 0.2s ease;
+  cursor: pointer;
+  border: none;
+  font-weight: 500;
+  font-size: 16px;
+}
+.add-route-modal .body form .form-group button:hover,
+.add-trip-modal .body form .form-group button:hover,
+.trip-passenger-list-modal .body form .form-group button:hover,
+.trip-station-list-modal .body form .form-group button:hover,
+.add-passanger-modal .body form .form-group button:hover,
+.confirm-modal .body form .form-group button:hover,
+.message-modal .body form .form-group button:hover {
+  background-color: rgba(118, 181, 169, 0.9);
+}
+.add-route-modal .body form .form-group .error-popup,
+.add-trip-modal .body form .form-group .error-popup,
+.trip-passenger-list-modal .body form .form-group .error-popup,
+.trip-station-list-modal .body form .form-group .error-popup,
+.add-passanger-modal .body form .form-group .error-popup,
+.confirm-modal .body form .form-group .error-popup,
+.message-modal .body form .form-group .error-popup {
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 0.75rem;
+  padding: 10px 20px;
+  background-color: #FAFBFC;
+}
+.add-route-modal .footer,
+.add-trip-modal .footer,
+.trip-passenger-list-modal .footer,
+.trip-station-list-modal .footer,
+.add-passanger-modal .footer,
+.confirm-modal .footer,
+.message-modal .footer {
+  position: sticky;
+  bottom: 0;
+  background-color: #FFFFFF;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  padding: 24px;
+  display: flex;
+  gap: 12px;
+}
+.add-route-modal .footer button,
+.add-trip-modal .footer button,
+.trip-passenger-list-modal .footer button,
+.trip-station-list-modal .footer button,
+.add-passanger-modal .footer button,
+.confirm-modal .footer button,
+.message-modal .footer button {
+  flex: 1;
+  padding: 12px 16px;
+  border-radius: 0.75rem;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.2s ease;
+}
+.add-route-modal .footer button.no,
+.add-trip-modal .footer button.no,
+.trip-passenger-list-modal .footer button.no,
+.trip-station-list-modal .footer button.no,
+.add-passanger-modal .footer button.no,
+.confirm-modal .footer button.no,
+.message-modal .footer button.no {
+  background-color: #E8EDF2;
+  color: #3D4551;
+}
+.add-route-modal .footer button.no:hover,
+.add-trip-modal .footer button.no:hover,
+.trip-passenger-list-modal .footer button.no:hover,
+.trip-station-list-modal .footer button.no:hover,
+.add-passanger-modal .footer button.no:hover,
+.confirm-modal .footer button.no:hover,
+.message-modal .footer button.no:hover {
+  background-color: rgba(232, 237, 242, 0.8);
+}
+.add-route-modal .footer button.yes,
+.add-trip-modal .footer button.yes,
+.trip-passenger-list-modal .footer button.yes,
+.trip-station-list-modal .footer button.yes,
+.add-passanger-modal .footer button.yes,
+.confirm-modal .footer button.yes,
+.message-modal .footer button.yes {
+  background-color: #A3C4F3;
+  color: #3D4551;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+.add-route-modal .footer button.yes svg,
+.add-trip-modal .footer button.yes svg,
+.trip-passenger-list-modal .footer button.yes svg,
+.trip-station-list-modal .footer button.yes svg,
+.add-passanger-modal .footer button.yes svg,
+.confirm-modal .footer button.yes svg,
+.message-modal .footer button.yes svg {
+  width: 16px;
+  height: 16px;
+}
+.add-route-modal .footer button.yes:hover,
+.add-trip-modal .footer button.yes:hover,
+.trip-passenger-list-modal .footer button.yes:hover,
+.trip-station-list-modal .footer button.yes:hover,
+.add-passanger-modal .footer button.yes:hover,
+.confirm-modal .footer button.yes:hover,
+.message-modal .footer button.yes:hover {
+  background-color: rgba(163, 196, 243, 0.9);
+}
+
+.trip-passenger-list-modal {
+  max-width: 600px;
+  z-index: 997 !important;
+}
+.trip-passenger-list-modal .body form .form-group.search {
+  pointer-events: none;
+  opacity: 0.3;
+  transition: opacity 200ms ease;
+}
+.trip-passenger-list-modal .body form .form-group.active {
+  pointer-events: all;
+  opacity: 1;
+}
+.trip-passenger-list-modal .body form .form-group .search-panel {
+  margin: 0 auto;
+  position: relative;
+  flex: 1 1 auto;
+}
+.trip-passenger-list-modal .body form .form-group .search-panel .search-icon {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1.25rem;
+  height: 1.25rem;
+  color: #6B7280;
+}
+.trip-passenger-list-modal .body form .form-group .search-panel input {
+  width: 100%;
+  height: 42px;
+  padding-left: 2.5rem;
+  padding-right: 1rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  background-color: #FAFBFC;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  font-size: 16px;
+  color: #3D4551;
+}
+.trip-passenger-list-modal .body form .form-group .search-panel input:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px #A3C4F3;
+}
+.trip-passenger-list-modal .body form .form-group .search-panel .autocomplete-dropdown {
+  padding: 0;
+  margin: 0;
+}
+.trip-passenger-list-modal .body form .form-group .search-panel .autocomplete-dropdown li {
+  list-style: none;
+}
+.trip-passenger-list-modal .body form .form-group .search-panel .autocomplete-dropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 0;
+  right: 0;
+  background-color: #FFFFFF;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-bottom-left-radius: 0.75rem;
+  border-bottom-right-radius: 0.75rem;
+  max-height: 200px;
+  overflow-y: auto;
+  margin: 0;
+  padding: 0;
+  z-index: 10;
+}
+.trip-passenger-list-modal .body form .form-group .search-panel .autocomplete-dropdown li {
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 16px;
+}
+.trip-passenger-list-modal .body form .form-group .search-panel .autocomplete-dropdown li span {
+  padding: 16px;
+  height: 100%;
+  width: 60%;
+  border-left: 1px solid #A3C4F3;
+  margin-left: 16px;
+  text-align: center;
+}
+.trip-passenger-list-modal .body form .form-group .selected-passengers {
+  padding: 0;
+  margin: 0;
+}
+.trip-passenger-list-modal .body form .form-group .selected-passengers li {
+  list-style: none;
+}
+.trip-passenger-list-modal .body form .form-group .selected-passengers {
+  margin-top: 16px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+.trip-passenger-list-modal .body form .form-group .selected-passengers li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.trip-passenger-list-modal .body form .form-group .selected-passengers li button {
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 0.75rem;
+  width: fit-content;
+  background-color: #FAFBFC;
+}
+.trip-passenger-list-modal .body form .form-group .selected-passengers li button svg {
+  width: 16px;
+  height: 16px;
+}
+
+.trip-station-list-modal {
+  max-width: 600px;
+  z-index: 997 !important;
+}
+.trip-station-list-modal .body form .form-group .row {
+  display: grid;
+  grid-template-columns: 1fr 50px;
+  gap: 1rem;
+}
+.trip-station-list-modal .body form .form-group .row .search-input {
+  flex: 1 1 auto;
+  height: fit-content;
+  position: relative;
+}
+.trip-station-list-modal .body form .form-group .row .search-input .autocomplete-dropdown {
+  padding: 0;
+  margin: 0;
+}
+.trip-station-list-modal .body form .form-group .row .search-input .autocomplete-dropdown li {
+  list-style: none;
+}
+.trip-station-list-modal .body form .form-group .row .search-input .autocomplete-dropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 0;
+  right: 0;
+  background-color: #FFFFFF;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-bottom-left-radius: 0.75rem;
+  border-bottom-right-radius: 0.75rem;
+  max-height: 200px;
+  overflow-y: auto;
+  margin: 0;
+  padding: 0;
+  z-index: 10;
+}
+.trip-station-list-modal .body form .form-group .row .search-input .autocomplete-dropdown li {
+  cursor: pointer;
+  align-items: center;
+  padding: 8px 16px;
+  transition: background-color 200ms ease-in-out;
+}
+.trip-station-list-modal .body form .form-group .row .search-input .autocomplete-dropdown li span {
+  padding: 16px;
+  height: 100%;
+  width: 60%;
+  border-left: 1px solid #A3C4F3;
+  margin-left: 16px;
+  text-align: center;
+}
+.trip-station-list-modal .body form .form-group .row .search-input .autocomplete-dropdown li:hover {
+  background-color: #FAFBFC;
+}
+.trip-station-list-modal .body form .form-group .row .remove-button {
+  background-color: #F7EEDB;
+  padding: 0;
+}
+.trip-station-list-modal .body form .add-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background-color: #76B5A9;
+  color: #3D4551;
+  border-radius: 0.5rem;
+  width: 100%;
+  transition: background-color 0.2s ease;
+  cursor: pointer;
+  border: none;
+  font-weight: 500;
+  font-size: 16px;
+}
+.trip-station-list-modal .body form .add-button:hover {
+  background-color: rgba(118, 181, 169, 0.9);
+}
+
+.message-modal {
+  z-index: 999 !important;
+}
+
+.trip-details-modal {
+  height: 100vh;
+  max-width: 600px;
+  width: 100%;
+  background-color: #FFFFFF;
+  overflow-y: auto;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-top-left-radius: 0.75rem;
+  border-bottom-left-radius: 0.75rem;
+  box-shadow: 0 20px 25px rgba(0, 0, 0, 0.15);
+  z-index: 996;
+  float: right;
+  padding-right: 16px;
+  display: flex;
+  flex-direction: column;
+}
+.trip-details-modal .header {
+  position: sticky;
+  top: 0;
+  background-color: #FFFFFF;
+  padding: 24px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  z-index: 10;
+  align-items: baseline !important;
+}
+.trip-details-modal .header .title h2 {
+  font-size: 1.125rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+.trip-details-modal .header .title p {
+  color: #6B7280;
+  font-size: 0.875rem;
+}
+.trip-details-modal .header .icon-wrapper {
+  cursor: pointer;
+}
+.trip-details-modal .body {
+  padding: 24px;
+  flex: 1 1 auto;
+}
+.trip-details-modal .body .info-card {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+.trip-details-modal .body .info-card .time, .trip-details-modal .body .info-card .passengers {
+  background-color: #F5F7FA;
+  border-radius: 0.75rem;
+  padding: 1rem;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  transition: box-shadow 0.2s ease;
+}
+.trip-details-modal .body .info-card .time:hover, .trip-details-modal .body .info-card .passengers:hover {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+.trip-details-modal .body .info-card .time p, .trip-details-modal .body .info-card .passengers p {
+  color: #6B7280;
+  font-size: 0.875rem;
+  margin-bottom: 0.5rem;
+}
+.trip-details-modal .body .info-card .time div, .trip-details-modal .body .info-card .passengers div {
+  display: flex;
+  gap: 4px;
+}
+.trip-details-modal .body .info-card .time div svg, .trip-details-modal .body .info-card .passengers div svg {
+  width: 16px;
+  height: 16px;
+}
+.trip-details-modal .body .route-card {
+  background-color: #F5F7FA;
+  border-radius: 0.75rem;
+  padding: 1rem;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  transition: box-shadow 0.2s ease;
+  margin-bottom: 1.5rem;
+}
+.trip-details-modal .body .route-card:hover {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+.trip-details-modal .body .route-card .title {
+  color: #6B7280;
+  font-size: 0.875rem;
+  margin-bottom: 0.5rem;
+}
+.trip-details-modal .body .route-card .from {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 0.5rem;
+}
+.trip-details-modal .body .route-card .from svg {
+  color: #A3C4F3;
+}
+.trip-details-modal .body .route-card .stations .station {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 0.8rem;
+}
+.trip-details-modal .body .route-card .stations .station:last-child {
+  margin-bottom: none;
+}
+.trip-details-modal .body .route-card .stations .station svg {
+  scale: 1.5;
+}
+.trip-details-modal .body .route-card .to {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: -0.4rem;
+}
+.trip-details-modal .body .route-card .to svg {
+  color: #76B5A9;
+}
+.trip-details-modal .body .passengers-card {
+  background-color: #F5F7FA;
+  border-radius: 0.75rem;
+  padding: 1rem;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  transition: box-shadow 0.2s ease;
+}
+.trip-details-modal .body .passengers-card:hover {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+.trip-details-modal .body .passengers-card .title {
+  color: #6B7280;
+  font-size: 0.875rem;
+  margin-bottom: 0.5rem;
+}
+.trip-details-modal .body .passengers-card .passengers .passenger {
+  padding-left: 24px;
+}
+.trip-details-modal .body .passengers-card .passengers .passenger li p {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+.trip-details-modal .body .passengers-card .passengers .passenger li p span:nth-child(2), .trip-details-modal .body .passengers-card .passengers .passenger li p span:last-child {
+  font-size: 0.875rem;
+}
+.trip-details-modal .footer {
+  position: sticky;
+  bottom: 0;
+  background-color: #FFFFFF;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  padding: 24px;
+  display: flex;
+  gap: 12px;
+}
+.trip-details-modal .footer button {
+  flex: 1;
+  padding: 12px 16px;
+  border-radius: 0.75rem;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.2s ease;
+  background-color: #EF9A9A;
+}
+.trip-details-modal .footer button:hover {
+  background-color: rgba(239, 154, 154, 0.8);
+}
+
+.login-form-wrapper {
+  width: 100%;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: #F5F7FA;
+}
+.login-form-wrapper .login-form {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 448px;
+  width: 100%;
+  max-height: calc(90vh + 1px);
+  overflow-y: auto;
+  background-color: #FFFFFF;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 0.75rem;
+  box-shadow: 0 20px 25px rgba(0, 0, 0, 0.15);
+  z-index: 996;
+}
+.login-form-wrapper .login-form .header {
+  position: sticky;
+  top: 0;
+  background-color: #FFFFFF;
+  padding: 24px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  z-index: 10;
+}
+.login-form-wrapper .login-form .header h2 {
+  font-size: 1.125rem;
+  font-weight: 500;
+}
+.login-form-wrapper .login-form .body {
+  padding: 24px;
+}
+.login-form-wrapper .login-form .body form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+.login-form-wrapper .login-form .body form label {
+  display: block;
+  margin-bottom: 8px;
+  color: #6B7280;
+  font-size: 16px;
+}
+.login-form-wrapper .login-form .body form label span {
+  color: #EF9A9A;
+}
+.login-form-wrapper .login-form .body form input {
+  width: 100%;
+  padding: 8px 16px;
+  background-color: #FAFBFC;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 0.75rem;
+  font-size: 16px;
+  color: #3D4551;
+}
+.login-form-wrapper .login-form .body form input::placeholder {
+  color: rgba(107, 114, 128, 0.7);
+}
+.login-form-wrapper .login-form .body form input:focus {
+  outline: none;
+  border-color: #A3C4F3;
+  box-shadow: 0 0 0 2px rgba(163, 196, 243, 0.3);
+}
+.login-form-wrapper .login-form .body form input::placeholder {
+  color: rgba(107, 114, 128, 0.7);
+}
+.login-form-wrapper .login-form .body form input.required {
+  border-color: #EF9A9A;
+}
+.login-form-wrapper .login-form .body form input.not-valid {
+  border-color: #EF9A9A;
+  background-color: rgba(239, 154, 154, 0.2);
+  box-shadow: 0 0 0 2px rgba(239, 154, 154, 0.3);
+}
+.login-form-wrapper .login-form .body form button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background-color: #A3C4F3;
+  color: #3D4551;
+  border-radius: 0.5rem;
+  width: 100%;
+  transition: background-color 0.2s ease;
+  cursor: pointer;
+  border: none;
+  font-weight: 500;
+  font-size: 16px;
+}
+.login-form-wrapper .login-form .body form button:hover {
+  background-color: rgba(163, 196, 243, 0.9);
+}
+.login-form-wrapper .login-form .footer {
+  position: sticky;
+  bottom: 0;
+  background-color: #FFFFFF;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  padding: 24px;
+  display: flex;
+  gap: 12px;
+}
+.login-form-wrapper .login-form .footer p span {
+  color: #6B7280;
+  color: #76B5A9;
+  font-weight: 500;
+  cursor: pointer;
+  position: relative;
+}
+.login-form-wrapper .login-form .footer p span::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 100%;
+  height: 2px;
+  background: #76B5A9;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.2s ease;
+}
+.login-form-wrapper .login-form .footer p span:hover::after {
+  transform: scaleX(1);
+}
