@@ -25,7 +25,7 @@ CREATE TABLE users (
 -- ============================
 --  Таблиця settings
 -- ============================
-CREATE TABLE settings (
+CREATE TABLE IF NOT EXISTS settings (
     id INT PRIMARY KEY AUTO_INCREMENT,
 
     `key` VARCHAR(100) NOT NULL UNIQUE,
