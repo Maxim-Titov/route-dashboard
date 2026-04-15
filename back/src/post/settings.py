@@ -3,7 +3,7 @@ from src.db.connection import get_connection
 import json
 
 def post_update_setting(key: str, value: dict):
-    conn = get_connection("users_data")
+    conn = get_connection()
     cursor = conn.cursor()
 
     cursor.execute(

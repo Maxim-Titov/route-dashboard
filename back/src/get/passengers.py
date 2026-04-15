@@ -1,7 +1,7 @@
 from src.db.connection import get_connection
 
 def get_passengers():
-    conn = get_connection("users_data")
+    conn = get_connection()
     cursor = conn.cursor(dictionary=True)
 
     cursor.execute("""
@@ -23,7 +23,7 @@ def get_passengers():
     return res
 
 def get_passengers_count():
-    conn = get_connection("users_data")
+    conn = get_connection()
     cursor = conn.cursor()
 
     cursor.execute("SELECT COUNT(*) FROM passengers")

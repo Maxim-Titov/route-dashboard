@@ -1,7 +1,7 @@
 from src.db.connection import get_connection
 
 def post_search_users(q):
-    conn = get_connection("users_data")
+    conn = get_connection()
     cursor = conn.cursor(dictionary=True)
     
     cursor.execute("""
@@ -18,7 +18,7 @@ def post_search_users(q):
     return res
 
 def post_set_user(user_id, trip_id):
-    conn = get_connection("users_data")
+    conn = get_connection()
     cursor = conn.cursor()
 
     try:

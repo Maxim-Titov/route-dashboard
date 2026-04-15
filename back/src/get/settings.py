@@ -3,7 +3,7 @@ from src.db.connection import get_connection
 import json
 
 def get_settings():
-    conn = get_connection("users_data")
+    conn = get_connection()
     cursor = conn.cursor(dictionary=True)
 
     cursor.execute("SELECT `key`, `value` FROM settings")
@@ -16,7 +16,7 @@ def get_settings():
     return settings
 
 def get_load_settings():
-    conn = get_connection("users_data")
+    conn = get_connection()
     cursor = conn.cursor(dictionary=True)
 
     cursor.execute("SELECT `key`, `value` FROM settings")

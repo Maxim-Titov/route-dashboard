@@ -1,7 +1,7 @@
 from src.db.connection import get_connection
 
 def post_write(user_id, entity_type, action, description):
-    conn = get_connection("users_data")
+    conn = get_connection()
     cursor = conn.cursor()
 
     try:

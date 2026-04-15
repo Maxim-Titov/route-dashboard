@@ -1,7 +1,7 @@
 from src.db.connection import get_connection
 
 def post_get_trips(user_id):
-    conn = get_connection("users_data")
+    conn = get_connection()
     cursor = conn.cursor(dictionary=True)
 
     cursor.execute("SELECT role FROM users WHERE id = %s", (user_id,))
@@ -49,7 +49,7 @@ def post_get_trips(user_id):
     return trips
 
 def post_add_trip(from_city_id, to_city_id, from_station_id, to_station_id, date, time, max_passengers, passenger_ids, passenger_stations, stations):
-    conn = get_connection("users_data")
+    conn = get_connection()
     cursor = conn.cursor(dictionary=True)
 
     try:
@@ -107,7 +107,7 @@ def post_add_trip(from_city_id, to_city_id, from_station_id, to_station_id, date
         conn.close()
 
 def post_edit_trip(trip_id, from_city_id, to_city_id, from_station_id, to_station_id, date, time, max_passengers, passenger_ids, passenger_stations, stations, status):
-    conn = get_connection("users_data")
+    conn = get_connection()
     cursor = conn.cursor(dictionary=True)
 
     try:
@@ -183,7 +183,7 @@ def post_edit_trip(trip_id, from_city_id, to_city_id, from_station_id, to_statio
         conn.close()
 
 def post_delete_trip(id):
-    conn = get_connection("users_data")
+    conn = get_connection()
     cursor = conn.cursor()
 
     cursor.execute("DELETE FROM trips WHERE id = %s", (id,))
@@ -195,7 +195,7 @@ def post_delete_trip(id):
     return "deleted"
 
 def post_trip_stations(id):
-    conn = get_connection("users_data")
+    conn = get_connection()
     cursor = conn.cursor(dictionary=True)
 
     cursor.execute("""
@@ -213,7 +213,7 @@ def post_trip_stations(id):
     return res
 
 def post_trip_passengers(id):
-    conn = get_connection("users_data")
+    conn = get_connection()
     cursor = conn.cursor(dictionary=True)
 
     cursor.execute("""
@@ -246,7 +246,7 @@ def post_trip_passengers(id):
     return res
 
 def post_trip_set_status(id, status):
-    conn = get_connection("users_data")
+    conn = get_connection()
     cursor = conn.cursor()
 
     cursor.execute("""
@@ -266,7 +266,7 @@ def post_trip_set_status(id, status):
     return updated
 
 def post_filter_trips(req):
-    conn = get_connection("users_data")
+    conn = get_connection()
     cursor = conn.cursor(dictionary=True)
 
     cursor.execute("SELECT role FROM users WHERE id = %s", (req.user_id,))

@@ -1,7 +1,7 @@
 from src.db.connection import get_connection
 
 def post_add_city(city):
-    conn = get_connection("users_data")
+    conn = get_connection()
     cursor = conn.cursor()
 
     cursor.execute("SELECT id FROM cities WHERE city = %s", (city, ))
@@ -18,7 +18,7 @@ def post_add_city(city):
     conn.close()
 
 def post_delete_city(city_id):
-    conn = get_connection("users_data")
+    conn = get_connection()
     cursor = conn.cursor(dictionary=True)
 
     try:
@@ -88,7 +88,7 @@ def post_delete_city(city_id):
         conn.close()
 
 def post_city_stations(city_id):
-    conn = get_connection("users_data")
+    conn = get_connection()
     cursor = conn.cursor(dictionary=True)
 
     cursor.execute("SELECT id FROM cities WHERE id = %s", (city_id, ))
@@ -117,7 +117,7 @@ def post_city_stations(city_id):
     }
 
 def post_update_city_stations(city_id, stations):
-    conn = get_connection("users_data")
+    conn = get_connection()
     cursor = conn.cursor()
 
     cursor.execute("SELECT id FROM cities WHERE id = %s", (city_id, ))
@@ -163,7 +163,7 @@ def post_update_city_stations(city_id, stations):
         conn.close()
 
 def post_search_cities(q):
-    conn = get_connection("users_data")
+    conn = get_connection()
     cursor = conn.cursor(dictionary=True)
     
     cursor.execute("""
@@ -180,7 +180,7 @@ def post_search_cities(q):
     return res
 
 def post_search_citie_station(q, city_id):
-    conn = get_connection("users_data")
+    conn = get_connection()
     cursor = conn.cursor(dictionary=True)
     
     cursor.execute("""

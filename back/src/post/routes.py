@@ -1,7 +1,7 @@
 from src.db.connection import get_connection
 
 def post_add_route(from_city, to_city):
-    conn = get_connection("users_data")
+    conn = get_connection()
     cursor = conn.cursor(dictionary=True)
 
     try:
@@ -56,7 +56,7 @@ def post_add_route(from_city, to_city):
         conn.close()
 
 def post_delete_route(id):
-    conn = get_connection("users_data")
+    conn = get_connection()
     cursor = conn.cursor()
 
     cursor.execute("SELECT COUNT(*) FROM trips WHERE route_id = %s", (id,))
@@ -84,7 +84,7 @@ def post_filter_routes(
     city_from=None,
     city_to=None
 ):
-    conn = get_connection("users_data")
+    conn = get_connection()
     cursor = conn.cursor(dictionary=True)
 
     sort_map = {'asc': 'ASC', 'desc': 'DESC'}
@@ -142,7 +142,7 @@ def post_filter_routes(
     return result
 
 def post_get_route_prices(route_id):
-    conn = get_connection("users_data")
+    conn = get_connection()
     cursor = conn.cursor(dictionary=True)
 
     cursor.execute("""
@@ -159,7 +159,7 @@ def post_get_route_prices(route_id):
     return pricing
 
 def post_update_pricing(pricing):
-    conn = get_connection("users_data")
+    conn = get_connection()
     cursor = conn.cursor()
 
     try:

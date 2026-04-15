@@ -1,7 +1,7 @@
 from src.db.connection import get_connection
 
 def get_journal():
-    conn = get_connection("users_data")
+    conn = get_connection()
     cursor = conn.cursor(dictionary=True)
 
     cursor.execute("""
@@ -19,7 +19,7 @@ def get_journal():
     return res
 
 def get_clear_journal():
-    conn = get_connection("users_data")
+    conn = get_connection()
     cursor = conn.cursor(dictionary=True)
 
     cursor.execute("TRUNCATE TABLE journal;")

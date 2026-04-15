@@ -1,7 +1,7 @@
 from src.db.connection import get_connection
 
 def get_trips_count():
-    conn = get_connection("users_data")
+    conn = get_connection()
     cursor = conn.cursor()
 
     cursor.execute("""

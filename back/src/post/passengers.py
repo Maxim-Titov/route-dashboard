@@ -1,7 +1,7 @@
 from src.db.connection import get_connection
 
 def post_add_passenger(name, surname, phone, date_of_birth, trip_id=None, note=None):
-    conn = get_connection("users_data")
+    conn = get_connection()
     cursor = conn.cursor(dictionary=True)
 
     try:
@@ -60,7 +60,7 @@ def post_add_passenger(name, surname, phone, date_of_birth, trip_id=None, note=N
         conn.close()
 
 def post_edit_passenger(id, name, surname, phone, date_of_birth, note=None):
-    conn = get_connection("users_data")
+    conn = get_connection()
     cursor = conn.cursor(dictionary=True)
 
     try:
@@ -100,7 +100,7 @@ def post_edit_passenger(id, name, surname, phone, date_of_birth, note=None):
         conn.close()
 
 def post_delete_passenger(id):
-    conn = get_connection("users_data")
+    conn = get_connection()
     cursor = conn.cursor()
 
     cursor.execute("SELECT id FROM passengers WHERE id = %s", (id, ))
@@ -116,7 +116,7 @@ def post_delete_passenger(id):
     conn.close()
 
 def post_search_passengers(name=None, surname=None, phone=None):
-    conn = get_connection("users_data")
+    conn = get_connection()
     cursor = conn.cursor(dictionary=True)
 
     if phone:
@@ -173,7 +173,7 @@ def post_filter_passengers(
     city_from=None,
     city_to=None
 ):
-    conn = get_connection("users_data")
+    conn = get_connection()
     cursor = conn.cursor(dictionary=True)
 
     sort_map = {
@@ -247,7 +247,7 @@ def post_filter_passengers(
     return result
 
 def post_passenger_trips(passenger_id):
-    conn = get_connection("users_data")
+    conn = get_connection()
     cursor = conn.cursor(dictionary=True)
 
     cursor.execute("""

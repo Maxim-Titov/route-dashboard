@@ -15,7 +15,7 @@ def post_register(req):
     
     role = 'admin' if req.is_admin else 'user'
 
-    conn = get_connection("users_data")
+    conn = get_connection()
     cursor = conn.cursor(dictionary=True)
 
     # перевірка логіну
@@ -63,7 +63,7 @@ def post_register(req):
 def post_login(req):
     settings = get_settings()
 
-    conn = get_connection("users_data")
+    conn = get_connection()
     cursor = conn.cursor(dictionary=True)
 
     cursor.execute(
@@ -111,7 +111,7 @@ def post_login(req):
     return response
 
 def post_edit_user(user_id, login, name, surname, is_admin):
-    conn = get_connection("users_data")
+    conn = get_connection()
     cursor = conn.cursor(dictionary=True)
 
     try:
@@ -145,7 +145,7 @@ def post_edit_user(user_id, login, name, surname, is_admin):
         conn.close()
 
 def post_delete_user(user_id):
-    conn = get_connection("users_data")
+    conn = get_connection()
     cursor = conn.cursor()
 
     cursor.execute("DELETE FROM users WHERE id = %s", (user_id,))

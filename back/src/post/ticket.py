@@ -1,7 +1,7 @@
 from src.db.connection import get_connection
 
 def post_get_ticket_price(trip_id, passenger_id, city_id):
-    conn = get_connection("users_data")
+    conn = get_connection()
     cursor = conn.cursor(dictionary=True)
 
     cursor.execute("SELECT route_id FROM trips WHERE id = %s", (trip_id, ))
