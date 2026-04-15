@@ -3,11 +3,11 @@ import { KeyRound } from 'lucide-react'
 
 class SecuritySettings extends React.Component {
     handleChange = (e) => {
-        const { name, type, value, checked } = e.target
+        const { name, value } = e.target
 
         this.props.onChange({
             ...this.props.value,
-            [name]: type === "checkbox" ? checked : value
+            [name]: value
         })
     }
 
@@ -20,26 +20,19 @@ class SecuritySettings extends React.Component {
                     <div className="icon">
                         <KeyRound />
                     </div>
-                    
+
                     <h3>Безпека</h3>
                 </div>
 
                 <form className="content">
                     <div className="form-row">
-                        <label htmlFor="jwt">JWT TTL (хв)</label>
-                        <input id="jwt" name="jwt_ttl" type="number" value={value?.jwt_ttl} onChange={this.handleChange} />
+                        <label htmlFor="refresh">Refresh token (дн)</label>
+                        <input id="refresh" name="refresh_ttl" type="number" value={value?.refresh_ttl} onChange={this.handleChange} />
                     </div>
 
-                    <div className="form-row checkbox">
-                        <label>
-                            <input
-                                type="checkbox"
-                                name="allow_multiple_sessions"
-                                checked={value?.allow_multiple_sessions}
-                                onChange={this.handleChange}
-                            />
-                            Дозволити кілька сесій
-                        </label>
+                    <div className="form-row">
+                        <label htmlFor="access">Access token (хв)</label>
+                        <input id="access" name="access_ttl" type="number" value={value?.access_ttl} onChange={this.handleChange} />
                     </div>
                 </form>
             </div>

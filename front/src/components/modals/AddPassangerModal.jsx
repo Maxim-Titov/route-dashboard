@@ -26,12 +26,14 @@ class AddPassengerModal extends React.Component {
 
     addPassenger = async () => {
         try {
-            const res = await fetch(
+            let res = await fetch(
                 `${import.meta.env.VITE_API_URL}/passengers/add`,
                 {
                     method: "POST",
+                    credentials: "include",
                     headers: {
                         "Content-Type": "application/json",
+                        Authorization: `Bearer ${localStorage.getItem("token")}`
                     },
                     body: JSON.stringify({
                         name: this.state.passengerData?.name,
@@ -43,6 +45,41 @@ class AddPassengerModal extends React.Component {
                     })
                 }
             )
+
+            if (res.status === 401) {
+                const refreshRes = await fetch(`${import.meta.env.VITE_API_URL}/auth/refresh`, {
+                    method: "POST",
+                    credentials: "include"
+                })
+
+                if (!refreshRes.ok) {
+                    context.logout()
+                    return null
+                }
+
+                const data = await refreshRes.json()
+                localStorage.setItem("token", data.access_token)
+
+                res = await fetch(
+                    `${import.meta.env.VITE_API_URL}/passengers/add`,
+                    {
+                        method: "POST",
+                        credentials: "include",
+                        headers: {
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${localStorage.getItem("token")}`
+                        },
+                        body: JSON.stringify({
+                            name: this.state.passengerData?.name,
+                            surname: this.state.passengerData?.surname,
+                            phone: this.state.passengerData?.phone,
+                            date_of_birth: this.state.passengerData?.dateOfBirth,
+                            trip_id: this.parseNumber(this.state.passengerData?.trip),
+                            note: this.state.passengerData?.note
+                        })
+                    }
+                )
+            }
 
             const data = await res.json()
 
@@ -56,6 +93,28 @@ class AddPassengerModal extends React.Component {
             }
 
             return data
+        } catch (err) {
+            console.error(err)
+        }
+    }
+
+    writeToJournal = async () => {
+        try {
+            const res = await fetch(
+                `${import.meta.env.VITE_API_URL}/journal/write`,
+                {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        user_id: this.props.user?.id,
+                        entity_type: 'passengers',
+                        action: 'create',
+                        description: `Додавання пасажира "${this.state.passengerData?.name} ${this.state.passengerData?.surname}"`
+                    })
+                }
+            )
+
+            return await res.json()
         } catch (err) {
             console.error(err)
         }
@@ -94,6 +153,7 @@ class AddPassengerModal extends React.Component {
         if (!this.validateForm()) return
 
         await this.addPassenger()
+        await this.writeToJournal()
         await this.props.fetchPassengers()
         await this.props.fetchTripsCount()
         await this.props.fetchPassengersCount()
@@ -102,7 +162,7 @@ class AddPassengerModal extends React.Component {
             this.props.setRenderPassengersModal(false)
         }
     }
-    
+
     handleChange = (e) => {
         const { name, value } = e.target
 
@@ -132,7 +192,7 @@ class AddPassengerModal extends React.Component {
                 {this.state.isTripExists && (
                     <MessageModal header="Поїздка не існує" body='Поїздка з цим номером не існує' action={this.setIsTripExists} />
                 )}
-                
+
                 <div className="modal-wrapper">
                     <div className="add-passanger-modal">
                         <div className="header">

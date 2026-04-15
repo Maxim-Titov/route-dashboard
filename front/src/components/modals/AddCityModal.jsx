@@ -1,5 +1,5 @@
 import React from "react"
-import { Save } from "lucide-react"
+import { Save, Search } from "lucide-react"
 import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet"
 import L from "leaflet"
 
@@ -31,13 +31,69 @@ class AddCityModal extends React.Component {
 
     addCity = async () => {
         try {
-            const res = await fetch(
+            let res = await fetch(
                 `${import.meta.env.VITE_API_URL}/cities/add`,
+                {
+                    method: "POST",
+                    credentials: "include",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${localStorage.getItem("token")}`
+                    },
+                    body: JSON.stringify({
+                        city: this.state.city
+                    })
+                }
+            )
+
+            if (res.status === 401) {
+                const refreshRes = await fetch(`${import.meta.env.VITE_API_URL}/auth/refresh`, {
+                    method: "POST",
+                    credentials: "include"
+                })
+
+                if (!refreshRes.ok) {
+                    context.logout()
+                    return null
+                }
+
+                const data = await refreshRes.json()
+                localStorage.setItem("token", data.access_token)
+
+                res = await fetch(
+                    `${import.meta.env.VITE_API_URL}/cities/add`,
+                    {
+                        method: "POST",
+                        credentials: "include",
+                        headers: {
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${localStorage.getItem("token")}`
+                        },
+                        body: JSON.stringify({
+                            city: this.state.city
+                        })
+                    }
+                )
+            }
+
+            return await res.json()
+        } catch (err) {
+            console.error(err)
+        }
+    }
+
+    writeToJournal = async () => {
+        try {
+            const res = await fetch(
+                `${import.meta.env.VITE_API_URL}/journal/write`,
                 {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
-                        city: this.state.city
+                        user_id: this.props.user?.id,
+                        entity_type: 'cities',
+                        action: 'create',
+                        description: `Додавання міста "${this.state.city}"`
                     })
                 }
             )
@@ -63,9 +119,10 @@ class AddCityModal extends React.Component {
             return
         }
 
+        await this.writeToJournal()
         await this.props.fetchCities()
         await this.props.fetchCitiesCount()
-        
+
         this.props.setRenderCitiesModal(false)
     }
 
@@ -74,7 +131,7 @@ class AddCityModal extends React.Component {
 
         try {
             const res = await fetch(
-                `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`
+                `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&accept-language=uk`
             )
             const data = await res.json()
 
@@ -85,6 +142,32 @@ class AddCityModal extends React.Component {
 
             if (city) {
                 this.setState({ city })
+            }
+        } catch (err) {
+            console.error(err)
+        }
+    }
+
+    searchCity = async () => {
+        if (!this.state.city) return
+
+        try {
+            const res = await fetch(
+                `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(this.state.city)}&limit=1&accept-language=uk`
+            )
+
+            const data = await res.json()
+
+            if (data.length > 0) {
+                const { lat, lon, display_name } = data[0]
+
+                this.setState({
+                    lat: parseFloat(lat),
+                    lng: parseFloat(lon),
+                    city: display_name.split(",")[0] // тільки назва міста
+                })
+            } else {
+                this.setState({ isCityUnknown: true })
             }
         } catch (err) {
             console.error(err)
@@ -109,21 +192,29 @@ class AddCityModal extends React.Component {
                 {this.renderErrors()}
 
                 <div className="modal-wrapper">
-                    <div className="add-route-modal">
+                    <div className="add-city-modal">
                         <div className="header">
                             <h2>Додати місто</h2>
                         </div>
 
                         <div className="body">
-                            <div className="form-group">
-                                <label>Місто</label>
-                                <input
-                                    type="text"
-                                    value={this.state.city}
-                                    readOnly
-                                    placeholder="Оберіть місто на карті"
-                                />
-                            </div>
+                            <form>
+                                <div className="form-group">
+                                    <div>
+                                        <label>Місто</label>
+                                        <input
+                                            type="text"
+                                            value={this.state.city}
+                                            onChange={(e) => this.setState({ city: e.target.value })}
+                                            placeholder="Введіть або оберіть місто"
+                                        />
+                                    </div>
+
+                                    <button type="button" onClick={this.searchCity}>
+                                        <Search />
+                                    </button>
+                                </div>
+                            </form>
 
                             <div style={{ height: "300px", marginTop: "10px" }}>
                                 <MapContainer
@@ -141,12 +232,10 @@ class AddCityModal extends React.Component {
                                     />
 
                                     {this.state.lat && (
-                                        <Marker
-                                            position={[
-                                                this.state.lat,
-                                                this.state.lng
-                                            ]}
-                                        />
+                                        <>
+                                            <ChangeView center={[this.state.lat, this.state.lng]} />
+                                            <Marker position={[this.state.lat, this.state.lng]} />
+                                        </>
                                     )}
                                 </MapContainer>
                             </div>
@@ -180,6 +269,12 @@ function MapClickHandler({ onClick }) {
             onClick(e.latlng.lat, e.latlng.lng)
         }
     })
+    return null
+}
+
+function ChangeView({ center }) {
+    const map = useMapEvents({})
+    map.setView(center)
     return null
 }
 

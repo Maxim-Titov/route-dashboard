@@ -2,9 +2,9 @@ import React from "react"
 import { Plus } from 'lucide-react'
 
 class AddPassengerButton extends React.Component {
-    render () {
+    render() {
         return (
-            <button className="add-passenger-button" type="button" onClick={() => this.props.setRenderPassengersModal(true)}>
+            <button className={`add-passenger-button ${this.props.role === 'user' ? 'forbidden' : ''}`} type="button" onClick={() => this.props.setRenderPassengersModal(true)}>
                 <Plus />
                 <p className="inter-font">Додати пасажира</p>
             </button>

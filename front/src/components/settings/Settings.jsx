@@ -18,48 +18,55 @@ class Settings extends React.Component {
                     site_name: ""
                 },
                 security: {
-                    jwt_ttl: 60,
-                    allow_multiple_sessions: false
+                    jwt_ttl: 60
                 },
                 access: {
-                    allow_registration: true,
-                    default_role: 'user'
+                    allow_registration: true
                 }
             },
-            renderSuccessMessage: false
+            renderSuccessMessage: false,
+            isForbidden: false
         }
     }
-    
+
     async componentDidMount() {
         await this.fetchSettings()
     }
 
     fetchSettings = async () => {
         try {
-            fetch(`${import.meta.env.VITE_API_URL}/settings`, {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/settings`, {
+                method: "GET",
+                credentials: "include",
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem("token")}`
                 }
             })
-                .then(res => res.json())
-                .then(settings => {
-                    this.setState(prev => ({
-                        settings: {
-                            general: {
-                                ...prev.settings.general,
-                                ...settings.general
-                            },
-                            security: {
-                                ...prev.settings.security,
-                                ...settings.security
-                            },
-                            access: {
-                                ...prev.settings.access,
-                                ...settings.access
-                            }
+
+            const data = await res.json()
+
+            if (!data.detail) {
+                this.setState(prev => ({
+                    settings: {
+                        general: {
+                            ...prev.settings.general,
+                            ...data.general
+                        },
+                        security: {
+                            ...prev.settings.security,
+                            ...data.security
+                        },
+                        access: {
+                            ...prev.settings.access,
+                            ...data.access
                         }
-                    }))
-                })
+                    }
+                }))
+            }
+
+            if (data.detail === 'Forbidden') {
+                this.setState({ isForbidden: true })
+            }
         } catch (err) {
             console.error(err)
         }
@@ -68,6 +75,7 @@ class Settings extends React.Component {
     save = async () => {
         const res = await fetch(`${import.meta.env.VITE_API_URL}/settings/save`, {
             method: "POST",
+            credentials: "include",
             headers: {
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${localStorage.getItem("token")}`
@@ -83,7 +91,7 @@ class Settings extends React.Component {
             this.setState({ renderSuccessMessage: true })
         }
     }
-    
+
     setRenderSuccessMessage = (value) => {
         this.setState({ renderSuccessMessage: value })
     }
@@ -98,10 +106,8 @@ class Settings extends React.Component {
     }
 
     render() {
-        console.log(this.state.settings)
-        
         return (
-            <div className="settings-wrapper">
+            <div className={`settings-wrapper ${this.state.isForbidden ? 'forbidden' : ''}`}>
                 <div className="container">
                     <div className="header">
                         <ViewHeader title="Налаштування" subtitle="Керування системою та доступами" />

@@ -9,7 +9,7 @@ import PassengersList from "./PassengersList"
 import AddPassengerModal from "../modals/AddPassangerModal"
 import MessageModal from "../modals/MessageModal"
 
-class Passengers extends React.Component {      
+class Passengers extends React.Component {
     constructor(props) {
         super(props)
 
@@ -29,9 +29,17 @@ class Passengers extends React.Component {
         }
     }
 
+    componentDidUpdate(prevProps) {
+        if (prevProps.passengersList !== this.props.passengersList) {
+            this.setState({
+                passengersToShow: this.props.passengersList
+            })
+        }
+    }
+
     filterPassengers = async () => {
         const { filters, sortTypeDesc } = this.state
-        
+
         try {
             const res = await fetch(
                 `${import.meta.env.VITE_API_URL}/passengers/filter`,
@@ -56,7 +64,7 @@ class Passengers extends React.Component {
                 this.setState({ isError: true })
                 return
             }
-                
+
             this.setState({
                 passengersToShow: data
             })
@@ -70,7 +78,7 @@ class Passengers extends React.Component {
     }
 
     setIsFilters = () => {
-        this.setState({isFilters: !this.state.isFilters})
+        this.setState({ isFilters: !this.state.isFilters })
     }
 
     toggleSort = () => {
@@ -106,9 +114,9 @@ class Passengers extends React.Component {
     render() {
 
         return (
-            <div className="passengers-wrapper"> 
+            <div className="passengers-wrapper">
                 {this.props.renderPassengersModal && (
-                    <AddPassengerModal setRenderPassengersModal={this.props.setRenderPassengersModal} fetchTripsCount={this.props.fetchTripsCount} fetchPassengers={this.props.fetchPassengers} fetchPassengersCount={this.props.fetchPassengersCount}/>
+                    <AddPassengerModal user={this.props.user} setRenderPassengersModal={this.props.setRenderPassengersModal} fetchTripsCount={this.props.fetchTripsCount} fetchPassengers={this.props.fetchPassengers} fetchPassengersCount={this.props.fetchPassengersCount} />
                 )}
 
                 <div className="container">
@@ -117,14 +125,14 @@ class Passengers extends React.Component {
 
                         <div className="buttons-wrapper">
                             <FilterButton setIsFilters={this.setIsFilters} />
-                            <AddPassengerButton setRenderPassengersModal={this.props.setRenderPassengersModal} />
+                            <AddPassengerButton role={this.props.user?.role} setRenderPassengersModal={this.props.setRenderPassengersModal} />
                         </div>
                     </div>
 
-                    {this.state.isFilters && <Filters filters={this.state.filters} sortTypeDesc={this.state.sortTypeDesc} setFilters={this.setFilters}  onToggle={this.toggleSort} onApply={this.filterPassengers} onReset={this.resetFilters} setViewType={this.setViewType} />}
-                    
+                    {this.state.isFilters && <Filters filters={this.state.filters} sortTypeDesc={this.state.sortTypeDesc} setFilters={this.setFilters} onToggle={this.toggleSort} onApply={this.filterPassengers} onReset={this.resetFilters} setViewType={this.setViewType} />}
+
                     <GeneralStatistics tripsCount={this.props.tripsCount} passengersCount={this.props.passengersCount} />
-                    <PassengersList viewType={this.state.viewType} searchQuery={this.props.searchQuery} passengersList={this.state.passengersToShow} generateRightForm={this.props.generateRightForm} fetchTripsCount={this.props.fetchTripsCount} fetchPassengers={this.props.fetchPassengers} fetchPassengersCount={this.props.fetchPassengersCount} />
+                    <PassengersList user={this.props.user} viewType={this.state.viewType} searchQuery={this.props.searchQuery} passengersList={this.state.passengersToShow} generateRightForm={this.props.generateRightForm} fetchTripsCount={this.props.fetchTripsCount} fetchPassengers={this.props.fetchPassengers} fetchPassengersCount={this.props.fetchPassengersCount} />
                 </div>
 
                 {this.state.isError && (

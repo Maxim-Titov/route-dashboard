@@ -6,7 +6,7 @@ import EditTripModal from "../modals/EditTripModal"
 import DeleteTripModal from "../modals/DeleteTripModal"
 
 class TripsList extends React.Component {
-    constructor(props){
+    constructor(props) {
         super(props)
 
         this.state = {
@@ -18,13 +18,22 @@ class TripsList extends React.Component {
             tripData: {
                 from: '',
                 to: '',
+                from_station_name: '',
+                to_station_name: '',
+                from_station_address: '',
+                to_station_address: '',
                 date: '',
                 time: '',
                 status: '',
                 passengersCount: '',
                 maxPassengers: '',
                 stations: [],
-                passengers: []
+                passengers: [],
+                user: {
+                    name: '',
+                    surname: '',
+                    login: ''
+                }
             },
             isFail: false,
             failMessage: ''
@@ -41,18 +50,50 @@ class TripsList extends React.Component {
 
     deleteTrip = async (id) => {
         try {
-            const res = await fetch(
+            let res = await fetch(
                 `${import.meta.env.VITE_API_URL}/trips/delete`,
                 {
                     method: "POST",
+                    credentials: "include",
                     headers: {
                         "Content-Type": "application/json",
+                        Authorization: `Bearer ${localStorage.getItem("token")}`
                     },
                     body: JSON.stringify({
                         trip_id: id
                     })
                 }
             )
+
+            if (res.status === 401) {
+                const refreshRes = await fetch(`${import.meta.env.VITE_API_URL}/auth/refresh`, {
+                    method: "POST",
+                    credentials: "include"
+                })
+
+                if (!refreshRes.ok) {
+                    context.logout()
+                    return null
+                }
+
+                const data = await refreshRes.json()
+                localStorage.setItem("token", data.access_token)
+
+                res = await fetch(
+                    `${import.meta.env.VITE_API_URL}/trips/delete`,
+                    {
+                        method: "POST",
+                        credentials: "include",
+                        headers: {
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${localStorage.getItem("token")}`
+                        },
+                        body: JSON.stringify({
+                            trip_id: id
+                        })
+                    }
+                )
+            }
 
             const data = await res.json()
 
@@ -73,8 +114,10 @@ class TripsList extends React.Component {
                 `${import.meta.env.VITE_API_URL}/trips/stations`,
                 {
                     method: "POST",
+                    credentials: "include",
                     headers: {
                         "Content-Type": "application/json",
+                        Authorization: `Bearer ${localStorage.getItem("token")}`
                     },
                     body: JSON.stringify({
                         trip_id: id
@@ -96,8 +139,10 @@ class TripsList extends React.Component {
                 `${import.meta.env.VITE_API_URL}/trips/passengers`,
                 {
                     method: "POST",
+                    credentials: "include",
                     headers: {
                         "Content-Type": "application/json",
+                        Authorization: `Bearer ${localStorage.getItem("token")}`
                     },
                     body: JSON.stringify({
                         trip_id: id
@@ -119,8 +164,10 @@ class TripsList extends React.Component {
                 `${import.meta.env.VITE_API_URL}/trips/status/set`,
                 {
                     method: "POST",
+                    credentials: "include",
                     headers: {
                         "Content-Type": "application/json",
+                        Authorization: `Bearer ${localStorage.getItem("token")}`
                     },
                     body: JSON.stringify({
                         trip_id: id,
@@ -194,155 +241,187 @@ class TripsList extends React.Component {
         }
     }
 
-    render() {        
+    render() {
         const { tripsList } = this.props
 
         const trips = tripsList.map((trip) => ({
             id: trip.id,
             from: trip.from_city,
             to: trip.to_city,
+            from_station_name: trip.from_station_name,
+            to_station_name: trip.to_station_name,
+            from_station_address: trip.from_station_address,
+            to_station_address: trip.to_station_address,
             status: trip.status,
             date: trip.date,
             time: trip.time,
             passengersCount: trip.passengers_count,
             maxPassengers: trip.max_passengers_count,
+            user_name: trip.user_name,
+            user_surname: trip.user_surname,
+            user_login: trip.user_login
         }));
-        
+
         return (
-            <div className="trips-list">
-                {trips.map((trip, index) => (
-                    <div className="card" key={index}>
-                        <div className="header">
-                            <div className="route">
-                                <div className="info">
-                                    #{trip.id} {trip.from} → {trip.to}
+            <div className="trips-list" >
+                {
+                    trips.map((trip, index) => (
+                        <div className="card" key={index}>
+                            <div className="header">
+                                <div className="route">
+                                    <div className="info">
+                                        #{trip.id} {trip.from} → {trip.to}
+                                    </div>
+
+                                    <div className="status">
+                                        {this.formatStatus(trip.status)}
+                                    </div>
                                 </div>
 
-                                <div className="status">
-                                    {this.formatStatus(trip.status)}
+                                <div className="actions">
+                                    <div className="icon-wrapper info" onClick={async () => {
+                                        const stations = await this.tripStations(trip.id)
+                                        const { passengers, passenger_stations } = await this.tripPassengers(trip.id)
+
+                                        this.setTrip(
+                                            trip.id,
+                                            `#${trip.id} ${trip.from} → ${trip.to}`,
+                                            {
+                                                from: trip.from,
+                                                to: trip.to,
+                                                from_station_name: trip.from_station_name,
+                                                to_station_name: trip.to_station_name,
+                                                from_station_address: trip.from_station_address,
+                                                to_station_address: trip.to_station_address,
+                                                date: trip.date,
+                                                time: trip.time,
+                                                status: trip.status,
+                                                passengersCount: trip.passengersCount,
+                                                maxPassengers: trip.maxPassengers,
+                                                passengerStations: passenger_stations,
+                                                stations,
+                                                passengers,
+                                                user_name: trip.user_name,
+                                                user_surname: trip.user_surname,
+                                                user_login: trip.user_login
+                                            }
+                                        )
+
+                                        this.setState({ renderTripDetailsModal: true })
+                                    }}>
+                                        <Info />
+                                    </div>
+
+                                    <div className={`icon-wrapper edit ${this.props.user?.role === 'user' ? 'forbidden' : ''}`} onClick={async () => {
+                                        const stations = await this.tripStations(trip.id)
+                                        const { passengers, passenger_stations } = await this.tripPassengers(trip.id)
+
+                                        this.setTrip(
+                                            trip.id,
+                                            `#${trip.id} ${trip.from} → ${trip.to}`,
+                                            {
+                                                from: trip.from,
+                                                to: trip.to,
+                                                from_station_name: trip.from_station_name,
+                                                to_station_name: trip.to_station_name,
+                                                from_station_address: trip.from_station_address,
+                                                to_station_address: trip.to_station_address,
+                                                date: trip.date,
+                                                time: this.formatTimeFromSeconds(trip.time),
+                                                status: trip.status,
+                                                passengersCount: trip.passengersCount,
+                                                maxPassengers: trip.maxPassengers,
+                                                passengerStations: passenger_stations,
+                                                stations,
+                                                passengers
+                                            }
+                                        )
+                                        this.setRenderEditTripModal(true)
+                                    }}>
+                                        <Edit2 />
+                                    </div>
+
+                                    <div className={`icon-wrapper trash ${this.props.user?.role === 'user' ? 'forbidden' : ''}`} onClick={() => {
+                                        this.setTrip(
+                                            trip.id,
+                                            `${trip.from} → ${trip.to}`,
+                                            {
+                                                from: trip.from,
+                                                to: trip.to,
+                                                date: trip.date,
+                                                time: trip.time,
+                                                maxPassengers: trip.maxPassengers
+                                            }
+                                        );
+                                        this.setRenderDeleteTripModal(true);
+                                    }}>
+                                        <Trash2 />
+                                    </div>
                                 </div>
                             </div>
 
-                            <div className="actions">
-                                <div className="icon-wrapper info" onClick={async () => {
-                                    const stations = await this.tripStations(trip.id)
-                                    const passengers = await this.tripPassengers(trip.id)
-
-                                    this.setTrip(
-                                        trip.id,
-                                        `#${trip.id} ${trip.from} → ${trip.to}`,
-                                        {
-                                            from: trip.from,
-                                            to: trip.to,
-                                            date: trip.date,
-                                            time: trip.time,
-                                            status: trip.status,
-                                            passengersCount: trip.passengersCount,
-                                            maxPassengers: trip.maxPassengers,
-                                            stations,
-                                            passengers
-                                        }
-                                    )
-
-                                    this.setState({ renderTripDetailsModal: true })
-                                }}>
-                                    <Info />
-                                </div>
-                                
-                                <div className="icon-wrapper edit" onClick={async () => {
-                                    const stations = await this.tripStations(trip.id)
-                                    const passengers = await this.tripPassengers(trip.id)
-
-                                    this.setTrip(
-                                        trip.id,
-                                        `#${trip.id} ${trip.from} → ${trip.to}`,
-                                        {
-                                            from: trip.from,
-                                            to: trip.to,
-                                            date: trip.date,
-                                            time: this.formatTimeFromSeconds(trip.time),
-                                            status: trip.status,
-                                            passengersCount: trip.passengersCount,
-                                            maxPassengers: trip.maxPassengers,
-                                            stations,
-                                            passengers
-                                        }
-                                    )
-                                    this.setRenderEditTripModal(true)
-                                }}>
-                                    <Edit2 />
+                            <div className="content">
+                                <div className="date">
+                                    <Calendar />
+                                    <span>{new Date(trip.date).toLocaleDateString('uk-UA', { day: 'numeric', month: 'long', year: '2-digit' })}</span>
                                 </div>
 
-                                <div className="icon-wrapper trash" onClick={() => {
-                                    this.setTrip(
-                                        trip.id,
-                                        `${trip.from} → ${trip.to}`,
-                                        {
-                                            from: trip.from,
-                                            to: trip.to,
-                                            date: trip.date,
-                                            time: trip.time,
-                                            maxPassengers: trip.maxPassengers
-                                        }
-                                    );
-                                    this.setRenderDeleteTripModal(true);
-                                }}>
-                                    <Trash2 />
+                                <div className="time">
+                                    <Clock />
+                                    <span>{this.formatTimeFromSeconds(trip.time)}</span>
+                                </div>
+
+                                <div className="passengers-count">
+                                    <Users />
+                                    <span>{trip.passengersCount} / {trip.maxPassengers}</span>
                                 </div>
                             </div>
                         </div>
+                    ))
+                }
 
-                        <div className="content">
-                            <div className="date">
-                                <Calendar />
-                                <span>{new Date(trip.date).toLocaleDateString('uk-UA', { day: 'numeric', month: 'long' })}</span>
-                            </div>
-
-                            <div className="time">
-                                <Clock />
-                                <span>{this.formatTimeFromSeconds(trip.time)}</span>
-                            </div>
-
-                            <div className="passengers-count">
-                                <Users />
-                                <span>{trip.passengersCount} / {trip.maxPassengers}</span>
-                            </div>
-                        </div>
-                    </div>
-                ))}
-
-                {this.state.renderTripDetailsModal && <TripDetailsModal
-                    id={this.state.tripId}
-                    name={this.state.tripName}
-                    data={this.state.tripData}
-                    formatTimeFromSeconds={this.formatTimeFromSeconds}
-                    setRenderTripDetailsModal={this.setRenderTripDetailsModal}
-                    setTripStatus={this.setTripStatus}
-                />}
-
-                {this.state.renderEditTripModal && <EditTripModal 
-                    id={this.state.tripId}
-                    data={this.state.tripData}
-                    setRenderEditTripModal={this.setRenderEditTripModal}
-                    setTripStatus={this.setTripStatus}
-                    formatStatus={this.formatStatus}
-                    fetchRoutes={this.props.fetchRoutes}
-                    fetchRoutesCount={this.props.fetchRoutesCount}
-                    fetchTrips={this.props.fetchTrips}
-                    fetchTripsCount={this.props.fetchTripsCount}
-                    fetchPassengers={this.props.fetchPassengers}
-                    fetchPassengersCount={this.props.fetchPassengersCount} 
-                />}
-
-                {this.state.renderDeleteTripModal && (
-                    <DeleteTripModal
-                        setRenderDeleteTripModal={this.setRenderDeleteTripModal}
-                        tripId={this.state.tripId}
-                        tripName={this.state.tripName}
-                        onDelete={this.onDelete}
+                {
+                    this.state.renderTripDetailsModal && <TripDetailsModal
+                        user={this.props.user}
+                        id={this.state.tripId}
+                        name={this.state.tripName}
+                        data={this.state.tripData}
+                        formatTimeFromSeconds={this.formatTimeFromSeconds}
+                        setRenderTripDetailsModal={this.setRenderTripDetailsModal}
+                        setTripStatus={this.setTripStatus}
+                        fetchTrips={this.props.fetchTrips}
                     />
-                )}
-            </div>
+                }
+
+                {
+                    this.state.renderEditTripModal && <EditTripModal
+                        user={this.props.user}
+                        id={this.state.tripId}
+                        data={this.state.tripData}
+                        setRenderEditTripModal={this.setRenderEditTripModal}
+                        setTripStatus={this.setTripStatus}
+                        formatStatus={this.formatStatus}
+                        fetchRoutes={this.props.fetchRoutes}
+                        fetchRoutesCount={this.props.fetchRoutesCount}
+                        fetchTrips={this.props.fetchTrips}
+                        fetchTripsCount={this.props.fetchTripsCount}
+                        fetchPassengers={this.props.fetchPassengers}
+                        fetchPassengersCount={this.props.fetchPassengersCount}
+                    />
+                }
+
+                {
+                    this.state.renderDeleteTripModal && (
+                        <DeleteTripModal
+                            user={this.props.user}
+                            setRenderDeleteTripModal={this.setRenderDeleteTripModal}
+                            tripId={this.state.tripId}
+                            tripName={this.state.tripName}
+                            onDelete={this.onDelete}
+                        />
+                    )
+                }
+            </div >
         )
     }
 }

@@ -14,7 +14,7 @@ class AddRouteModal extends React.Component {
             },
 
             errors: {},
-            
+
             isRouteExists: false,
             isFromCityUnknown: false,
             isToCityUnknown: false,
@@ -26,12 +26,14 @@ class AddRouteModal extends React.Component {
 
     addRoute = async () => {
         try {
-            const res = await fetch(
+            let res = await fetch(
                 `${import.meta.env.VITE_API_URL}/routes/add`,
                 {
                     method: "POST",
+                    credentials: "include",
                     headers: {
                         "Content-Type": "application/json",
+                        Authorization: `Bearer ${localStorage.getItem("token")}`
                     },
                     body: JSON.stringify({
                         from_city: this.state.routeData?.from,
@@ -40,9 +42,62 @@ class AddRouteModal extends React.Component {
                 }
             )
 
+            if (res.status === 401) {
+                const refreshRes = await fetch(`${import.meta.env.VITE_API_URL}/auth/refresh`, {
+                    method: "POST",
+                    credentials: "include"
+                })
+
+                if (!refreshRes.ok) {
+                    context.logout()
+                    return null
+                }
+
+                const data = await refreshRes.json()
+                localStorage.setItem("token", data.access_token)
+
+                res = await fetch(
+                    `${import.meta.env.VITE_API_URL}/routes/add`,
+                    {
+                        method: "POST",
+                        credentials: "include",
+                        headers: {
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${localStorage.getItem("token")}`
+                        },
+                        body: JSON.stringify({
+                            from_city: this.state.routeData?.from,
+                            to_city: this.state.routeData?.to
+                        })
+                    }
+                )
+            }
+
             const data = await res.json()
 
             return data
+        } catch (err) {
+            console.error(err)
+        }
+    }
+
+    writeToJournal = async () => {
+        try {
+            const res = await fetch(
+                `${import.meta.env.VITE_API_URL}/journal/write`,
+                {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        user_id: this.props.user?.id,
+                        entity_type: 'routes',
+                        action: 'create',
+                        description: `Додавання маршруту "${this.state.routeData?.from} → ${this.state.routeData?.to}"`
+                    })
+                }
+            )
+
+            return await res.json()
         } catch (err) {
             console.error(err)
         }
@@ -110,6 +165,7 @@ class AddRouteModal extends React.Component {
             return
         }
 
+        await this.writeToJournal()
         await this.props.fetchRoutes()
         await this.props.fetchRoutesCount()
 

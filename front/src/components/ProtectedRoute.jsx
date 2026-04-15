@@ -7,7 +7,11 @@ class ProtectedRoute extends React.Component {
 	static contextType = AuthContext
 
 	render() {
-		const { isAuth } = this.context
+		const { isAuth, loading } = this.context
+
+		if (loading) {
+			return <div>Loading...</div>
+		}
 
 		if (!isAuth) {
 			return <Navigate to="/login" replace />

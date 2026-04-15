@@ -6,8 +6,7 @@ import AddTripButton from "../AddTripButton"
 import FilterButton from "../FilterButton"
 import AddTripModal from "../modals/AddTripModal"
 import Filters from "./Filters"
-
-// TODO: Додати фільтри
+import NotFound from "../NotFound"
 
 class Trips extends React.Component {
     constructor(props) {
@@ -31,6 +30,14 @@ class Trips extends React.Component {
             },
 
             tripsToShow: this.props.tripsList
+        }
+    }
+
+    componentDidUpdate(prevProps) {
+        if (prevProps.tripsList !== this.props.tripsList) {
+            this.setState({
+                tripsToShow: this.props.tripsList
+            })
         }
     }
 
@@ -63,6 +70,7 @@ class Trips extends React.Component {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
+                        user_id: this.props.user?.id,
                         sort_by: sortTypeDesc ? 'desc' : 'asc',
 
                         date_from: filters.dateFrom || null,
@@ -82,8 +90,6 @@ class Trips extends React.Component {
             )
 
             const data = await res.json()
-
-            console.log(data)
 
             if (data.error) {
                 this.setState({ isError: true })
@@ -117,15 +123,14 @@ class Trips extends React.Component {
     render() {
         return (
             <div className="trips-wrapper">
-                {this.props.renderTripsModal && <AddTripModal setRenderTripsModal={this.props.setRenderTripsModal} fetchPassengers={this.props.fetchPassengers} fetchTrips={this.props.fetchTrips} fetchTripsCount={this.props.fetchTripsCount} />}
-                
+                {this.props.renderTripsModal && <AddTripModal user={this.props.user} setRenderTripsModal={this.props.setRenderTripsModal} fetchPassengers={this.props.fetchPassengers} fetchTrips={this.props.fetchTrips} fetchTripsCount={this.props.fetchTripsCount} />}
+
                 <div className="container">
                     <div className="header">
                         <ViewHeader title='Поїздки' subtitle='Керуйте своїми поїздками' />
-
                         <div className="buttons-wrapper">
                             <FilterButton setIsFilters={this.toggleFilters} />
-                            <AddTripButton setRenderTripsModal={this.props.setRenderTripsModal} />
+                            <AddTripButton role={this.props.user?.role} setRenderTripsModal={this.props.setRenderTripsModal} />
                         </div>
                     </div>
 
@@ -140,7 +145,13 @@ class Trips extends React.Component {
                         />
                     )}
 
-                    <TripsList tripsList={this.state.tripsToShow} fetchRoutes={this.props.fetchRoutes} fetchRoutesCount={this.props.fetchRoutesCount} fetchTrips={this.props.fetchTrips} fetchTripsCount={this.props.fetchTripsCount} fetchPassengers={this.props.fetchPassengers} fetchPassengersCount={this.props.fetchPassengersCount} />
+                    {this.state.tripsToShow.length === 0 ? (
+                        <div className="no-trips">
+                            <NotFound />
+                        </div>
+                    ) : (
+                        <TripsList user={this.props.user} tripsList={this.state.tripsToShow} fetchRoutes={this.props.fetchRoutes} fetchRoutesCount={this.props.fetchRoutesCount} fetchTrips={this.props.fetchTrips} fetchTripsCount={this.props.fetchTripsCount} fetchPassengers={this.props.fetchPassengers} fetchPassengersCount={this.props.fetchPassengersCount} />
+                    )}
                 </div>
             </div>
         )

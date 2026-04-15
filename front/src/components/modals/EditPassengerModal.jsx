@@ -25,12 +25,14 @@ class EditPassengerModal extends React.Component {
 
     editPassenger = async () => {
         try {
-            const res = await fetch(
+            let res = await fetch(
                 `${import.meta.env.VITE_API_URL}/passengers/edit`,
                 {
                     method: "POST",
+                    credentials: "include",
                     headers: {
                         "Content-Type": "application/json",
+                        Authorization: `Bearer ${localStorage.getItem("token")}`
                     },
                     body: JSON.stringify({
                         passenger_id: this.props.passengerId,
@@ -43,8 +45,65 @@ class EditPassengerModal extends React.Component {
                 }
             )
 
+            if (res.status === 401) {
+                const refreshRes = await fetch(`${import.meta.env.VITE_API_URL}/auth/refresh`, {
+                    method: "POST",
+                    credentials: "include"
+                })
+
+                if (!refreshRes.ok) {
+                    context.logout()
+                    return null
+                }
+
+                const data = await refreshRes.json()
+                localStorage.setItem("token", data.access_token)
+
+                res = await fetch(
+                    `${import.meta.env.VITE_API_URL}/passengers/edit`,
+                    {
+                        method: "POST",
+                        credentials: "include",
+                        headers: {
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${localStorage.getItem("token")}`
+                        },
+                        body: JSON.stringify({
+                            passenger_id: this.props.passengerId,
+                            name: this.state.passengerData?.name,
+                            surname: this.state.passengerData?.surname,
+                            phone: this.state.passengerData?.phone,
+                            date_of_birth: this.state.passengerData?.dateOfBirth,
+                            note: this.state.passengerData?.note
+                        })
+                    }
+                )
+            }
+
             const data = await res.json()
             return data
+        } catch (err) {
+            console.error(err)
+        }
+    }
+
+    writeToJournal = async () => {
+        try {
+            const res = await fetch(
+                `${import.meta.env.VITE_API_URL}/journal/write`,
+                {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        user_id: this.props.user?.id,
+                        entity_type: 'passengers',
+                        action: 'edit',
+                        description: `Редагування пасажира "#${this.props.passengerId} ${this.state.passengerData?.name} ${this.state.passengerData?.surname}"`
+                    })
+                }
+            )
+
+            return await res.json()
         } catch (err) {
             console.error(err)
         }
@@ -58,8 +117,8 @@ class EditPassengerModal extends React.Component {
         if (!surname.trim()) errors.surname = "Прізвище обовʼязкове"
         if (!phone.trim()) errors.phone = "Телефон обовʼязковий"
 
-        if (phone && !/^\+380\d{9}$/.test(phone)) {
-            errors.phone = "Формат: +380XXXXXXXXX"
+        if (phone && !/^(\+?380\d{9})$/.test(phone)) {
+            errors.phone = "Формат: +380XXXXXXXXX або 380XXXXXXXXX"
         }
 
         if (!dateOfBirth) errors.dateOfBirth = "Дата народження обовʼязкова"
@@ -73,11 +132,12 @@ class EditPassengerModal extends React.Component {
         if (!this.validateForm()) return
 
         await this.editPassenger()
+        await this.writeToJournal()
         await this.props.fetchPassengers()
 
         this.props.setRenderEditPassengerModal(false)
     }
-    
+
     handleChange = (e) => {
         const { name, value } = e.target
 
@@ -107,7 +167,7 @@ class EditPassengerModal extends React.Component {
 
                     <div className="body">
                         <form id="passenger-info">
-                            
+
                             {/* Імʼя */}
                             <div className="form-group">
                                 <label htmlFor="name">Ім'я <span>*</span></label>
@@ -148,7 +208,7 @@ class EditPassengerModal extends React.Component {
                                     type="text"
                                     name="phone"
                                     id="phone"
-                                    placeholder="+380123456789"
+                                    placeholder="380123456789"
                                 />
                                 {/* {errors.phone && <div className="error-popup">{errors.phone}</div>} */}
                             </div>

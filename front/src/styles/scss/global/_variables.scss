@@ -16,16 +16,16 @@ $chart: #9EC9BC;
 $sidebar-accent: #F5F7FA;
 
 // Typography
-$font-size: 16px;
+$font-size: clamp(14px, 0.9vw, 18px);
 $font-weight-medium: 500;
 $font-weight-normal: 400;
 $radius: 0.75rem;
-$text-base: 1rem;
-$text-sm: 0.875rem;
-$text-lg: 1.125rem;
-$text-xl: 1.25rem;
-$text-2xl: 1.5rem;
-$text-3xl: 1.875rem;
+$text-sm: clamp(0.75rem, 0.7rem + 0.2vw, 0.875rem);
+$text-base: clamp(0.875rem, 0.8rem + 0.3vw, 1rem);
+$text-lg: clamp(1rem, 0.9rem + 0.4vw, 1.125rem);
+$text-xl: clamp(1.125rem, 1rem + 0.5vw, 1.25rem);
+$text-2xl: clamp(1.25rem, 1.1rem + 0.7vw, 1.5rem);
+$text-3xl: clamp(1.5rem, 1.2rem + 1vw, 1.875rem);
 
 // Gutters
 $gutter: 30px;
@@ -35,6 +35,7 @@ $gutterS: 10px;
 // Sizes
 $mobile: 425px;
 $tablet: 768px;
+$tabletL: 900px;
 $laptop: 1024px;
 $desktop: 1160px;
 $desktopL: 1280px;

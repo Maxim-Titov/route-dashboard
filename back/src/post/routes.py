@@ -140,3 +140,90 @@ def post_filter_routes(
     conn.close()
 
     return result
+
+def post_get_route_prices(route_id):
+    conn = get_connection("users_data")
+    cursor = conn.cursor(dictionary=True)
+
+    cursor.execute("""
+        SELECT pricing.route_id, pricing.from_city_id, pricing.to_city_id, pricing.price, from_city_name.city AS from_city_name, to_city_name.city AS to_city_name
+        FROM pricing
+                   
+        JOIN cities AS from_city_name ON pricing.from_city_id = from_city_name.id
+        JOIN cities AS to_city_name ON pricing.to_city_id = to_city_name.id
+        
+        WHERE pricing.route_id = %s
+    """, (route_id, ))
+    pricing = cursor.fetchall()
+
+    return pricing
+
+def post_update_pricing(pricing):
+    conn = get_connection("users_data")
+    cursor = conn.cursor()
+
+    try:
+
+        if not pricing:
+            return {"success": False, "message": "empty pricing"}
+
+        route_id = pricing[0].route_id
+
+        # --- перевірка route ---
+        cursor.execute(
+            "SELECT id FROM routes WHERE id = %s",
+            (route_id,)
+        )
+
+        if not cursor.fetchone():
+            return {"success": False, "message": "route not found"}
+
+        # --- очистка старих цін ---
+        cursor.execute(
+            "DELETE FROM pricing WHERE route_id = %s",
+            (route_id,)
+        )
+
+        # --- insert нових ---
+        insert_data = []
+
+        for p in pricing:
+
+            if p.price <= 0:
+                continue
+
+            insert_data.append((
+                p.route_id,
+                p.from_city_id,
+                p.to_city_id,
+                p.price
+            ))
+
+        if insert_data:
+
+            cursor.executemany("""
+                INSERT INTO pricing
+                (route_id, from_city_id, to_city_id, price)
+                VALUES (%s,%s,%s,%s)
+            """, insert_data)
+
+        conn.commit()
+
+        return {
+            "success": True,
+            "inserted": len(insert_data)
+        }
+
+    except Exception as e:
+
+        conn.rollback()
+
+        return {
+            "success": False,
+            "error": str(e)
+        }
+
+    finally:
+
+        cursor.close()
+        conn.close()

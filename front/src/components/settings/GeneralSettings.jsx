@@ -2,16 +2,11 @@ import React from "react"
 import { Wrench } from 'lucide-react'
 
 class GeneralSettings extends React.Component {
-    constructor(props) {
-        super(props)
-
-        this.state = {
-            siteName: "Route Dashboard"
-        }
-    }
-
     handleChange = (e) => {
-        this.setState({ siteName: e.target.value })
+        this.props.onChange({
+            ...this.props.value,
+            site_name: e.target.value
+        })
     }
 
     render() {
@@ -28,7 +23,12 @@ class GeneralSettings extends React.Component {
                 <form className="content">
                     <div className="form-row">
                         <label htmlFor="site-name">Назва системи</label>
-                        <input id="site-name" name="site-name" value={this.state.siteName} onChange={this.handleChange} />
+                        <input
+                            id="site-name"
+                            name="site-name"
+                            value={this.props.value.site_name}
+                            onChange={this.handleChange}
+                        />
                     </div>
                 </form>
             </div>

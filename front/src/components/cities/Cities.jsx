@@ -30,19 +30,18 @@ class Cities extends React.Component {
         return (
             <div className="cities-wrapper">
                 {this.props.renderCitiesModal && (
-                    <AddCityModal setRenderCitiesModal={this.props.setRenderCitiesModal} fetchCities={this.props.fetchCities} fetchCitiesCount={this.props.fetchCitiesCount} />
+                    <AddCityModal user={this.props.user} setRenderCitiesModal={this.props.setRenderCitiesModal} fetchCities={this.props.fetchCities} fetchCitiesCount={this.props.fetchCitiesCount} />
                 )}
 
                 <div className="container">
                     <div className="header">
                         <ViewHeader title="Міста" subtitle="Керуйте списком міст" />
 
-                        <div className="buttons-wrapper">
+                        <div className={`buttons-wrapper ${this.props.user?.role === 'user' ? 'forbidden' : ''}`}>
                             <AddCityButton setRenderCitiesModal={this.props.setRenderCitiesModal} />
                         </div>
                     </div>
-
-                    <CitiesList citiesList={this.state.citiesToShow} fetchCities={this.props.fetchCities} />
+                    <CitiesList user={this.props.user} citiesList={this.state.citiesToShow} fetchCities={this.props.fetchCities} />
                 </div>
 
                 {this.state.isError && (

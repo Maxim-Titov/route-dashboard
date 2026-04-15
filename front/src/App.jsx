@@ -10,7 +10,7 @@ class App extends React.Component {
 		return (
 			<Routes>
 				<Route path="/login" element={<LoginForm />} />
-				
+
 				<Route path="/" element={
 					<ProtectedRoute>
 						<Home />

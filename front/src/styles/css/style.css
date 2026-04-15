@@ -81,7 +81,7 @@ h5 {
 }
 .site-branding .title h1 {
   font-weight: 500;
-  font-size: 1.25rem;
+  font-size: clamp(1.125rem, 1rem + 0.5vw, 1.25rem);
   line-height: 1.5;
 }
 .site-branding .title h1.on-header {
@@ -90,7 +90,7 @@ h5 {
   transform: translateY(-50%);
 }
 .site-branding .sub-title p {
-  font-size: 16px;
+  font-size: clamp(14px, 0.9vw, 18px);
   color: #6B7280;
 }
 
@@ -102,7 +102,7 @@ h5 {
 .progress-bar--header {
   width: 100%;
   margin-bottom: 16px;
-  font-size: 16px;
+  font-size: clamp(14px, 0.9vw, 18px);
   display: flex;
   justify-content: space-between;
 }
@@ -130,10 +130,13 @@ h5 {
   color: #6B7280;
 }
 
+.add-city-button,
 .add-route-button,
 .add-trip-button,
 .add-passenger-button,
-.save-settings-button {
+.add-user-button,
+.save-settings-button,
+.clear-journal-button {
   background-color: #A3C4F3;
   display: flex;
   align-items: center;
@@ -147,25 +150,34 @@ h5 {
   cursor: pointer;
   border: none;
 }
+.add-city-button:hover,
 .add-route-button:hover,
 .add-trip-button:hover,
 .add-passenger-button:hover,
-.save-settings-button:hover {
+.add-user-button:hover,
+.save-settings-button:hover,
+.clear-journal-button:hover {
   background-color: rgba(163, 196, 243, 0.9);
 }
+.add-city-button svg,
 .add-route-button svg,
 .add-trip-button svg,
 .add-passenger-button svg,
-.save-settings-button svg {
+.add-user-button svg,
+.save-settings-button svg,
+.clear-journal-button svg {
   width: 20px;
   height: 20px;
 }
+.add-city-button p,
 .add-route-button p,
 .add-trip-button p,
 .add-passenger-button p,
-.save-settings-button p {
+.add-user-button p,
+.save-settings-button p,
+.clear-journal-button p {
   font-weight: 500;
-  font-size: 16px;
+  font-size: clamp(14px, 0.9vw, 18px);
 }
 
 .filter-button {
@@ -191,7 +203,7 @@ h5 {
 }
 .filter-button p {
   font-weight: 500;
-  font-size: 16px;
+  font-size: clamp(14px, 0.9vw, 18px);
 }
 
 .modal-wrapper,
@@ -244,7 +256,7 @@ h5 {
   color: #A3C4F3;
 }
 .filters-wrapper .card .header h3 {
-  font-size: 16px;
+  font-size: clamp(14px, 0.9vw, 18px);
   font-weight: 400;
 }
 .filters-wrapper .card .content {
@@ -276,7 +288,7 @@ h5 {
 }
 .filters-wrapper .card .content #filters .settings-wrapper button span {
   font-weight: 500;
-  font-size: 16px;
+  font-size: clamp(14px, 0.9vw, 18px);
 }
 .filters-wrapper .card .content #filters .settings-wrapper button svg {
   width: 20px;
@@ -317,7 +329,7 @@ h5 {
 }
 .filters-wrapper .card .content #filters .settings-wrapper .view p {
   color: #6B7280;
-  font-size: 16px;
+  font-size: clamp(14px, 0.9vw, 18px);
   margin-right: 16px;
 }
 .filters-wrapper .card .content #filters .settings-wrapper .view button {
@@ -347,7 +359,7 @@ h5 {
   display: block;
   margin-bottom: 8px;
   color: #6B7280;
-  font-size: 16px;
+  font-size: clamp(14px, 0.9vw, 18px);
   display: flex;
   align-items: end;
 }
@@ -371,7 +383,7 @@ h5 {
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  font-size: 16px;
+  font-size: clamp(14px, 0.9vw, 18px);
 }
 .filters-wrapper .card .content #filters .form-row .form-group input {
   width: 100%;
@@ -379,7 +391,7 @@ h5 {
   background-color: #FAFBFC;
   border: 1px solid rgba(0, 0, 0, 0.06);
   border-radius: 0.75rem;
-  font-size: 16px;
+  font-size: clamp(14px, 0.9vw, 18px);
   color: #3D4551;
 }
 .filters-wrapper .card .content #filters .form-row .form-group input:focus {
@@ -412,7 +424,7 @@ h5 {
   cursor: pointer;
   border: none;
   font-weight: 500;
-  font-size: 16px;
+  font-size: clamp(14px, 0.9vw, 18px);
 }
 .filters-wrapper .card .content #filters .form-row .form-group .buttons button:hover {
   background-color: rgba(163, 196, 243, 0.5);
@@ -421,12 +433,127 @@ h5 {
   background-color: #A3C4F3;
 }
 
+.forbidden {
+  pointer-events: none;
+  opacity: 0.5;
+  transition: opacity 200ms ease;
+}
+
+.not-found {
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  overflow: hidden;
+  position: relative;
+}
+.not-found .scene {
+  position: relative;
+  max-width: 500px;
+}
+.not-found .scene .bus-wrapper {
+  position: relative;
+  margin-bottom: 40px;
+}
+.not-found .scene .bus-wrapper .bus {
+  color: #1e293b;
+  animation: bounce 3s ease-in-out infinite;
+}
+.not-found .scene .bus-wrapper .smoke {
+  position: absolute;
+  left: -20px;
+  color: #94a3b8;
+}
+.not-found .scene .bus-wrapper .smoke.smoke-1 {
+  top: 100px;
+  left: -50px;
+}
+.not-found .scene .bus-wrapper .smoke.smoke-2 {
+  top: 80px;
+  left: -70px;
+}
+.not-found .scene .bus-wrapper .wrench {
+  position: absolute;
+  bottom: 30px;
+  right: 125px;
+  color: #EF9A9A;
+}
+.not-found .scene .title {
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: #3D4551;
+}
+.not-found .scene .subtitle {
+  font-size: 18px;
+  color: #6B7280;
+}
+
+@keyframes bounce {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+@media (max-width: 900px) {
+  main {
+    padding-left: 78px;
+  }
+}
+@media (max-width: 425px) {
+  .container {
+    padding: 24px 12px;
+  }
+  .filters-wrapper .card {
+    padding: 1.5rem 0.5rem;
+  }
+  .filters-wrapper .card .header {
+    margin-bottom: 8px !important;
+  }
+  .filters-wrapper .card .content {
+    display: flex;
+  }
+  .filters-wrapper .card .content #filters {
+    width: 100%;
+  }
+  .filters-wrapper .card .content #filters .settings-wrapper {
+    flex-direction: column;
+    align-items: normal;
+  }
+  .filters-wrapper .card .content #filters .settings-wrapper .view {
+    position: static;
+    order: 1;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 16px;
+  }
+  .filters-wrapper .card .content #filters .settings-wrapper .buttons {
+    flex-direction: column;
+    gap: 16px;
+    order: 2;
+  }
+  .filters-wrapper .card .content #filters .settings-wrapper .buttons button {
+    width: 100%;
+  }
+  .filters-wrapper .card .content #filters .form-row {
+    grid-template-columns: repeat(1, 1fr);
+  }
+  .filters-wrapper .card .content #filters .form-row.status .form-group .buttons {
+    grid-template-columns: repeat(1, 1fr);
+  }
+}
 .dashboard-wrapper .container > * + * {
   margin-top: 1.5rem;
 }
 .dashboard-wrapper .container .general-statistics {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 1.5rem;
   max-width: 100%;
 }
@@ -451,11 +578,11 @@ h5 {
   color: #6B7280;
   margin-bottom: 0.5rem;
   font-weight: 400;
-  font-size: 16px;
+  font-size: clamp(14px, 0.9vw, 18px);
 }
 .dashboard-wrapper .container .general-statistics .card .content .value {
   margin-bottom: 0.25rem;
-  font-size: 1.25rem;
+  font-size: clamp(1.125rem, 1rem + 0.5vw, 1.25rem);
   font-weight: 600;
 }
 .dashboard-wrapper .container .general-statistics .card .icon {
@@ -485,13 +612,12 @@ h5 {
 }
 .dashboard-wrapper .container .quick-actions h2 {
   margin-bottom: 1rem;
-  font-size: 1.25rem;
+  font-size: clamp(1.125rem, 1rem + 0.5vw, 1.25rem);
   font-weight: 500;
-  font-size: 16px;
 }
 .dashboard-wrapper .container .quick-actions .actions {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 1.5rem;
 }
 .dashboard-wrapper .container .quick-actions .actions button {
@@ -507,7 +633,7 @@ h5 {
   cursor: pointer;
   border: none;
   font-weight: 500;
-  font-size: 16px;
+  font-size: clamp(14px, 0.9vw, 18px);
 }
 .dashboard-wrapper .container .popular-routes .card {
   background-color: #FFFFFF;
@@ -522,7 +648,7 @@ h5 {
 }
 .dashboard-wrapper .container .popular-routes .card h3 {
   margin-bottom: 1rem;
-  font-size: 1.125rem;
+  font-size: clamp(1rem, 0.9rem + 0.4vw, 1.125rem);
   font-weight: 500;
 }
 .dashboard-wrapper .container .popular-routes .card .content {
@@ -546,6 +672,18 @@ h5 {
   background-color: #76B5A9;
 }
 
+@media (max-width: 425px) {
+  .container .general-statistics {
+    gap: 0.5rem !important;
+  }
+  .container .popular-routes .card .content {
+    gap: 0.5rem !important;
+    font-size: clamp(14px, 0.9vw, 18px);
+  }
+  .container .popular-routes .card .content div {
+    padding: 0.25rem 0 !important;
+  }
+}
 .cities-wrapper .container > * + * {
   margin-top: 1.5rem;
 }
@@ -561,7 +699,7 @@ h5 {
 }
 .cities-wrapper .container .cities-list {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 1.5rem;
 }
 .cities-wrapper .container .cities-list .card {
@@ -579,7 +717,7 @@ h5 {
 }
 .cities-wrapper .container .cities-list .card .header {
   display: flex;
-  font-size: 1.125rem;
+  font-size: clamp(1rem, 0.9rem + 0.4vw, 1.125rem);
   font-weight: 500;
 }
 .cities-wrapper .container .cities-list .card .header .actions {
@@ -603,6 +741,9 @@ h5 {
   width: 16px;
   height: 16px;
 }
+.cities-wrapper .container .cities-list .card .header .actions .icon-wrapper.info svg {
+  color: #76B5A9;
+}
 .cities-wrapper .container .cities-list .card .header .actions .icon-wrapper.trash svg {
   color: #EF9A9A;
 }
@@ -621,6 +762,24 @@ h5 {
   color: #6B7280;
 }
 
+@media (max-width: 425px) {
+  .cities-wrapper .container .header {
+    align-items: normal;
+  }
+  .cities-wrapper .container .header .buttons-wrapper .add-city-button {
+    padding: 10px 10px;
+    height: 40px;
+  }
+  .cities-wrapper .container .header .buttons-wrapper .add-city-button p {
+    display: none;
+  }
+  .cities-wrapper .container .cities-list {
+    gap: 0.5rem;
+  }
+  .cities-wrapper .container .cities-list .card .header {
+    align-items: center;
+  }
+}
 .routes-wrapper .container > * + * {
   margin-top: 1.5rem;
 }
@@ -636,7 +795,7 @@ h5 {
 }
 .routes-wrapper .container .routes-list {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 1.5rem;
 }
 .routes-wrapper .container .routes-list .card {
@@ -654,7 +813,7 @@ h5 {
 }
 .routes-wrapper .container .routes-list .card .header {
   display: flex;
-  font-size: 1.125rem;
+  font-size: clamp(1rem, 0.9rem + 0.4vw, 1.125rem);
   font-weight: 500;
 }
 .routes-wrapper .container .routes-list .card .header .actions {
@@ -678,6 +837,9 @@ h5 {
   width: 16px;
   height: 16px;
 }
+.routes-wrapper .container .routes-list .card .header .actions .icon-wrapper.info svg {
+  color: #76B5A9;
+}
 .routes-wrapper .container .routes-list .card .header .actions .icon-wrapper.trash svg {
   color: #EF9A9A;
 }
@@ -696,6 +858,32 @@ h5 {
   color: #6B7280;
 }
 
+@media (max-width: 425px) {
+  .routes-wrapper .container .header {
+    align-items: normal;
+  }
+  .routes-wrapper .container .header .buttons-wrapper {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 8px;
+  }
+  .routes-wrapper .container .header .buttons-wrapper .add-route-button,
+  .routes-wrapper .container .header .buttons-wrapper .filter-button {
+    padding: 10px 10px;
+    height: 40px;
+  }
+  .routes-wrapper .container .header .buttons-wrapper .add-route-button p,
+  .routes-wrapper .container .header .buttons-wrapper .filter-button p {
+    display: none;
+  }
+  .routes-wrapper .container .routes-list {
+    gap: 0.5rem;
+  }
+  .routes-wrapper .container .routes-list .card .header {
+    align-items: center;
+  }
+}
 .trips-wrapper .container > * + * {
   margin-top: 1.5rem;
 }
@@ -737,13 +925,13 @@ h5 {
   align-items: center;
 }
 .trips-wrapper .container .trips-list .card .header .route .info {
-  font-size: 1.125rem;
+  font-size: clamp(1rem, 0.9rem + 0.4vw, 1.125rem);
   font-weight: 500;
   margin-right: 0.5rem;
 }
 .trips-wrapper .container .trips-list .card .header .route .status {
   color: #6B7280;
-  font-size: 0.875rem;
+  font-size: clamp(0.75rem, 0.7rem + 0.2vw, 0.875rem);
   background-color: #E8EDF2;
   height: fit-content;
   border-radius: 0.75rem;
@@ -785,18 +973,71 @@ h5 {
   color: #6B7280;
   gap: 1.5rem;
 }
-.trips-wrapper .container .trips-list .card .content .date, .trips-wrapper .container .trips-list .card .content .time, .trips-wrapper .container .trips-list .card .content .passengers-count {
+.trips-wrapper .container .trips-list .card .content .date,
+.trips-wrapper .container .trips-list .card .content .time,
+.trips-wrapper .container .trips-list .card .content .passengers-count {
   display: flex;
   gap: 5px;
 }
-.trips-wrapper .container .trips-list .card .content .date svg, .trips-wrapper .container .trips-list .card .content .time svg, .trips-wrapper .container .trips-list .card .content .passengers-count svg {
+.trips-wrapper .container .trips-list .card .content .date svg,
+.trips-wrapper .container .trips-list .card .content .time svg,
+.trips-wrapper .container .trips-list .card .content .passengers-count svg {
   width: 16px;
   height: 16px;
 }
-.trips-wrapper .container .trips-list .card .content .date span, .trips-wrapper .container .trips-list .card .content .time span, .trips-wrapper .container .trips-list .card .content .passengers-count span {
+.trips-wrapper .container .trips-list .card .content .date span,
+.trips-wrapper .container .trips-list .card .content .time span,
+.trips-wrapper .container .trips-list .card .content .passengers-count span {
   font-size: 14px;
 }
 
+@media (max-width: 425px) {
+  .trips-wrapper .container .header {
+    align-items: normal;
+  }
+  .trips-wrapper .container .header .buttons-wrapper {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 8px;
+  }
+  .trips-wrapper .container .header .buttons-wrapper .add-trip-button,
+  .trips-wrapper .container .header .buttons-wrapper .filter-button {
+    padding: 10px 10px;
+    height: 40px;
+  }
+  .trips-wrapper .container .header .buttons-wrapper .add-trip-button p,
+  .trips-wrapper .container .header .buttons-wrapper .filter-button p {
+    display: none;
+  }
+  .trips-wrapper .container .trips-list {
+    gap: 0.5rem;
+  }
+  .trips-wrapper .container .trips-list .card {
+    gap: 1rem;
+  }
+  .trips-wrapper .container .trips-list .card .header {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    padding-top: 40px;
+  }
+  .trips-wrapper .container .trips-list .card .header .route .status {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+  .trips-wrapper .container .trips-list .card .header .actions {
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+  .trips-wrapper .container .trips-list .card .content {
+    flex-direction: column;
+    align-items: normal;
+    gap: 0.5rem;
+  }
+}
 .passengers-wrapper .container > * + * {
   margin-top: 1.5rem;
 }
@@ -837,7 +1078,7 @@ h5 {
   color: #A3C4F3;
 }
 .passengers-wrapper .container .general-statistics .card .header h3 {
-  font-size: 16px;
+  font-size: clamp(14px, 0.9vw, 18px);
   font-weight: 400;
 }
 .passengers-wrapper .container .general-statistics .card .content {
@@ -849,10 +1090,10 @@ h5 {
   color: #6B7280;
   margin-bottom: 0.5rem;
   font-weight: 400;
-  font-size: 16px;
+  font-size: clamp(14px, 0.9vw, 18px);
 }
 .passengers-wrapper .container .general-statistics .card .content .statistic .value {
-  font-size: 1.5rem;
+  font-size: clamp(1.25rem, 1.1rem + 0.7vw, 1.5rem);
   font-weight: 400;
 }
 .passengers-wrapper .container .passengers-list.flex {
@@ -888,11 +1129,11 @@ h5 {
 .passengers-wrapper .container .passengers-list.flex .card .content .note-title {
   margin-bottom: 4px;
   color: #6B7280;
-  font-size: 16px;
+  font-size: clamp(14px, 0.9vw, 18px);
 }
 .passengers-wrapper .container .passengers-list.grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 1.5rem;
 }
 .passengers-wrapper .container .passengers-list.grid .card .content {
@@ -922,7 +1163,7 @@ h5 {
 .passengers-wrapper .container .passengers-list.grid .card .content .note-title {
   margin-bottom: 4px;
   color: #6B7280;
-  font-size: 16px;
+  font-size: clamp(14px, 0.9vw, 18px);
 }
 .passengers-wrapper .container .passengers-list .card {
   background-color: #FFFFFF;
@@ -944,12 +1185,12 @@ h5 {
 }
 .passengers-wrapper .container .passengers-list .card .header .info .full-name {
   margin-bottom: 0.6rem;
-  font-size: 1.125rem;
+  font-size: clamp(1rem, 0.9rem + 0.4vw, 1.125rem);
   font-weight: 500;
 }
 .passengers-wrapper .container .passengers-list .card .header .info .trips-count {
   color: #6B7280;
-  font-size: 16px;
+  font-size: clamp(14px, 0.9vw, 18px);
 }
 .passengers-wrapper .container .passengers-list .card .header .actions {
   display: flex;
@@ -972,6 +1213,9 @@ h5 {
   width: 16px;
   height: 16px;
 }
+.passengers-wrapper .container .passengers-list .card .header .actions .icon-wrapper.info svg {
+  color: #76B5A9;
+}
 .passengers-wrapper .container .passengers-list .card .header .actions .icon-wrapper.edit svg {
   color: #A3C4F3;
 }
@@ -979,6 +1223,273 @@ h5 {
   color: #EF9A9A;
 }
 
+@media (max-width: 900px) {
+  .filters-wrapper .card {
+    position: relative;
+  }
+  .filters-wrapper .card .header {
+    margin-bottom: 30px;
+  }
+  .filters-wrapper .card .content form .settings-wrapper .view {
+    position: absolute;
+    top: 15px;
+    right: 24px;
+  }
+}
+@media (max-width: 425px) {
+  .passengers-wrapper .container .header {
+    align-items: normal;
+  }
+  .passengers-wrapper .container .header .buttons-wrapper {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 8px;
+  }
+  .passengers-wrapper .container .header .buttons-wrapper .add-passenger-button,
+  .passengers-wrapper .container .header .buttons-wrapper .filter-button {
+    padding: 10px 10px;
+    height: 40px;
+  }
+  .passengers-wrapper .container .header .buttons-wrapper .add-passenger-button p,
+  .passengers-wrapper .container .header .buttons-wrapper .filter-button p {
+    display: none;
+  }
+  .passengers-wrapper .container .passengers-list.grid, .passengers-wrapper .container .passengers-list.flex {
+    gap: 0.5rem;
+  }
+  .passengers-wrapper .container .passengers-list.grid .card, .passengers-wrapper .container .passengers-list.flex .card {
+    gap: 1rem;
+  }
+  .passengers-wrapper .container .passengers-list.grid .card .header, .passengers-wrapper .container .passengers-list.flex .card .header {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    padding-top: 40px;
+  }
+  .passengers-wrapper .container .passengers-list.grid .card .header .info .full-name, .passengers-wrapper .container .passengers-list.flex .card .header .info .full-name {
+    margin-bottom: 0.6rem;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+  .passengers-wrapper .container .passengers-list.grid .card .header .info .trips-count, .passengers-wrapper .container .passengers-list.flex .card .header .info .trips-count {
+    position: absolute;
+    top: 1.3rem;
+    left: 0;
+  }
+  .passengers-wrapper .container .passengers-list.grid .card .header .actions, .passengers-wrapper .container .passengers-list.flex .card .header .actions {
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+  .passengers-wrapper .container .passengers-list.grid .card .content, .passengers-wrapper .container .passengers-list.flex .card .content {
+    grid-template-columns: repeat(1, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 0rem;
+    align-items: normal;
+  }
+  .passengers-wrapper .container .passengers-list.grid .card .content .details, .passengers-wrapper .container .passengers-list.flex .card .content .details {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+@media (max-width: 375px) {
+  .passengers-wrapper .container .general-statistics .card .content {
+    grid-template-columns: repeat(1, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 8px;
+  }
+}
+.users-wrapper .container > * + * {
+  margin-top: 1.5rem;
+}
+.users-wrapper .container .header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.users-wrapper .container .header .buttons-wrapper {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+.users-wrapper .container .users-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+.users-wrapper .container .users-list .card {
+  background-color: #FFFFFF;
+  border-radius: 0.75rem;
+  padding: 24px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.2s ease;
+  display: grid;
+  gap: 1.5rem;
+}
+.users-wrapper .container .users-list .card:hover {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+.users-wrapper .container .users-list .card .header {
+  display: flex;
+  font-size: clamp(1rem, 0.9rem + 0.4vw, 1.125rem);
+  font-weight: 500;
+}
+.users-wrapper .container .users-list .card .header .name-and-login .login {
+  color: #6B7280;
+  font-size: clamp(14px, 0.9vw, 18px);
+}
+.users-wrapper .container .users-list .card .header .actions {
+  display: flex;
+  gap: 8px;
+}
+.users-wrapper .container .users-list .card .header .actions .icon-wrapper {
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  border-radius: 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+.users-wrapper .container .users-list .card .header .actions .icon-wrapper:hover {
+  background-color: #E8EDF2;
+}
+.users-wrapper .container .users-list .card .header .actions .icon-wrapper svg {
+  width: 16px;
+  height: 16px;
+}
+.users-wrapper .container .users-list .card .header .actions .icon-wrapper.edit svg {
+  color: #A3C4F3;
+}
+.users-wrapper .container .users-list .card .header .actions .icon-wrapper.trash svg {
+  color: #EF9A9A;
+}
+.users-wrapper .container .users-list .card .details {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.users-wrapper .container .users-list .card .details p {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+.users-wrapper .container .users-list .card .details p span {
+  color: #6B7280;
+}
+
+@media (max-width: 425px) {
+  .users-wrapper .container .header {
+    align-items: normal;
+  }
+  .users-wrapper .container .header .add-user-button {
+    padding: 10px 10px;
+    height: 40px;
+  }
+  .users-wrapper .container .header .add-user-button p {
+    display: none;
+  }
+  .users-wrapper .container .users-list {
+    gap: 0.5rem;
+  }
+}
+.journal-wrapper .container > * + * {
+  margin-top: 1.5rem;
+}
+.journal-wrapper .container .header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.journal-wrapper .container .header .buttons-wrapper .clear-journal-button {
+  background-color: #EF9A9A;
+}
+.journal-wrapper .container .changes-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.5rem;
+}
+.journal-wrapper .container .changes-list .card {
+  background-color: #FFFFFF;
+  border-radius: 0.75rem;
+  padding: 24px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.2s ease;
+  display: grid;
+  gap: 1.5rem;
+  position: relative;
+}
+.journal-wrapper .container .changes-list .card:hover {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+.journal-wrapper .container .changes-list .card .header {
+  display: flex;
+  font-size: clamp(1rem, 0.9rem + 0.4vw, 1.125rem);
+  font-weight: 500;
+  justify-content: space-between;
+  align-items: center;
+}
+.journal-wrapper .container .changes-list .card .header .time {
+  color: #6B7280;
+  font-size: clamp(14px, 0.9vw, 18px);
+}
+.journal-wrapper .container .changes-list .card .content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.journal-wrapper .container .changes-list .card .content .user {
+  position: absolute;
+  bottom: 24px;
+  right: 24px;
+  background-color: #E8EDF2;
+  padding: 0.5rem;
+  border-radius: 0.75rem;
+  transform: translate(0.5rem, 0.5rem);
+}
+
+@media (max-width: 900px) {
+  .journal-wrapper .container .changes-list .card .content .user {
+    position: static;
+    margin-top: 0.5rem;
+    background-color: #E8EDF2;
+    border-radius: 0.75rem;
+    transform: translate(0, 0);
+    width: fit-content;
+  }
+}
+@media (max-width: 425px) {
+  .journal-wrapper .container .header .buttons-wrapper .clear-journal-button {
+    padding: 10px 10px;
+    height: 40px;
+  }
+  .journal-wrapper .container .header .buttons-wrapper .clear-journal-button p {
+    display: none;
+  }
+  .journal-wrapper .container .changes-list {
+    gap: 0.5rem;
+  }
+  .journal-wrapper .container .changes-list .card {
+    padding-bottom: 6rem;
+  }
+  .journal-wrapper .container .changes-list .card .header .time {
+    position: absolute;
+    bottom: 4rem;
+  }
+  .journal-wrapper .container .changes-list .card .content .user {
+    position: absolute;
+    bottom: 24px;
+    left: 24px;
+    transform: translate(0rem, 0.5rem);
+  }
+}
 .settings-wrapper .container > * + * {
   margin-top: 1.5rem;
 }
@@ -1022,7 +1533,7 @@ h5 {
   color: #A3C4F3;
 }
 .settings-wrapper .container .settings-block.card .header h3 {
-  font-size: 1.125rem;
+  font-size: clamp(1rem, 0.9rem + 0.4vw, 1.125rem);
   font-weight: 500;
 }
 .settings-wrapper .container .settings-block.card .content {
@@ -1039,9 +1550,9 @@ h5 {
   margin-bottom: 8px;
   color: #6B7280;
   font-weight: 400;
-  font-size: 16px;
+  font-size: clamp(14px, 0.9vw, 18px);
   display: flex;
-  align-items: end;
+  align-items: center;
 }
 .settings-wrapper .container .settings-block.card .content .form-row label input[type=checkbox] {
   width: 25px;
@@ -1064,33 +1575,39 @@ h5 {
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  font-size: 16px;
+  font-size: clamp(14px, 0.9vw, 18px);
 }
-.settings-wrapper .container .settings-block.card .content .form-row input, .settings-wrapper .container .settings-block.card .content .form-row select {
+.settings-wrapper .container .settings-block.card .content .form-row input,
+.settings-wrapper .container .settings-block.card .content .form-row select {
   width: 100%;
   max-width: 450px;
   padding: 8px 16px;
   background-color: #FAFBFC;
   border: 1px solid rgba(0, 0, 0, 0.06);
   border-radius: 0.75rem;
-  font-size: 16px;
+  font-size: clamp(14px, 0.9vw, 18px);
   color: #3D4551;
 }
-.settings-wrapper .container .settings-block.card .content .form-row input::placeholder, .settings-wrapper .container .settings-block.card .content .form-row select::placeholder {
+.settings-wrapper .container .settings-block.card .content .form-row input::placeholder,
+.settings-wrapper .container .settings-block.card .content .form-row select::placeholder {
   color: rgba(107, 114, 128, 0.7);
 }
-.settings-wrapper .container .settings-block.card .content .form-row input:focus, .settings-wrapper .container .settings-block.card .content .form-row select:focus {
+.settings-wrapper .container .settings-block.card .content .form-row input:focus,
+.settings-wrapper .container .settings-block.card .content .form-row select:focus {
   outline: none;
   border-color: #A3C4F3;
   box-shadow: 0 0 0 2px rgba(163, 196, 243, 0.3);
 }
-.settings-wrapper .container .settings-block.card .content .form-row input::placeholder, .settings-wrapper .container .settings-block.card .content .form-row select::placeholder {
+.settings-wrapper .container .settings-block.card .content .form-row input::placeholder,
+.settings-wrapper .container .settings-block.card .content .form-row select::placeholder {
   color: rgba(107, 114, 128, 0.7);
 }
-.settings-wrapper .container .settings-block.card .content .form-row input.required, .settings-wrapper .container .settings-block.card .content .form-row select.required {
+.settings-wrapper .container .settings-block.card .content .form-row input.required,
+.settings-wrapper .container .settings-block.card .content .form-row select.required {
   border-color: #EF9A9A;
 }
-.settings-wrapper .container .settings-block.card .content .form-row input.not-valid, .settings-wrapper .container .settings-block.card .content .form-row select.not-valid {
+.settings-wrapper .container .settings-block.card .content .form-row input.not-valid,
+.settings-wrapper .container .settings-block.card .content .form-row select.not-valid {
   border-color: #EF9A9A;
   background-color: rgba(239, 154, 154, 0.2);
   box-shadow: 0 0 0 2px rgba(239, 154, 154, 0.3);
@@ -1110,7 +1627,7 @@ h5 {
   cursor: pointer;
   border: none;
   font-weight: 500;
-  font-size: 16px;
+  font-size: clamp(14px, 0.9vw, 18px);
 }
 .settings-wrapper .container .settings-block.card .content button:hover {
   background-color: rgba(163, 196, 243, 0.9);
@@ -1121,19 +1638,31 @@ h5 {
 .settings-wrapper .container .settings-block.danger-zone.card .header .icon svg {
   color: #EF9A9A;
 }
-.settings-wrapper .container .settings-block.danger-zone.card .content .buttons-wrapper {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1.5rem;
-}
-.settings-wrapper .container .settings-block.danger-zone.card .content .buttons-wrapper button {
+.settings-wrapper .container .settings-block.danger-zone.card .content button {
   background-color: #EF9A9A;
-  max-width: 100%;
+  width: 100%;
+  max-width: 450px;
 }
-.settings-wrapper .container .settings-block.danger-zone.card .content .buttons-wrapper button:hover {
+.settings-wrapper .container .settings-block.danger-zone.card .content button:hover {
   background-color: rgba(239, 154, 154, 0.9);
 }
 
+@media (max-width: 425px) {
+  .settings-wrapper .container > * + * {
+    margin-top: 0.5rem;
+  }
+  .settings-wrapper .container > .header {
+    align-items: normal;
+    margin-bottom: 1.5rem;
+  }
+  .settings-wrapper .container > .header .save-settings-button {
+    padding: 10px 10px;
+    height: 40px;
+  }
+  .settings-wrapper .container > .header .save-settings-button p {
+    display: none;
+  }
+}
 header {
   background-color: #FFFFFF;
   border-bottom: 1px solid rgba(0, 0, 0, 0.06);
@@ -1170,7 +1699,7 @@ header .search-panel input {
   background-color: #FAFBFC;
   border-radius: 0.5rem;
   border: 1px solid rgba(0, 0, 0, 0.06);
-  font-size: 16px;
+  font-size: clamp(14px, 0.9vw, 18px);
   color: #3D4551;
 }
 header .search-panel input:focus {
@@ -1223,8 +1752,36 @@ header .user-logo {
   align-items: center;
   justify-content: center;
   color: #A3C4F3;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+header .user-logo:hover {
+  background-color: rgba(163, 196, 243, 0.3);
 }
 
+@media (max-width: 900px) {
+  header {
+    padding-left: 102px;
+  }
+  header .site-branding {
+    display: none;
+  }
+  header .search-panel {
+    margin: 0 auto;
+  }
+}
+@media (max-width: 425px) {
+  header {
+    padding: 16px 16px 16px 94px;
+    gap: 16px;
+  }
+  header .site-branding {
+    display: none;
+  }
+  header .search-panel {
+    margin: 0 auto;
+  }
+}
 aside {
   flex-direction: column;
   width: 16rem;
@@ -1269,12 +1826,140 @@ aside .navigation nav ul li svg {
   height: 1.25rem;
 }
 
+@media (max-width: 900px) {
+  aside {
+    min-width: 78px;
+    transition: all 0.3s ease-in-out;
+    position: fixed;
+    width: 78px;
+    z-index: 100;
+  }
+  aside .site-branding {
+    position: relative;
+    min-width: 0;
+    padding: 1.5rem 1rem 1.5rem 1rem;
+  }
+  aside .site-branding .logo {
+    min-width: 40px;
+    z-index: 10;
+  }
+  aside .site-branding .logo .icon img {
+    display: none;
+  }
+  aside .site-branding .logo .burger-icon {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+  aside .site-branding .logo .burger-icon span {
+    position: absolute;
+    display: block;
+    width: 1.5rem;
+    height: 2.5px;
+    background-color: #3D4551;
+    transition: all 0.3s ease-in-out;
+  }
+  aside .site-branding .logo .burger-icon span:first-child {
+    top: 3px;
+  }
+  aside .site-branding .logo .burger-icon span:nth-child(2) {
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  aside .site-branding .logo .burger-icon span:nth-child(3) {
+    bottom: 3px;
+  }
+  aside .site-branding .logo .burger-icon span:last-child {
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  aside .site-branding .title-and-subtitle {
+    position: absolute;
+    opacity: 0;
+    top: 50%;
+    left: 45px;
+    transform: translateY(-50%);
+    transition: all 0.3s ease-in-out;
+  }
+  aside .navigation nav ul li {
+    position: relative;
+    width: fit-content;
+  }
+  aside .navigation nav ul li p {
+    position: absolute;
+    opacity: 0;
+    top: 50%;
+    left: 30px;
+    transform: translateY(-50%);
+    transition: all 0.3s ease-in-out;
+  }
+  aside.open {
+    min-width: 16rem;
+    width: 16rem;
+  }
+  aside.open .site-branding {
+    min-width: none;
+  }
+  aside.open .site-branding .logo .burger-icon {
+    position: relative;
+  }
+  aside.open .site-branding .logo .burger-icon span {
+    background-color: rgba(255, 255, 255, 0);
+    border: 2px solid #3D4551;
+    border-radius: 3px;
+  }
+  aside.open .site-branding .logo .burger-icon span:first-child {
+    top: 0px;
+    right: -1px;
+    width: calc(50% - 0px);
+    height: calc(40% - 0px);
+  }
+  aside.open .site-branding .logo .burger-icon span:nth-child(2) {
+    top: 6px;
+    left: 0;
+    width: calc(50% - 0px);
+    height: calc(60% - 0px);
+  }
+  aside.open .site-branding .logo .burger-icon span:nth-child(3) {
+    bottom: 0;
+    left: 0;
+    width: calc(50% - 0px);
+    height: calc(40% - 0px);
+  }
+  aside.open .site-branding .logo .burger-icon span:last-child {
+    top: 50%;
+    right: 0;
+    width: calc(50% - 0.5px);
+    height: calc(60% - 0.5px);
+    transform: translateY(0);
+  }
+  aside.open .site-branding .title-and-subtitle {
+    opacity: 1;
+    left: 75px;
+  }
+  aside.open .navigation nav ul li {
+    width: 100%;
+    margin: 0 0 0.25rem 0;
+  }
+  aside.open .navigation nav ul li p {
+    opacity: 1;
+    top: 50%;
+    left: 50px;
+    transform: translateY(-50%);
+  }
+}
+.add-city-modal,
 .add-route-modal,
 .add-trip-modal,
 .trip-passenger-list-modal,
 .trip-station-list-modal,
 .add-passanger-modal,
 .confirm-modal,
+.profile-modal,
+.add-user-modal,
+.set-driver-modal,
+.ticket-modal,
+.clear-journal-modal,
 .message-modal {
   position: fixed;
   top: 50%;
@@ -1290,12 +1975,129 @@ aside .navigation nav ul li svg {
   box-shadow: 0 20px 25px rgba(0, 0, 0, 0.15);
   z-index: 996;
 }
+.add-city-modal .autocomplete-dropdown,
+.add-route-modal .autocomplete-dropdown,
+.add-trip-modal .autocomplete-dropdown,
+.trip-passenger-list-modal .autocomplete-dropdown,
+.trip-station-list-modal .autocomplete-dropdown,
+.add-passanger-modal .autocomplete-dropdown,
+.confirm-modal .autocomplete-dropdown,
+.profile-modal .autocomplete-dropdown,
+.add-user-modal .autocomplete-dropdown,
+.set-driver-modal .autocomplete-dropdown,
+.ticket-modal .autocomplete-dropdown,
+.clear-journal-modal .autocomplete-dropdown,
+.message-modal .autocomplete-dropdown {
+  padding: 0;
+  margin: 0;
+}
+.add-city-modal .autocomplete-dropdown li,
+.add-route-modal .autocomplete-dropdown li,
+.add-trip-modal .autocomplete-dropdown li,
+.trip-passenger-list-modal .autocomplete-dropdown li,
+.trip-station-list-modal .autocomplete-dropdown li,
+.add-passanger-modal .autocomplete-dropdown li,
+.confirm-modal .autocomplete-dropdown li,
+.profile-modal .autocomplete-dropdown li,
+.add-user-modal .autocomplete-dropdown li,
+.set-driver-modal .autocomplete-dropdown li,
+.ticket-modal .autocomplete-dropdown li,
+.clear-journal-modal .autocomplete-dropdown li,
+.message-modal .autocomplete-dropdown li {
+  list-style: none;
+}
+.add-city-modal .autocomplete-dropdown,
+.add-route-modal .autocomplete-dropdown,
+.add-trip-modal .autocomplete-dropdown,
+.trip-passenger-list-modal .autocomplete-dropdown,
+.trip-station-list-modal .autocomplete-dropdown,
+.add-passanger-modal .autocomplete-dropdown,
+.confirm-modal .autocomplete-dropdown,
+.profile-modal .autocomplete-dropdown,
+.add-user-modal .autocomplete-dropdown,
+.set-driver-modal .autocomplete-dropdown,
+.ticket-modal .autocomplete-dropdown,
+.clear-journal-modal .autocomplete-dropdown,
+.message-modal .autocomplete-dropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 0;
+  right: 0;
+  background-color: #FFFFFF;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-bottom-left-radius: 0.75rem;
+  border-bottom-right-radius: 0.75rem;
+  max-height: 200px;
+  overflow-y: auto;
+  margin: 0;
+  padding: 0;
+  z-index: 10;
+}
+.add-city-modal .autocomplete-dropdown li,
+.add-route-modal .autocomplete-dropdown li,
+.add-trip-modal .autocomplete-dropdown li,
+.trip-passenger-list-modal .autocomplete-dropdown li,
+.trip-station-list-modal .autocomplete-dropdown li,
+.add-passanger-modal .autocomplete-dropdown li,
+.confirm-modal .autocomplete-dropdown li,
+.profile-modal .autocomplete-dropdown li,
+.add-user-modal .autocomplete-dropdown li,
+.set-driver-modal .autocomplete-dropdown li,
+.ticket-modal .autocomplete-dropdown li,
+.clear-journal-modal .autocomplete-dropdown li,
+.message-modal .autocomplete-dropdown li {
+  cursor: pointer;
+  align-items: center;
+  padding: 8px 16px;
+  transition: background-color 200ms ease-in-out;
+}
+.add-city-modal .autocomplete-dropdown li span,
+.add-route-modal .autocomplete-dropdown li span,
+.add-trip-modal .autocomplete-dropdown li span,
+.trip-passenger-list-modal .autocomplete-dropdown li span,
+.trip-station-list-modal .autocomplete-dropdown li span,
+.add-passanger-modal .autocomplete-dropdown li span,
+.confirm-modal .autocomplete-dropdown li span,
+.profile-modal .autocomplete-dropdown li span,
+.add-user-modal .autocomplete-dropdown li span,
+.set-driver-modal .autocomplete-dropdown li span,
+.ticket-modal .autocomplete-dropdown li span,
+.clear-journal-modal .autocomplete-dropdown li span,
+.message-modal .autocomplete-dropdown li span {
+  padding: 16px;
+  height: 100%;
+  width: 60%;
+  border-left: 1px solid #A3C4F3;
+  margin-left: 16px;
+  text-align: center;
+}
+.add-city-modal .autocomplete-dropdown li:hover,
+.add-route-modal .autocomplete-dropdown li:hover,
+.add-trip-modal .autocomplete-dropdown li:hover,
+.trip-passenger-list-modal .autocomplete-dropdown li:hover,
+.trip-station-list-modal .autocomplete-dropdown li:hover,
+.add-passanger-modal .autocomplete-dropdown li:hover,
+.confirm-modal .autocomplete-dropdown li:hover,
+.profile-modal .autocomplete-dropdown li:hover,
+.add-user-modal .autocomplete-dropdown li:hover,
+.set-driver-modal .autocomplete-dropdown li:hover,
+.ticket-modal .autocomplete-dropdown li:hover,
+.clear-journal-modal .autocomplete-dropdown li:hover,
+.message-modal .autocomplete-dropdown li:hover {
+  background-color: #FAFBFC;
+}
+.add-city-modal .header,
 .add-route-modal .header,
 .add-trip-modal .header,
 .trip-passenger-list-modal .header,
 .trip-station-list-modal .header,
 .add-passanger-modal .header,
 .confirm-modal .header,
+.profile-modal .header,
+.add-user-modal .header,
+.set-driver-modal .header,
+.ticket-modal .header,
+.clear-journal-modal .header,
 .message-modal .header {
   position: sticky;
   top: 0;
@@ -1304,87 +2106,140 @@ aside .navigation nav ul li svg {
   border-bottom: 1px solid rgba(0, 0, 0, 0.06);
   z-index: 10;
 }
+.add-city-modal .header h2,
 .add-route-modal .header h2,
 .add-trip-modal .header h2,
 .trip-passenger-list-modal .header h2,
 .trip-station-list-modal .header h2,
 .add-passanger-modal .header h2,
 .confirm-modal .header h2,
+.profile-modal .header h2,
+.add-user-modal .header h2,
+.set-driver-modal .header h2,
+.ticket-modal .header h2,
+.clear-journal-modal .header h2,
 .message-modal .header h2 {
-  font-size: 1.125rem;
+  font-size: clamp(1rem, 0.9rem + 0.4vw, 1.125rem);
   font-weight: 500;
 }
+.add-city-modal .body,
 .add-route-modal .body,
 .add-trip-modal .body,
 .trip-passenger-list-modal .body,
 .trip-station-list-modal .body,
 .add-passanger-modal .body,
 .confirm-modal .body,
+.profile-modal .body,
+.add-user-modal .body,
+.set-driver-modal .body,
+.ticket-modal .body,
+.clear-journal-modal .body,
 .message-modal .body {
   padding: 24px;
 }
+.add-city-modal .body p span,
 .add-route-modal .body p span,
 .add-trip-modal .body p span,
 .trip-passenger-list-modal .body p span,
 .trip-station-list-modal .body p span,
 .add-passanger-modal .body p span,
 .confirm-modal .body p span,
+.profile-modal .body p span,
+.add-user-modal .body p span,
+.set-driver-modal .body p span,
+.ticket-modal .body p span,
+.clear-journal-modal .body p span,
 .message-modal .body p span {
   color: #6B7280;
 }
+.add-city-modal .body form,
 .add-route-modal .body form,
 .add-trip-modal .body form,
 .trip-passenger-list-modal .body form,
 .trip-station-list-modal .body form,
 .add-passanger-modal .body form,
 .confirm-modal .body form,
+.profile-modal .body form,
+.add-user-modal .body form,
+.set-driver-modal .body form,
+.ticket-modal .body form,
+.clear-journal-modal .body form,
 .message-modal .body form {
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
+.add-city-modal .body form .form-group,
 .add-route-modal .body form .form-group,
 .add-trip-modal .body form .form-group,
 .trip-passenger-list-modal .body form .form-group,
 .trip-station-list-modal .body form .form-group,
 .add-passanger-modal .body form .form-group,
 .confirm-modal .body form .form-group,
+.profile-modal .body form .form-group,
+.add-user-modal .body form .form-group,
+.set-driver-modal .body form .form-group,
+.ticket-modal .body form .form-group,
+.clear-journal-modal .body form .form-group,
 .message-modal .body form .form-group {
   position: relative;
 }
+.add-city-modal .body form .form-group.row,
 .add-route-modal .body form .form-group.row,
 .add-trip-modal .body form .form-group.row,
 .trip-passenger-list-modal .body form .form-group.row,
 .trip-station-list-modal .body form .form-group.row,
 .add-passanger-modal .body form .form-group.row,
 .confirm-modal .body form .form-group.row,
+.profile-modal .body form .form-group.row,
+.add-user-modal .body form .form-group.row,
+.set-driver-modal .body form .form-group.row,
+.ticket-modal .body form .form-group.row,
+.clear-journal-modal .body form .form-group.row,
 .message-modal .body form .form-group.row {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 16px;
 }
+.add-city-modal .body form .form-group label,
 .add-route-modal .body form .form-group label,
 .add-trip-modal .body form .form-group label,
 .trip-passenger-list-modal .body form .form-group label,
 .trip-station-list-modal .body form .form-group label,
 .add-passanger-modal .body form .form-group label,
 .confirm-modal .body form .form-group label,
+.profile-modal .body form .form-group label,
+.add-user-modal .body form .form-group label,
+.set-driver-modal .body form .form-group label,
+.ticket-modal .body form .form-group label,
+.clear-journal-modal .body form .form-group label,
 .message-modal .body form .form-group label {
   display: block;
   margin-bottom: 8px;
   color: #6B7280;
-  font-size: 16px;
+  font-size: clamp(14px, 0.9vw, 18px);
 }
+.add-city-modal .body form .form-group label span,
 .add-route-modal .body form .form-group label span,
 .add-trip-modal .body form .form-group label span,
 .trip-passenger-list-modal .body form .form-group label span,
 .trip-station-list-modal .body form .form-group label span,
 .add-passanger-modal .body form .form-group label span,
 .confirm-modal .body form .form-group label span,
+.profile-modal .body form .form-group label span,
+.add-user-modal .body form .form-group label span,
+.set-driver-modal .body form .form-group label span,
+.ticket-modal .body form .form-group label span,
+.clear-journal-modal .body form .form-group label span,
 .message-modal .body form .form-group label span {
   color: #EF9A9A;
 }
-.add-route-modal .body form .form-group input, .add-route-modal .body form .form-group textarea, .add-route-modal .body form .form-group select,
+.add-city-modal .body form .form-group input,
+.add-city-modal .body form .form-group textarea,
+.add-city-modal .body form .form-group select,
+.add-route-modal .body form .form-group input,
+.add-route-modal .body form .form-group textarea,
+.add-route-modal .body form .form-group select,
 .add-trip-modal .body form .form-group input,
 .add-trip-modal .body form .form-group textarea,
 .add-trip-modal .body form .form-group select,
@@ -1400,6 +2255,21 @@ aside .navigation nav ul li svg {
 .confirm-modal .body form .form-group input,
 .confirm-modal .body form .form-group textarea,
 .confirm-modal .body form .form-group select,
+.profile-modal .body form .form-group input,
+.profile-modal .body form .form-group textarea,
+.profile-modal .body form .form-group select,
+.add-user-modal .body form .form-group input,
+.add-user-modal .body form .form-group textarea,
+.add-user-modal .body form .form-group select,
+.set-driver-modal .body form .form-group input,
+.set-driver-modal .body form .form-group textarea,
+.set-driver-modal .body form .form-group select,
+.ticket-modal .body form .form-group input,
+.ticket-modal .body form .form-group textarea,
+.ticket-modal .body form .form-group select,
+.clear-journal-modal .body form .form-group input,
+.clear-journal-modal .body form .form-group textarea,
+.clear-journal-modal .body form .form-group select,
 .message-modal .body form .form-group input,
 .message-modal .body form .form-group textarea,
 .message-modal .body form .form-group select {
@@ -1408,10 +2278,15 @@ aside .navigation nav ul li svg {
   background-color: #FAFBFC;
   border: 1px solid rgba(0, 0, 0, 0.06);
   border-radius: 0.75rem;
-  font-size: 16px;
+  font-size: clamp(14px, 0.9vw, 18px);
   color: #3D4551;
 }
-.add-route-modal .body form .form-group input::placeholder, .add-route-modal .body form .form-group textarea::placeholder, .add-route-modal .body form .form-group select::placeholder,
+.add-city-modal .body form .form-group input::placeholder,
+.add-city-modal .body form .form-group textarea::placeholder,
+.add-city-modal .body form .form-group select::placeholder,
+.add-route-modal .body form .form-group input::placeholder,
+.add-route-modal .body form .form-group textarea::placeholder,
+.add-route-modal .body form .form-group select::placeholder,
 .add-trip-modal .body form .form-group input::placeholder,
 .add-trip-modal .body form .form-group textarea::placeholder,
 .add-trip-modal .body form .form-group select::placeholder,
@@ -1427,12 +2302,32 @@ aside .navigation nav ul li svg {
 .confirm-modal .body form .form-group input::placeholder,
 .confirm-modal .body form .form-group textarea::placeholder,
 .confirm-modal .body form .form-group select::placeholder,
+.profile-modal .body form .form-group input::placeholder,
+.profile-modal .body form .form-group textarea::placeholder,
+.profile-modal .body form .form-group select::placeholder,
+.add-user-modal .body form .form-group input::placeholder,
+.add-user-modal .body form .form-group textarea::placeholder,
+.add-user-modal .body form .form-group select::placeholder,
+.set-driver-modal .body form .form-group input::placeholder,
+.set-driver-modal .body form .form-group textarea::placeholder,
+.set-driver-modal .body form .form-group select::placeholder,
+.ticket-modal .body form .form-group input::placeholder,
+.ticket-modal .body form .form-group textarea::placeholder,
+.ticket-modal .body form .form-group select::placeholder,
+.clear-journal-modal .body form .form-group input::placeholder,
+.clear-journal-modal .body form .form-group textarea::placeholder,
+.clear-journal-modal .body form .form-group select::placeholder,
 .message-modal .body form .form-group input::placeholder,
 .message-modal .body form .form-group textarea::placeholder,
 .message-modal .body form .form-group select::placeholder {
   color: rgba(107, 114, 128, 0.7);
 }
-.add-route-modal .body form .form-group input:focus, .add-route-modal .body form .form-group textarea:focus, .add-route-modal .body form .form-group select:focus,
+.add-city-modal .body form .form-group input:focus,
+.add-city-modal .body form .form-group textarea:focus,
+.add-city-modal .body form .form-group select:focus,
+.add-route-modal .body form .form-group input:focus,
+.add-route-modal .body form .form-group textarea:focus,
+.add-route-modal .body form .form-group select:focus,
 .add-trip-modal .body form .form-group input:focus,
 .add-trip-modal .body form .form-group textarea:focus,
 .add-trip-modal .body form .form-group select:focus,
@@ -1448,6 +2343,21 @@ aside .navigation nav ul li svg {
 .confirm-modal .body form .form-group input:focus,
 .confirm-modal .body form .form-group textarea:focus,
 .confirm-modal .body form .form-group select:focus,
+.profile-modal .body form .form-group input:focus,
+.profile-modal .body form .form-group textarea:focus,
+.profile-modal .body form .form-group select:focus,
+.add-user-modal .body form .form-group input:focus,
+.add-user-modal .body form .form-group textarea:focus,
+.add-user-modal .body form .form-group select:focus,
+.set-driver-modal .body form .form-group input:focus,
+.set-driver-modal .body form .form-group textarea:focus,
+.set-driver-modal .body form .form-group select:focus,
+.ticket-modal .body form .form-group input:focus,
+.ticket-modal .body form .form-group textarea:focus,
+.ticket-modal .body form .form-group select:focus,
+.clear-journal-modal .body form .form-group input:focus,
+.clear-journal-modal .body form .form-group textarea:focus,
+.clear-journal-modal .body form .form-group select:focus,
 .message-modal .body form .form-group input:focus,
 .message-modal .body form .form-group textarea:focus,
 .message-modal .body form .form-group select:focus {
@@ -1455,7 +2365,12 @@ aside .navigation nav ul li svg {
   border-color: #A3C4F3;
   box-shadow: 0 0 0 2px rgba(163, 196, 243, 0.3);
 }
-.add-route-modal .body form .form-group input::placeholder, .add-route-modal .body form .form-group textarea::placeholder, .add-route-modal .body form .form-group select::placeholder,
+.add-city-modal .body form .form-group input::placeholder,
+.add-city-modal .body form .form-group textarea::placeholder,
+.add-city-modal .body form .form-group select::placeholder,
+.add-route-modal .body form .form-group input::placeholder,
+.add-route-modal .body form .form-group textarea::placeholder,
+.add-route-modal .body form .form-group select::placeholder,
 .add-trip-modal .body form .form-group input::placeholder,
 .add-trip-modal .body form .form-group textarea::placeholder,
 .add-trip-modal .body form .form-group select::placeholder,
@@ -1471,12 +2386,32 @@ aside .navigation nav ul li svg {
 .confirm-modal .body form .form-group input::placeholder,
 .confirm-modal .body form .form-group textarea::placeholder,
 .confirm-modal .body form .form-group select::placeholder,
+.profile-modal .body form .form-group input::placeholder,
+.profile-modal .body form .form-group textarea::placeholder,
+.profile-modal .body form .form-group select::placeholder,
+.add-user-modal .body form .form-group input::placeholder,
+.add-user-modal .body form .form-group textarea::placeholder,
+.add-user-modal .body form .form-group select::placeholder,
+.set-driver-modal .body form .form-group input::placeholder,
+.set-driver-modal .body form .form-group textarea::placeholder,
+.set-driver-modal .body form .form-group select::placeholder,
+.ticket-modal .body form .form-group input::placeholder,
+.ticket-modal .body form .form-group textarea::placeholder,
+.ticket-modal .body form .form-group select::placeholder,
+.clear-journal-modal .body form .form-group input::placeholder,
+.clear-journal-modal .body form .form-group textarea::placeholder,
+.clear-journal-modal .body form .form-group select::placeholder,
 .message-modal .body form .form-group input::placeholder,
 .message-modal .body form .form-group textarea::placeholder,
 .message-modal .body form .form-group select::placeholder {
   color: rgba(107, 114, 128, 0.7);
 }
-.add-route-modal .body form .form-group input.required, .add-route-modal .body form .form-group textarea.required, .add-route-modal .body form .form-group select.required,
+.add-city-modal .body form .form-group input.required,
+.add-city-modal .body form .form-group textarea.required,
+.add-city-modal .body form .form-group select.required,
+.add-route-modal .body form .form-group input.required,
+.add-route-modal .body form .form-group textarea.required,
+.add-route-modal .body form .form-group select.required,
 .add-trip-modal .body form .form-group input.required,
 .add-trip-modal .body form .form-group textarea.required,
 .add-trip-modal .body form .form-group select.required,
@@ -1492,12 +2427,32 @@ aside .navigation nav ul li svg {
 .confirm-modal .body form .form-group input.required,
 .confirm-modal .body form .form-group textarea.required,
 .confirm-modal .body form .form-group select.required,
+.profile-modal .body form .form-group input.required,
+.profile-modal .body form .form-group textarea.required,
+.profile-modal .body form .form-group select.required,
+.add-user-modal .body form .form-group input.required,
+.add-user-modal .body form .form-group textarea.required,
+.add-user-modal .body form .form-group select.required,
+.set-driver-modal .body form .form-group input.required,
+.set-driver-modal .body form .form-group textarea.required,
+.set-driver-modal .body form .form-group select.required,
+.ticket-modal .body form .form-group input.required,
+.ticket-modal .body form .form-group textarea.required,
+.ticket-modal .body form .form-group select.required,
+.clear-journal-modal .body form .form-group input.required,
+.clear-journal-modal .body form .form-group textarea.required,
+.clear-journal-modal .body form .form-group select.required,
 .message-modal .body form .form-group input.required,
 .message-modal .body form .form-group textarea.required,
 .message-modal .body form .form-group select.required {
   border-color: #EF9A9A;
 }
-.add-route-modal .body form .form-group input.not-valid, .add-route-modal .body form .form-group textarea.not-valid, .add-route-modal .body form .form-group select.not-valid,
+.add-city-modal .body form .form-group input.not-valid,
+.add-city-modal .body form .form-group textarea.not-valid,
+.add-city-modal .body form .form-group select.not-valid,
+.add-route-modal .body form .form-group input.not-valid,
+.add-route-modal .body form .form-group textarea.not-valid,
+.add-route-modal .body form .form-group select.not-valid,
 .add-trip-modal .body form .form-group input.not-valid,
 .add-trip-modal .body form .form-group textarea.not-valid,
 .add-trip-modal .body form .form-group select.not-valid,
@@ -1513,6 +2468,21 @@ aside .navigation nav ul li svg {
 .confirm-modal .body form .form-group input.not-valid,
 .confirm-modal .body form .form-group textarea.not-valid,
 .confirm-modal .body form .form-group select.not-valid,
+.profile-modal .body form .form-group input.not-valid,
+.profile-modal .body form .form-group textarea.not-valid,
+.profile-modal .body form .form-group select.not-valid,
+.add-user-modal .body form .form-group input.not-valid,
+.add-user-modal .body form .form-group textarea.not-valid,
+.add-user-modal .body form .form-group select.not-valid,
+.set-driver-modal .body form .form-group input.not-valid,
+.set-driver-modal .body form .form-group textarea.not-valid,
+.set-driver-modal .body form .form-group select.not-valid,
+.ticket-modal .body form .form-group input.not-valid,
+.ticket-modal .body form .form-group textarea.not-valid,
+.ticket-modal .body form .form-group select.not-valid,
+.clear-journal-modal .body form .form-group input.not-valid,
+.clear-journal-modal .body form .form-group textarea.not-valid,
+.clear-journal-modal .body form .form-group select.not-valid,
 .message-modal .body form .form-group input.not-valid,
 .message-modal .body form .form-group textarea.not-valid,
 .message-modal .body form .form-group select.not-valid {
@@ -1520,21 +2490,49 @@ aside .navigation nav ul li svg {
   background-color: rgba(239, 154, 154, 0.2);
   box-shadow: 0 0 0 2px rgba(239, 154, 154, 0.3);
 }
+.add-city-modal .body form .form-group .search-input,
+.add-route-modal .body form .form-group .search-input,
+.add-trip-modal .body form .form-group .search-input,
+.trip-passenger-list-modal .body form .form-group .search-input,
+.trip-station-list-modal .body form .form-group .search-input,
+.add-passanger-modal .body form .form-group .search-input,
+.confirm-modal .body form .form-group .search-input,
+.profile-modal .body form .form-group .search-input,
+.add-user-modal .body form .form-group .search-input,
+.set-driver-modal .body form .form-group .search-input,
+.ticket-modal .body form .form-group .search-input,
+.clear-journal-modal .body form .form-group .search-input,
+.message-modal .body form .form-group .search-input {
+  margin-bottom: 0.5rem;
+  position: relative;
+}
+.add-city-modal .body form .form-group textarea,
 .add-route-modal .body form .form-group textarea,
 .add-trip-modal .body form .form-group textarea,
 .trip-passenger-list-modal .body form .form-group textarea,
 .trip-station-list-modal .body form .form-group textarea,
 .add-passanger-modal .body form .form-group textarea,
 .confirm-modal .body form .form-group textarea,
+.profile-modal .body form .form-group textarea,
+.add-user-modal .body form .form-group textarea,
+.set-driver-modal .body form .form-group textarea,
+.ticket-modal .body form .form-group textarea,
+.clear-journal-modal .body form .form-group textarea,
 .message-modal .body form .form-group textarea {
   resize: none;
 }
+.add-city-modal .body form .form-group button,
 .add-route-modal .body form .form-group button,
 .add-trip-modal .body form .form-group button,
 .trip-passenger-list-modal .body form .form-group button,
 .trip-station-list-modal .body form .form-group button,
 .add-passanger-modal .body form .form-group button,
 .confirm-modal .body form .form-group button,
+.profile-modal .body form .form-group button,
+.add-user-modal .body form .form-group button,
+.set-driver-modal .body form .form-group button,
+.ticket-modal .body form .form-group button,
+.clear-journal-modal .body form .form-group button,
 .message-modal .body form .form-group button {
   display: flex;
   align-items: center;
@@ -1549,23 +2547,35 @@ aside .navigation nav ul li svg {
   cursor: pointer;
   border: none;
   font-weight: 500;
-  font-size: 16px;
+  font-size: clamp(14px, 0.9vw, 18px);
 }
+.add-city-modal .body form .form-group button:hover,
 .add-route-modal .body form .form-group button:hover,
 .add-trip-modal .body form .form-group button:hover,
 .trip-passenger-list-modal .body form .form-group button:hover,
 .trip-station-list-modal .body form .form-group button:hover,
 .add-passanger-modal .body form .form-group button:hover,
 .confirm-modal .body form .form-group button:hover,
+.profile-modal .body form .form-group button:hover,
+.add-user-modal .body form .form-group button:hover,
+.set-driver-modal .body form .form-group button:hover,
+.ticket-modal .body form .form-group button:hover,
+.clear-journal-modal .body form .form-group button:hover,
 .message-modal .body form .form-group button:hover {
   background-color: rgba(118, 181, 169, 0.9);
 }
+.add-city-modal .body form .form-group .error-popup,
 .add-route-modal .body form .form-group .error-popup,
 .add-trip-modal .body form .form-group .error-popup,
 .trip-passenger-list-modal .body form .form-group .error-popup,
 .trip-station-list-modal .body form .form-group .error-popup,
 .add-passanger-modal .body form .form-group .error-popup,
 .confirm-modal .body form .form-group .error-popup,
+.profile-modal .body form .form-group .error-popup,
+.add-user-modal .body form .form-group .error-popup,
+.set-driver-modal .body form .form-group .error-popup,
+.ticket-modal .body form .form-group .error-popup,
+.clear-journal-modal .body form .form-group .error-popup,
 .message-modal .body form .form-group .error-popup {
   position: absolute;
   top: -20px;
@@ -1576,12 +2586,18 @@ aside .navigation nav ul li svg {
   padding: 10px 20px;
   background-color: #FAFBFC;
 }
+.add-city-modal .footer,
 .add-route-modal .footer,
 .add-trip-modal .footer,
 .trip-passenger-list-modal .footer,
 .trip-station-list-modal .footer,
 .add-passanger-modal .footer,
 .confirm-modal .footer,
+.profile-modal .footer,
+.add-user-modal .footer,
+.set-driver-modal .footer,
+.ticket-modal .footer,
+.clear-journal-modal .footer,
 .message-modal .footer {
   position: sticky;
   bottom: 0;
@@ -1591,46 +2607,70 @@ aside .navigation nav ul li svg {
   display: flex;
   gap: 12px;
 }
+.add-city-modal .footer button,
 .add-route-modal .footer button,
 .add-trip-modal .footer button,
 .trip-passenger-list-modal .footer button,
 .trip-station-list-modal .footer button,
 .add-passanger-modal .footer button,
 .confirm-modal .footer button,
+.profile-modal .footer button,
+.add-user-modal .footer button,
+.set-driver-modal .footer button,
+.ticket-modal .footer button,
+.clear-journal-modal .footer button,
 .message-modal .footer button {
   flex: 1;
   padding: 12px 16px;
   border-radius: 0.75rem;
   border: none;
   cursor: pointer;
-  font-size: 16px;
+  font-size: clamp(14px, 0.9vw, 18px);
   transition: background-color 0.2s ease;
 }
+.add-city-modal .footer button.no,
 .add-route-modal .footer button.no,
 .add-trip-modal .footer button.no,
 .trip-passenger-list-modal .footer button.no,
 .trip-station-list-modal .footer button.no,
 .add-passanger-modal .footer button.no,
 .confirm-modal .footer button.no,
+.profile-modal .footer button.no,
+.add-user-modal .footer button.no,
+.set-driver-modal .footer button.no,
+.ticket-modal .footer button.no,
+.clear-journal-modal .footer button.no,
 .message-modal .footer button.no {
   background-color: #E8EDF2;
   color: #3D4551;
 }
+.add-city-modal .footer button.no:hover,
 .add-route-modal .footer button.no:hover,
 .add-trip-modal .footer button.no:hover,
 .trip-passenger-list-modal .footer button.no:hover,
 .trip-station-list-modal .footer button.no:hover,
 .add-passanger-modal .footer button.no:hover,
 .confirm-modal .footer button.no:hover,
+.profile-modal .footer button.no:hover,
+.add-user-modal .footer button.no:hover,
+.set-driver-modal .footer button.no:hover,
+.ticket-modal .footer button.no:hover,
+.clear-journal-modal .footer button.no:hover,
 .message-modal .footer button.no:hover {
   background-color: rgba(232, 237, 242, 0.8);
 }
+.add-city-modal .footer button.yes,
 .add-route-modal .footer button.yes,
 .add-trip-modal .footer button.yes,
 .trip-passenger-list-modal .footer button.yes,
 .trip-station-list-modal .footer button.yes,
 .add-passanger-modal .footer button.yes,
 .confirm-modal .footer button.yes,
+.profile-modal .footer button.yes,
+.add-user-modal .footer button.yes,
+.set-driver-modal .footer button.yes,
+.ticket-modal .footer button.yes,
+.clear-journal-modal .footer button.yes,
 .message-modal .footer button.yes {
   background-color: #A3C4F3;
   color: #3D4551;
@@ -1638,24 +2678,82 @@ aside .navigation nav ul li svg {
   justify-content: center;
   gap: 8px;
 }
+.add-city-modal .footer button.yes svg,
 .add-route-modal .footer button.yes svg,
 .add-trip-modal .footer button.yes svg,
 .trip-passenger-list-modal .footer button.yes svg,
 .trip-station-list-modal .footer button.yes svg,
 .add-passanger-modal .footer button.yes svg,
 .confirm-modal .footer button.yes svg,
+.profile-modal .footer button.yes svg,
+.add-user-modal .footer button.yes svg,
+.set-driver-modal .footer button.yes svg,
+.ticket-modal .footer button.yes svg,
+.clear-journal-modal .footer button.yes svg,
 .message-modal .footer button.yes svg {
   width: 16px;
   height: 16px;
 }
+.add-city-modal .footer button.yes:hover,
 .add-route-modal .footer button.yes:hover,
 .add-trip-modal .footer button.yes:hover,
 .trip-passenger-list-modal .footer button.yes:hover,
 .trip-station-list-modal .footer button.yes:hover,
 .add-passanger-modal .footer button.yes:hover,
 .confirm-modal .footer button.yes:hover,
+.profile-modal .footer button.yes:hover,
+.add-user-modal .footer button.yes:hover,
+.set-driver-modal .footer button.yes:hover,
+.ticket-modal .footer button.yes:hover,
+.clear-journal-modal .footer button.yes:hover,
 .message-modal .footer button.yes:hover {
   background-color: rgba(163, 196, 243, 0.9);
+}
+.add-city-modal .footer button.logout,
+.add-route-modal .footer button.logout,
+.add-trip-modal .footer button.logout,
+.trip-passenger-list-modal .footer button.logout,
+.trip-station-list-modal .footer button.logout,
+.add-passanger-modal .footer button.logout,
+.confirm-modal .footer button.logout,
+.profile-modal .footer button.logout,
+.add-user-modal .footer button.logout,
+.set-driver-modal .footer button.logout,
+.ticket-modal .footer button.logout,
+.clear-journal-modal .footer button.logout,
+.message-modal .footer button.logout {
+  background-color: #EF9A9A;
+  color: #3D4551;
+}
+.add-city-modal .footer button.logout:hover,
+.add-route-modal .footer button.logout:hover,
+.add-trip-modal .footer button.logout:hover,
+.trip-passenger-list-modal .footer button.logout:hover,
+.trip-station-list-modal .footer button.logout:hover,
+.add-passanger-modal .footer button.logout:hover,
+.confirm-modal .footer button.logout:hover,
+.profile-modal .footer button.logout:hover,
+.add-user-modal .footer button.logout:hover,
+.set-driver-modal .footer button.logout:hover,
+.ticket-modal .footer button.logout:hover,
+.clear-journal-modal .footer button.logout:hover,
+.message-modal .footer button.logout:hover {
+  background-color: rgba(239, 154, 154, 0.8);
+}
+
+.add-city-modal .body .form-group {
+  display: grid;
+  grid-template-columns: 1fr 36px;
+  align-items: end;
+  gap: 16px;
+}
+.add-city-modal .body .form-group button {
+  height: 36px;
+  padding: 0 !important;
+}
+.add-city-modal .body .form-group button svg {
+  width: 16px;
+  height: 16px;
 }
 
 .trip-passenger-list-modal {
@@ -1675,12 +2773,14 @@ aside .navigation nav ul li svg {
   margin: 0 auto;
   position: relative;
   flex: 1 1 auto;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
 }
 .trip-passenger-list-modal .body form .form-group .search-panel .search-icon {
   position: absolute;
   left: 0.75rem;
   top: 50%;
-  transform: translateY(-50%);
+  transform: translateY(calc(-50% - 8px));
   width: 1.25rem;
   height: 1.25rem;
   color: #6B7280;
@@ -1695,7 +2795,7 @@ aside .navigation nav ul li svg {
   background-color: #FAFBFC;
   border-radius: 0.5rem;
   border: 1px solid rgba(0, 0, 0, 0.06);
-  font-size: 16px;
+  font-size: clamp(14px, 0.9vw, 18px);
   color: #3D4551;
 }
 .trip-passenger-list-modal .body form .form-group .search-panel input:focus {
@@ -1747,25 +2847,29 @@ aside .navigation nav ul li svg {
   list-style: none;
 }
 .trip-passenger-list-modal .body form .form-group .selected-passengers {
+  display: flex;
+  flex-direction: column;
   margin-top: 16px;
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
   gap: 16px;
 }
-.trip-passenger-list-modal .body form .form-group .selected-passengers li {
+.trip-passenger-list-modal .body form .form-group .selected-passengers li .name {
   display: flex;
   align-items: center;
   gap: 8px;
+  padding-bottom: 8px;
 }
-.trip-passenger-list-modal .body form .form-group .selected-passengers li button {
+.trip-passenger-list-modal .body form .form-group .selected-passengers li .name button {
   border: 1px solid rgba(0, 0, 0, 0.06);
   border-radius: 0.75rem;
   width: fit-content;
   background-color: #FAFBFC;
 }
-.trip-passenger-list-modal .body form .form-group .selected-passengers li button svg {
+.trip-passenger-list-modal .body form .form-group .selected-passengers li .name button svg {
   width: 16px;
   height: 16px;
+}
+.trip-passenger-list-modal .body form .form-group .selected-passengers li .data .search-input input {
+  width: 100%;
 }
 
 .trip-station-list-modal {
@@ -1781,45 +2885,6 @@ aside .navigation nav ul li svg {
   flex: 1 1 auto;
   height: fit-content;
   position: relative;
-}
-.trip-station-list-modal .body form .form-group .row .search-input .autocomplete-dropdown {
-  padding: 0;
-  margin: 0;
-}
-.trip-station-list-modal .body form .form-group .row .search-input .autocomplete-dropdown li {
-  list-style: none;
-}
-.trip-station-list-modal .body form .form-group .row .search-input .autocomplete-dropdown {
-  position: absolute;
-  top: calc(100% + 10px);
-  left: 0;
-  right: 0;
-  background-color: #FFFFFF;
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  border-bottom-left-radius: 0.75rem;
-  border-bottom-right-radius: 0.75rem;
-  max-height: 200px;
-  overflow-y: auto;
-  margin: 0;
-  padding: 0;
-  z-index: 10;
-}
-.trip-station-list-modal .body form .form-group .row .search-input .autocomplete-dropdown li {
-  cursor: pointer;
-  align-items: center;
-  padding: 8px 16px;
-  transition: background-color 200ms ease-in-out;
-}
-.trip-station-list-modal .body form .form-group .row .search-input .autocomplete-dropdown li span {
-  padding: 16px;
-  height: 100%;
-  width: 60%;
-  border-left: 1px solid #A3C4F3;
-  margin-left: 16px;
-  text-align: center;
-}
-.trip-station-list-modal .body form .form-group .row .search-input .autocomplete-dropdown li:hover {
-  background-color: #FAFBFC;
 }
 .trip-station-list-modal .body form .form-group .row .remove-button {
   background-color: #F7EEDB;
@@ -1839,17 +2904,69 @@ aside .navigation nav ul li svg {
   cursor: pointer;
   border: none;
   font-weight: 500;
-  font-size: 16px;
+  font-size: clamp(14px, 0.9vw, 18px);
 }
 .trip-station-list-modal .body form .add-button:hover {
   background-color: rgba(118, 181, 169, 0.9);
+}
+
+.ticket-modal {
+  max-width: 800px;
+}
+.ticket-modal .header .icon-wrapper {
+  cursor: pointer;
 }
 
 .message-modal {
   z-index: 999 !important;
 }
 
-.trip-details-modal {
+.route-details-modal {
+  max-width: fit-content !important;
+  min-width: 600px;
+}
+.route-details-modal .autocomplete-dropdown {
+  padding: 0;
+  margin: 0;
+}
+.route-details-modal .autocomplete-dropdown li {
+  list-style: none;
+}
+.route-details-modal .autocomplete-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background-color: #FFFFFF;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-bottom-left-radius: 0.75rem;
+  border-bottom-right-radius: 0.75rem;
+  max-height: 200px;
+  overflow-y: auto;
+  margin: 0;
+  padding: 0;
+  z-index: 10;
+}
+.route-details-modal .autocomplete-dropdown li {
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 16px;
+}
+.route-details-modal .autocomplete-dropdown li span {
+  padding: 16px;
+  height: 100%;
+  width: 60%;
+  border-left: 1px solid #A3C4F3;
+  margin-left: 16px;
+  text-align: center;
+}
+
+.city-details-modal,
+.route-details-modal,
+.trip-details-modal,
+.passenger-details-modal {
   height: 100vh;
   max-width: 600px;
   width: 100%;
@@ -1865,7 +2982,10 @@ aside .navigation nav ul li svg {
   display: flex;
   flex-direction: column;
 }
-.trip-details-modal .header {
+.city-details-modal .header,
+.route-details-modal .header,
+.trip-details-modal .header,
+.passenger-details-modal .header {
   position: sticky;
   top: 0;
   background-color: #FFFFFF;
@@ -1874,52 +2994,133 @@ aside .navigation nav ul li svg {
   z-index: 10;
   align-items: baseline !important;
 }
-.trip-details-modal .header .title h2 {
-  font-size: 1.125rem;
+.city-details-modal .header .title h2,
+.route-details-modal .header .title h2,
+.trip-details-modal .header .title h2,
+.passenger-details-modal .header .title h2 {
+  font-size: clamp(1rem, 0.9rem + 0.4vw, 1.125rem);
   font-weight: 500;
   margin-bottom: 0.5rem;
 }
-.trip-details-modal .header .title p {
+.city-details-modal .header .title p,
+.route-details-modal .header .title p,
+.trip-details-modal .header .title p,
+.passenger-details-modal .header .title p {
   color: #6B7280;
-  font-size: 0.875rem;
+  font-size: clamp(0.75rem, 0.7rem + 0.2vw, 0.875rem);
 }
-.trip-details-modal .header .icon-wrapper {
+.city-details-modal .header .icon-wrapper,
+.route-details-modal .header .icon-wrapper,
+.trip-details-modal .header .icon-wrapper,
+.passenger-details-modal .header .icon-wrapper {
   cursor: pointer;
 }
-.trip-details-modal .body {
+.city-details-modal .body,
+.route-details-modal .body,
+.trip-details-modal .body,
+.passenger-details-modal .body {
   padding: 24px;
   flex: 1 1 auto;
 }
-.trip-details-modal .body .info-card {
+.city-details-modal .body .info-card,
+.route-details-modal .body .info-card,
+.trip-details-modal .body .info-card,
+.passenger-details-modal .body .info-card {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 1.5rem;
   margin-bottom: 1.5rem;
 }
-.trip-details-modal .body .info-card .time, .trip-details-modal .body .info-card .passengers {
+.city-details-modal .body .info-card .time,
+.city-details-modal .body .info-card .passengers,
+.route-details-modal .body .info-card .time,
+.route-details-modal .body .info-card .passengers,
+.trip-details-modal .body .info-card .time,
+.trip-details-modal .body .info-card .passengers,
+.passenger-details-modal .body .info-card .time,
+.passenger-details-modal .body .info-card .passengers {
   background-color: #F5F7FA;
   border-radius: 0.75rem;
   padding: 1rem;
   border: 1px solid rgba(0, 0, 0, 0.06);
   transition: box-shadow 0.2s ease;
 }
-.trip-details-modal .body .info-card .time:hover, .trip-details-modal .body .info-card .passengers:hover {
+.city-details-modal .body .info-card .time:hover,
+.city-details-modal .body .info-card .passengers:hover,
+.route-details-modal .body .info-card .time:hover,
+.route-details-modal .body .info-card .passengers:hover,
+.trip-details-modal .body .info-card .time:hover,
+.trip-details-modal .body .info-card .passengers:hover,
+.passenger-details-modal .body .info-card .time:hover,
+.passenger-details-modal .body .info-card .passengers:hover {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
-.trip-details-modal .body .info-card .time p, .trip-details-modal .body .info-card .passengers p {
+.city-details-modal .body .info-card .time p,
+.city-details-modal .body .info-card .passengers p,
+.route-details-modal .body .info-card .time p,
+.route-details-modal .body .info-card .passengers p,
+.trip-details-modal .body .info-card .time p,
+.trip-details-modal .body .info-card .passengers p,
+.passenger-details-modal .body .info-card .time p,
+.passenger-details-modal .body .info-card .passengers p {
   color: #6B7280;
-  font-size: 0.875rem;
+  font-size: clamp(0.75rem, 0.7rem + 0.2vw, 0.875rem);
   margin-bottom: 0.5rem;
 }
-.trip-details-modal .body .info-card .time div, .trip-details-modal .body .info-card .passengers div {
+.city-details-modal .body .info-card .time div,
+.city-details-modal .body .info-card .passengers div,
+.route-details-modal .body .info-card .time div,
+.route-details-modal .body .info-card .passengers div,
+.trip-details-modal .body .info-card .time div,
+.trip-details-modal .body .info-card .passengers div,
+.passenger-details-modal .body .info-card .time div,
+.passenger-details-modal .body .info-card .passengers div {
   display: flex;
   gap: 4px;
 }
-.trip-details-modal .body .info-card .time div svg, .trip-details-modal .body .info-card .passengers div svg {
+.city-details-modal .body .info-card .time div svg,
+.city-details-modal .body .info-card .passengers div svg,
+.route-details-modal .body .info-card .time div svg,
+.route-details-modal .body .info-card .passengers div svg,
+.trip-details-modal .body .info-card .time div svg,
+.trip-details-modal .body .info-card .passengers div svg,
+.passenger-details-modal .body .info-card .time div svg,
+.passenger-details-modal .body .info-card .passengers div svg {
   width: 16px;
   height: 16px;
 }
-.trip-details-modal .body .route-card {
+.city-details-modal .body .stations-card,
+.city-details-modal .body .route-card,
+.city-details-modal .body .passengers-card,
+.city-details-modal .body .passenger-info-card,
+.city-details-modal .body .note-card,
+.city-details-modal .body .trips-card,
+.city-details-modal .body .table-card,
+.city-details-modal .body .user-card,
+.route-details-modal .body .stations-card,
+.route-details-modal .body .route-card,
+.route-details-modal .body .passengers-card,
+.route-details-modal .body .passenger-info-card,
+.route-details-modal .body .note-card,
+.route-details-modal .body .trips-card,
+.route-details-modal .body .table-card,
+.route-details-modal .body .user-card,
+.trip-details-modal .body .stations-card,
+.trip-details-modal .body .route-card,
+.trip-details-modal .body .passengers-card,
+.trip-details-modal .body .passenger-info-card,
+.trip-details-modal .body .note-card,
+.trip-details-modal .body .trips-card,
+.trip-details-modal .body .table-card,
+.trip-details-modal .body .user-card,
+.passenger-details-modal .body .stations-card,
+.passenger-details-modal .body .route-card,
+.passenger-details-modal .body .passengers-card,
+.passenger-details-modal .body .passenger-info-card,
+.passenger-details-modal .body .note-card,
+.passenger-details-modal .body .trips-card,
+.passenger-details-modal .body .table-card,
+.passenger-details-modal .body .user-card {
   background-color: #F5F7FA;
   border-radius: 0.75rem;
   padding: 1rem;
@@ -1927,70 +3128,511 @@ aside .navigation nav ul li svg {
   transition: box-shadow 0.2s ease;
   margin-bottom: 1.5rem;
 }
-.trip-details-modal .body .route-card:hover {
+.city-details-modal .body .stations-card:hover,
+.city-details-modal .body .route-card:hover,
+.city-details-modal .body .passengers-card:hover,
+.city-details-modal .body .passenger-info-card:hover,
+.city-details-modal .body .note-card:hover,
+.city-details-modal .body .trips-card:hover,
+.city-details-modal .body .table-card:hover,
+.city-details-modal .body .user-card:hover,
+.route-details-modal .body .stations-card:hover,
+.route-details-modal .body .route-card:hover,
+.route-details-modal .body .passengers-card:hover,
+.route-details-modal .body .passenger-info-card:hover,
+.route-details-modal .body .note-card:hover,
+.route-details-modal .body .trips-card:hover,
+.route-details-modal .body .table-card:hover,
+.route-details-modal .body .user-card:hover,
+.trip-details-modal .body .stations-card:hover,
+.trip-details-modal .body .route-card:hover,
+.trip-details-modal .body .passengers-card:hover,
+.trip-details-modal .body .passenger-info-card:hover,
+.trip-details-modal .body .note-card:hover,
+.trip-details-modal .body .trips-card:hover,
+.trip-details-modal .body .table-card:hover,
+.trip-details-modal .body .user-card:hover,
+.passenger-details-modal .body .stations-card:hover,
+.passenger-details-modal .body .route-card:hover,
+.passenger-details-modal .body .passengers-card:hover,
+.passenger-details-modal .body .passenger-info-card:hover,
+.passenger-details-modal .body .note-card:hover,
+.passenger-details-modal .body .trips-card:hover,
+.passenger-details-modal .body .table-card:hover,
+.passenger-details-modal .body .user-card:hover {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
-.trip-details-modal .body .route-card .title {
+.city-details-modal .body .stations-card .title,
+.city-details-modal .body .route-card .title,
+.city-details-modal .body .passengers-card .title,
+.city-details-modal .body .passenger-info-card .title,
+.city-details-modal .body .note-card .title,
+.city-details-modal .body .trips-card .title,
+.city-details-modal .body .table-card .title,
+.city-details-modal .body .user-card .title,
+.route-details-modal .body .stations-card .title,
+.route-details-modal .body .route-card .title,
+.route-details-modal .body .passengers-card .title,
+.route-details-modal .body .passenger-info-card .title,
+.route-details-modal .body .note-card .title,
+.route-details-modal .body .trips-card .title,
+.route-details-modal .body .table-card .title,
+.route-details-modal .body .user-card .title,
+.trip-details-modal .body .stations-card .title,
+.trip-details-modal .body .route-card .title,
+.trip-details-modal .body .passengers-card .title,
+.trip-details-modal .body .passenger-info-card .title,
+.trip-details-modal .body .note-card .title,
+.trip-details-modal .body .trips-card .title,
+.trip-details-modal .body .table-card .title,
+.trip-details-modal .body .user-card .title,
+.passenger-details-modal .body .stations-card .title,
+.passenger-details-modal .body .route-card .title,
+.passenger-details-modal .body .passengers-card .title,
+.passenger-details-modal .body .passenger-info-card .title,
+.passenger-details-modal .body .note-card .title,
+.passenger-details-modal .body .trips-card .title,
+.passenger-details-modal .body .table-card .title,
+.passenger-details-modal .body .user-card .title {
   color: #6B7280;
-  font-size: 0.875rem;
+  font-size: clamp(0.75rem, 0.7rem + 0.2vw, 0.875rem);
   margin-bottom: 0.5rem;
 }
-.trip-details-modal .body .route-card .from {
+.city-details-modal .body .stations-card .info ol,
+.route-details-modal .body .stations-card .info ol,
+.trip-details-modal .body .stations-card .info ol,
+.passenger-details-modal .body .stations-card .info ol {
+  margin: 0;
+}
+.city-details-modal .body .stations-card .info ol li::marker,
+.route-details-modal .body .stations-card .info ol li::marker,
+.trip-details-modal .body .stations-card .info ol li::marker,
+.passenger-details-modal .body .stations-card .info ol li::marker {
+  color: #6B7280;
+}
+.city-details-modal .body .stations-card .info ol li .stop-row,
+.route-details-modal .body .stations-card .info ol li .stop-row,
+.trip-details-modal .body .stations-card .info ol li .stop-row,
+.passenger-details-modal .body .stations-card .info ol li .stop-row {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 1rem;
+}
+.city-details-modal .body .stations-card .info ol li .stop-row .stop-info,
+.route-details-modal .body .stations-card .info ol li .stop-row .stop-info,
+.trip-details-modal .body .stations-card .info ol li .stop-row .stop-info,
+.passenger-details-modal .body .stations-card .info ol li .stop-row .stop-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.city-details-modal .body .stations-card .info ol li .stop-row .stop-info input,
+.route-details-modal .body .stations-card .info ol li .stop-row .stop-info input,
+.trip-details-modal .body .stations-card .info ol li .stop-row .stop-info input,
+.passenger-details-modal .body .stations-card .info ol li .stop-row .stop-info input {
+  width: 100%;
+  padding: 8px 40px 8px 16px;
+  background-color: #FAFBFC;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 0.75rem;
+  font-size: clamp(14px, 0.9vw, 18px);
+  color: #3D4551;
+}
+.city-details-modal .body .stations-card .info ol li .stop-row .stop-info input:focus,
+.route-details-modal .body .stations-card .info ol li .stop-row .stop-info input:focus,
+.trip-details-modal .body .stations-card .info ol li .stop-row .stop-info input:focus,
+.passenger-details-modal .body .stations-card .info ol li .stop-row .stop-info input:focus {
+  outline: none;
+}
+.city-details-modal .body .stations-card .info ol li .stop-row .stop-info input::placeholder,
+.route-details-modal .body .stations-card .info ol li .stop-row .stop-info input::placeholder,
+.trip-details-modal .body .stations-card .info ol li .stop-row .stop-info input::placeholder,
+.passenger-details-modal .body .stations-card .info ol li .stop-row .stop-info input::placeholder {
+  color: rgba(107, 114, 128, 0.7);
+}
+.city-details-modal .body .stations-card .info ol li .stop-row button,
+.route-details-modal .body .stations-card .info ol li .stop-row button,
+.trip-details-modal .body .stations-card .info ol li .stop-row button,
+.passenger-details-modal .body .stations-card .info ol li .stop-row button {
+  color: #3D4551;
+  border-radius: 0.5rem;
+  transition: background-color 0.2s ease;
+  cursor: pointer;
+  border: none;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  background-color: #EF9A9A;
+}
+.city-details-modal .body .stations-card .info ol li .stop-row button svg,
+.route-details-modal .body .stations-card .info ol li .stop-row button svg,
+.trip-details-modal .body .stations-card .info ol li .stop-row button svg,
+.passenger-details-modal .body .stations-card .info ol li .stop-row button svg {
+  width: 16px;
+  height: 16px;
+}
+.city-details-modal .body .stations-card .info ol li .stop-row button:hover,
+.route-details-modal .body .stations-card .info ol li .stop-row button:hover,
+.trip-details-modal .body .stations-card .info ol li .stop-row button:hover,
+.passenger-details-modal .body .stations-card .info ol li .stop-row button:hover {
+  background-color: rgba(239, 154, 154, 0.9);
+}
+.city-details-modal .body .stations-card .info .actions,
+.route-details-modal .body .stations-card .info .actions,
+.trip-details-modal .body .stations-card .info .actions,
+.passenger-details-modal .body .stations-card .info .actions {
+  display: flex;
+  gap: 1.5rem;
+}
+.city-details-modal .body .route-card .from,
+.route-details-modal .body .route-card .from,
+.trip-details-modal .body .route-card .from,
+.passenger-details-modal .body .route-card .from {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 12px;
   margin-bottom: 0.5rem;
 }
-.trip-details-modal .body .route-card .from svg {
+.city-details-modal .body .route-card .from svg,
+.route-details-modal .body .route-card .from svg,
+.trip-details-modal .body .route-card .from svg,
+.passenger-details-modal .body .route-card .from svg {
   color: #A3C4F3;
 }
-.trip-details-modal .body .route-card .stations .station {
+.city-details-modal .body .route-card .from p span,
+.route-details-modal .body .route-card .from p span,
+.trip-details-modal .body .route-card .from p span,
+.passenger-details-modal .body .route-card .from p span {
+  position: absolute;
+  left: 125px;
+  color: #6B7280;
+  font-size: clamp(0.75rem, 0.7rem + 0.2vw, 0.875rem);
+}
+.city-details-modal .body .route-card .stations .station,
+.route-details-modal .body .route-card .stations .station,
+.trip-details-modal .body .route-card .stations .station,
+.passenger-details-modal .body .route-card .stations .station {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 12px;
   margin-bottom: 0.8rem;
 }
-.trip-details-modal .body .route-card .stations .station:last-child {
+.city-details-modal .body .route-card .stations .station:last-child,
+.route-details-modal .body .route-card .stations .station:last-child,
+.trip-details-modal .body .route-card .stations .station:last-child,
+.passenger-details-modal .body .route-card .stations .station:last-child {
   margin-bottom: none;
 }
-.trip-details-modal .body .route-card .stations .station svg {
+.city-details-modal .body .route-card .stations .station svg,
+.route-details-modal .body .route-card .stations .station svg,
+.trip-details-modal .body .route-card .stations .station svg,
+.passenger-details-modal .body .route-card .stations .station svg {
   scale: 1.5;
 }
-.trip-details-modal .body .route-card .to {
+.city-details-modal .body .route-card .stations .station p span,
+.route-details-modal .body .route-card .stations .station p span,
+.trip-details-modal .body .route-card .stations .station p span,
+.passenger-details-modal .body .route-card .stations .station p span {
+  position: absolute;
+  left: 125px;
+  color: #6B7280;
+  font-size: clamp(0.75rem, 0.7rem + 0.2vw, 0.875rem);
+}
+.city-details-modal .body .route-card .to,
+.route-details-modal .body .route-card .to,
+.trip-details-modal .body .route-card .to,
+.passenger-details-modal .body .route-card .to {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 12px;
   margin-top: -0.4rem;
 }
-.trip-details-modal .body .route-card .to svg {
+.city-details-modal .body .route-card .to svg,
+.route-details-modal .body .route-card .to svg,
+.trip-details-modal .body .route-card .to svg,
+.passenger-details-modal .body .route-card .to svg {
   color: #76B5A9;
 }
-.trip-details-modal .body .passengers-card {
-  background-color: #F5F7FA;
-  border-radius: 0.75rem;
-  padding: 1rem;
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  transition: box-shadow 0.2s ease;
-}
-.trip-details-modal .body .passengers-card:hover {
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-.trip-details-modal .body .passengers-card .title {
+.city-details-modal .body .route-card .to p span,
+.route-details-modal .body .route-card .to p span,
+.trip-details-modal .body .route-card .to p span,
+.passenger-details-modal .body .route-card .to p span {
+  position: absolute;
+  left: 125px;
   color: #6B7280;
-  font-size: 0.875rem;
-  margin-bottom: 0.5rem;
+  font-size: clamp(0.75rem, 0.7rem + 0.2vw, 0.875rem);
 }
-.trip-details-modal .body .passengers-card .passengers .passenger {
+.city-details-modal .body .passengers-card .passengers .passenger,
+.route-details-modal .body .passengers-card .passengers .passenger,
+.trip-details-modal .body .passengers-card .passengers .passenger,
+.passenger-details-modal .body .passengers-card .passengers .passenger {
   padding-left: 24px;
 }
-.trip-details-modal .body .passengers-card .passengers .passenger li p {
+.city-details-modal .body .passengers-card .passengers .passenger li p,
+.route-details-modal .body .passengers-card .passengers .passenger li p,
+.trip-details-modal .body .passengers-card .passengers .passenger li p,
+.passenger-details-modal .body .passengers-card .passengers .passenger li p {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
+  align-items: center;
 }
-.trip-details-modal .body .passengers-card .passengers .passenger li p span:nth-child(2), .trip-details-modal .body .passengers-card .passengers .passenger li p span:last-child {
-  font-size: 0.875rem;
+.city-details-modal .body .passengers-card .passengers .passenger li p span:nth-child(2),
+.route-details-modal .body .passengers-card .passengers .passenger li p span:nth-child(2),
+.trip-details-modal .body .passengers-card .passengers .passenger li p span:nth-child(2),
+.passenger-details-modal .body .passengers-card .passengers .passenger li p span:nth-child(2) {
+  font-size: clamp(0.75rem, 0.7rem + 0.2vw, 0.875rem);
 }
-.trip-details-modal .footer {
+.city-details-modal .body .passengers-card .passengers .passenger li p button,
+.route-details-modal .body .passengers-card .passengers .passenger li p button,
+.trip-details-modal .body .passengers-card .passengers .passenger li p button,
+.passenger-details-modal .body .passengers-card .passengers .passenger li p button {
+  width: 100%;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  padding: 5px 16px;
+  border-radius: 0.75rem;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  background-color: #A3C4F3;
+}
+.city-details-modal .body .passengers-card .passengers .passenger li p button:hover,
+.route-details-modal .body .passengers-card .passengers .passenger li p button:hover,
+.trip-details-modal .body .passengers-card .passengers .passenger li p button:hover,
+.passenger-details-modal .body .passengers-card .passengers .passenger li p button:hover {
+  background-color: rgba(163, 196, 243, 0.8);
+}
+.city-details-modal .body .table-card .table-wrapper table,
+.route-details-modal .body .table-card .table-wrapper table,
+.trip-details-modal .body .table-card .table-wrapper table,
+.passenger-details-modal .body .table-card .table-wrapper table {
+  width: 100%;
+}
+.city-details-modal .body .table-card .table-wrapper table .search-input,
+.route-details-modal .body .table-card .table-wrapper table .search-input,
+.trip-details-modal .body .table-card .table-wrapper table .search-input,
+.passenger-details-modal .body .table-card .table-wrapper table .search-input {
+  position: relative;
+}
+.city-details-modal .body .table-card .table-wrapper table input,
+.route-details-modal .body .table-card .table-wrapper table input,
+.trip-details-modal .body .table-card .table-wrapper table input,
+.passenger-details-modal .body .table-card .table-wrapper table input {
+  width: 100%;
+  padding: 8px 40px 8px 16px;
+  background-color: #FAFBFC;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 0.75rem;
+  font-size: clamp(14px, 0.9vw, 18px);
+  color: #3D4551;
+}
+.city-details-modal .body .table-card .table-wrapper table input:focus,
+.route-details-modal .body .table-card .table-wrapper table input:focus,
+.trip-details-modal .body .table-card .table-wrapper table input:focus,
+.passenger-details-modal .body .table-card .table-wrapper table input:focus {
+  outline: none;
+}
+.city-details-modal .body .table-card .table-wrapper table input::placeholder,
+.route-details-modal .body .table-card .table-wrapper table input::placeholder,
+.trip-details-modal .body .table-card .table-wrapper table input::placeholder,
+.passenger-details-modal .body .table-card .table-wrapper table input::placeholder {
+  color: rgba(107, 114, 128, 0.7);
+}
+.city-details-modal .body .table-card .table-wrapper table button,
+.route-details-modal .body .table-card .table-wrapper table button,
+.trip-details-modal .body .table-card .table-wrapper table button,
+.passenger-details-modal .body .table-card .table-wrapper table button {
+  color: #3D4551;
+  border-radius: 0.5rem;
+  transition: background-color 0.2s ease;
+  cursor: pointer;
+  border: none;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+.city-details-modal .body .table-card .table-wrapper table button svg,
+.route-details-modal .body .table-card .table-wrapper table button svg,
+.trip-details-modal .body .table-card .table-wrapper table button svg,
+.passenger-details-modal .body .table-card .table-wrapper table button svg {
+  width: 16px;
+  height: 16px;
+}
+.city-details-modal .body .table-card .table-wrapper table button.add,
+.route-details-modal .body .table-card .table-wrapper table button.add,
+.trip-details-modal .body .table-card .table-wrapper table button.add,
+.passenger-details-modal .body .table-card .table-wrapper table button.add {
+  background-color: #A3C4F3;
+}
+.city-details-modal .body .table-card .table-wrapper table button.add:hover,
+.route-details-modal .body .table-card .table-wrapper table button.add:hover,
+.trip-details-modal .body .table-card .table-wrapper table button.add:hover,
+.passenger-details-modal .body .table-card .table-wrapper table button.add:hover {
+  background-color: rgba(163, 196, 243, 0.9);
+}
+.city-details-modal .body .table-card .table-wrapper table button.remove,
+.route-details-modal .body .table-card .table-wrapper table button.remove,
+.trip-details-modal .body .table-card .table-wrapper table button.remove,
+.passenger-details-modal .body .table-card .table-wrapper table button.remove {
+  background-color: #EF9A9A;
+}
+.city-details-modal .body .table-card .table-wrapper table button.remove:hover,
+.route-details-modal .body .table-card .table-wrapper table button.remove:hover,
+.trip-details-modal .body .table-card .table-wrapper table button.remove:hover,
+.passenger-details-modal .body .table-card .table-wrapper table button.remove:hover {
+  background-color: rgba(239, 154, 154, 0.9);
+}
+.city-details-modal .body .table-card .table-wrapper table thead tr th,
+.route-details-modal .body .table-card .table-wrapper table thead tr th,
+.trip-details-modal .body .table-card .table-wrapper table thead tr th,
+.passenger-details-modal .body .table-card .table-wrapper table thead tr th {
+  padding: 0.5rem;
+}
+.city-details-modal .body .table-card .table-wrapper table thead tr th:first-child,
+.route-details-modal .body .table-card .table-wrapper table thead tr th:first-child,
+.trip-details-modal .body .table-card .table-wrapper table thead tr th:first-child,
+.passenger-details-modal .body .table-card .table-wrapper table thead tr th:first-child {
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 0.75rem;
+}
+.city-details-modal .body .table-card .table-wrapper table thead tr th .column-header,
+.route-details-modal .body .table-card .table-wrapper table thead tr th .column-header,
+.trip-details-modal .body .table-card .table-wrapper table thead tr th .column-header,
+.passenger-details-modal .body .table-card .table-wrapper table thead tr th .column-header {
+  position: relative;
+  display: flex;
+  gap: 0.5rem;
+}
+.city-details-modal .body .table-card .table-wrapper table thead tr th .column-header button,
+.route-details-modal .body .table-card .table-wrapper table thead tr th .column-header button,
+.trip-details-modal .body .table-card .table-wrapper table thead tr th .column-header button,
+.passenger-details-modal .body .table-card .table-wrapper table thead tr th .column-header button {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  border-radius: 0 0.75rem 0.75rem 0;
+}
+.city-details-modal .body .table-card .table-wrapper table tbody,
+.route-details-modal .body .table-card .table-wrapper table tbody,
+.trip-details-modal .body .table-card .table-wrapper table tbody,
+.passenger-details-modal .body .table-card .table-wrapper table tbody {
+  position: relative;
+}
+.city-details-modal .body .table-card .table-wrapper table tbody tr td,
+.route-details-modal .body .table-card .table-wrapper table tbody tr td,
+.trip-details-modal .body .table-card .table-wrapper table tbody tr td,
+.passenger-details-modal .body .table-card .table-wrapper table tbody tr td {
+  padding: 0.5rem;
+}
+.city-details-modal .body .table-card .table-wrapper table tbody tr.empty-row td,
+.route-details-modal .body .table-card .table-wrapper table tbody tr.empty-row td,
+.trip-details-modal .body .table-card .table-wrapper table tbody tr.empty-row td,
+.passenger-details-modal .body .table-card .table-wrapper table tbody tr.empty-row td {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #6B7280;
+  font-size: clamp(0.75rem, 0.7rem + 0.2vw, 0.875rem);
+}
+.city-details-modal .body .passenger-info-card .info,
+.route-details-modal .body .passenger-info-card .info,
+.trip-details-modal .body .passenger-info-card .info,
+.passenger-details-modal .body .passenger-info-card .info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.city-details-modal .body .trips-card ul,
+.route-details-modal .body .trips-card ul,
+.trip-details-modal .body .trips-card ul,
+.passenger-details-modal .body .trips-card ul {
+  padding: 0;
+  margin: 0;
+}
+.city-details-modal .body .trips-card ul li,
+.route-details-modal .body .trips-card ul li,
+.trip-details-modal .body .trips-card ul li,
+.passenger-details-modal .body .trips-card ul li {
+  list-style: none;
+}
+.city-details-modal .body .trips-card ul,
+.route-details-modal .body .trips-card ul,
+.trip-details-modal .body .trips-card ul,
+.passenger-details-modal .body .trips-card ul {
+  display: grid;
+  gap: 4px;
+}
+.city-details-modal .body .trips-card ul li,
+.route-details-modal .body .trips-card ul li,
+.trip-details-modal .body .trips-card ul li,
+.passenger-details-modal .body .trips-card ul li {
+  display: flex;
+  gap: 3.5rem;
+}
+.city-details-modal .body .trips-card ul li p:nth-child(2), .city-details-modal .body .trips-card ul li p:last-child,
+.route-details-modal .body .trips-card ul li p:nth-child(2),
+.route-details-modal .body .trips-card ul li p:last-child,
+.trip-details-modal .body .trips-card ul li p:nth-child(2),
+.trip-details-modal .body .trips-card ul li p:last-child,
+.passenger-details-modal .body .trips-card ul li p:nth-child(2),
+.passenger-details-modal .body .trips-card ul li p:last-child {
+  font-size: clamp(0.75rem, 0.7rem + 0.2vw, 0.875rem);
+}
+.city-details-modal .body .user-card .user-info .driver,
+.route-details-modal .body .user-card .user-info .driver,
+.trip-details-modal .body .user-card .user-info .driver,
+.passenger-details-modal .body .user-card .user-info .driver {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.city-details-modal .body .user-card .user-info .driver .unset,
+.route-details-modal .body .user-card .user-info .driver .unset,
+.trip-details-modal .body .user-card .user-info .driver .unset,
+.passenger-details-modal .body .user-card .user-info .driver .unset {
+  color: #EF9A9A;
+  cursor: pointer;
+}
+.city-details-modal .body .user-card .user-info button,
+.route-details-modal .body .user-card .user-info button,
+.trip-details-modal .body .user-card .user-info button,
+.passenger-details-modal .body .user-card .user-info button {
+  width: 100%;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 16px;
+  border-radius: 0.75rem;
+  border: none;
+  cursor: pointer;
+  font-size: clamp(14px, 0.9vw, 18px);
+  transition: background-color 0.2s ease;
+  background-color: #A3C4F3;
+}
+.city-details-modal .body .user-card .user-info button:hover,
+.route-details-modal .body .user-card .user-info button:hover,
+.trip-details-modal .body .user-card .user-info button:hover,
+.passenger-details-modal .body .user-card .user-info button:hover {
+  background-color: rgba(163, 196, 243, 0.8);
+}
+.city-details-modal .footer,
+.route-details-modal .footer,
+.trip-details-modal .footer,
+.passenger-details-modal .footer {
   position: sticky;
   bottom: 0;
   background-color: #FFFFFF;
@@ -1999,20 +3641,208 @@ aside .navigation nav ul li svg {
   display: flex;
   gap: 12px;
 }
-.trip-details-modal .footer button {
+.city-details-modal .footer button,
+.route-details-modal .footer button,
+.trip-details-modal .footer button,
+.passenger-details-modal .footer button {
   flex: 1;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
   padding: 12px 16px;
   border-radius: 0.75rem;
   border: none;
   cursor: pointer;
-  font-size: 16px;
+  font-size: clamp(14px, 0.9vw, 18px);
   transition: background-color 0.2s ease;
   background-color: #EF9A9A;
 }
-.trip-details-modal .footer button:hover {
+.city-details-modal .footer button:hover,
+.route-details-modal .footer button:hover,
+.trip-details-modal .footer button:hover,
+.passenger-details-modal .footer button:hover {
   background-color: rgba(239, 154, 154, 0.8);
 }
+.city-details-modal .footer button.add,
+.route-details-modal .footer button.add,
+.trip-details-modal .footer button.add,
+.passenger-details-modal .footer button.add {
+  background-color: #A3C4F3;
+}
+.city-details-modal .footer button.add:hover,
+.route-details-modal .footer button.add:hover,
+.trip-details-modal .footer button.add:hover,
+.passenger-details-modal .footer button.add:hover {
+  background-color: rgba(163, 196, 243, 0.9);
+}
+.city-details-modal .footer button.save,
+.route-details-modal .footer button.save,
+.trip-details-modal .footer button.save,
+.passenger-details-modal .footer button.save {
+  background-color: #76B5A9;
+}
+.city-details-modal .footer button.save:hover,
+.route-details-modal .footer button.save:hover,
+.trip-details-modal .footer button.save:hover,
+.passenger-details-modal .footer button.save:hover {
+  background-color: rgba(118, 181, 169, 0.9);
+}
 
+.profile-modal .body p.name-and-surname {
+  font-size: clamp(1rem, 0.9rem + 0.4vw, 1.125rem);
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+.profile-modal .body p.role {
+  color: #6B7280;
+  font-size: clamp(0.75rem, 0.7rem + 0.2vw, 0.875rem);
+}
+
+.add-user-modal .body form,
+.set-driver-modal .body form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+.add-user-modal .body form .search-input,
+.set-driver-modal .body form .search-input {
+  flex: 1 1 auto;
+  height: fit-content;
+  position: relative;
+}
+.add-user-modal .body form .form-row label,
+.add-user-modal .body form .search-input label,
+.set-driver-modal .body form .form-row label,
+.set-driver-modal .body form .search-input label {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+  color: #6B7280;
+  font-size: clamp(14px, 0.9vw, 18px);
+}
+.add-user-modal .body form .form-row label span,
+.add-user-modal .body form .search-input label span,
+.set-driver-modal .body form .form-row label span,
+.set-driver-modal .body form .search-input label span {
+  color: #EF9A9A;
+}
+.add-user-modal .body form .form-row input,
+.add-user-modal .body form .search-input input,
+.set-driver-modal .body form .form-row input,
+.set-driver-modal .body form .search-input input {
+  width: 100%;
+  padding: 8px 16px;
+  background-color: #FAFBFC;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 0.75rem;
+  font-size: clamp(14px, 0.9vw, 18px);
+  color: #3D4551;
+}
+.add-user-modal .body form .form-row input:focus,
+.add-user-modal .body form .search-input input:focus,
+.set-driver-modal .body form .form-row input:focus,
+.set-driver-modal .body form .search-input input:focus {
+  outline: none;
+  border-color: #A3C4F3;
+  box-shadow: 0 0 0 2px rgba(163, 196, 243, 0.3);
+}
+.add-user-modal .body form .form-row input.required,
+.add-user-modal .body form .search-input input.required,
+.set-driver-modal .body form .form-row input.required,
+.set-driver-modal .body form .search-input input.required {
+  border-color: #EF9A9A;
+}
+.add-user-modal .body form .form-row input.not-valid,
+.add-user-modal .body form .search-input input.not-valid,
+.set-driver-modal .body form .form-row input.not-valid,
+.set-driver-modal .body form .search-input input.not-valid {
+  border-color: #EF9A9A;
+  background-color: rgba(239, 154, 154, 0.2);
+  box-shadow: 0 0 0 2px rgba(239, 154, 154, 0.3);
+}
+.add-user-modal .body form .form-row input[type=checkbox],
+.add-user-modal .body form .search-input input[type=checkbox],
+.set-driver-modal .body form .form-row input[type=checkbox],
+.set-driver-modal .body form .search-input input[type=checkbox] {
+  width: 25px;
+  height: 25px;
+  padding: 0 !important;
+  appearance: none;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 8px;
+}
+.add-user-modal .body form .form-row input[type=checkbox]:checked,
+.add-user-modal .body form .search-input input[type=checkbox]:checked,
+.set-driver-modal .body form .form-row input[type=checkbox]:checked,
+.set-driver-modal .body form .search-input input[type=checkbox]:checked {
+  background: #A3C4F3;
+  position: relative;
+}
+.add-user-modal .body form .form-row input[type=checkbox]:checked::after,
+.add-user-modal .body form .search-input input[type=checkbox]:checked::after,
+.set-driver-modal .body form .form-row input[type=checkbox]:checked::after,
+.set-driver-modal .body form .search-input input[type=checkbox]:checked::after {
+  content: "✓";
+  color: white;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-size: clamp(14px, 0.9vw, 18px);
+}
+
+@media (max-width: 425px) {
+  .add-city-modal,
+  .add-route-modal,
+  .add-trip-modal,
+  .trip-passenger-list-modal,
+  .trip-station-list-modal,
+  .add-passanger-modal,
+  .confirm-modal,
+  .add-user-modal,
+  .set-driver-modal,
+  .ticket-modal,
+  .clear-journal-modal,
+  .message-modal {
+    top: 0;
+    left: 0;
+    transform: translate(0, 0);
+    height: 100vh;
+    max-height: none;
+    border-radius: 0;
+  }
+  .add-city-modal .body,
+  .add-route-modal .body,
+  .add-trip-modal .body,
+  .trip-passenger-list-modal .body,
+  .trip-station-list-modal .body,
+  .add-passanger-modal .body,
+  .confirm-modal .body,
+  .add-user-modal .body,
+  .set-driver-modal .body,
+  .ticket-modal .body,
+  .clear-journal-modal .body,
+  .message-modal .body {
+    height: calc(100% - 10rem);
+  }
+  .add-city-modal .footer,
+  .add-route-modal .footer,
+  .add-trip-modal .footer,
+  .trip-passenger-list-modal .footer,
+  .trip-station-list-modal .footer,
+  .add-passanger-modal .footer,
+  .confirm-modal .footer,
+  .add-user-modal .footer,
+  .set-driver-modal .footer,
+  .ticket-modal .footer,
+  .clear-journal-modal .footer,
+  .message-modal .footer {
+    position: sticky;
+    bottom: 0;
+  }
+}
 .login-form-wrapper {
   width: 100%;
   height: 100vh;
@@ -2045,7 +3875,7 @@ aside .navigation nav ul li svg {
   z-index: 10;
 }
 .login-form-wrapper .login-form .header h2 {
-  font-size: 1.125rem;
+  font-size: clamp(1rem, 0.9rem + 0.4vw, 1.125rem);
   font-weight: 500;
 }
 .login-form-wrapper .login-form .body {
@@ -2060,7 +3890,7 @@ aside .navigation nav ul li svg {
   display: block;
   margin-bottom: 8px;
   color: #6B7280;
-  font-size: 16px;
+  font-size: clamp(14px, 0.9vw, 18px);
 }
 .login-form-wrapper .login-form .body form label span {
   color: #EF9A9A;
@@ -2071,7 +3901,7 @@ aside .navigation nav ul li svg {
   background-color: #FAFBFC;
   border: 1px solid rgba(0, 0, 0, 0.06);
   border-radius: 0.75rem;
-  font-size: 16px;
+  font-size: clamp(14px, 0.9vw, 18px);
   color: #3D4551;
 }
 .login-form-wrapper .login-form .body form input::placeholder {
@@ -2107,7 +3937,7 @@ aside .navigation nav ul li svg {
   cursor: pointer;
   border: none;
   font-weight: 500;
-  font-size: 16px;
+  font-size: clamp(14px, 0.9vw, 18px);
 }
 .login-form-wrapper .login-form .body form button:hover {
   background-color: rgba(163, 196, 243, 0.9);

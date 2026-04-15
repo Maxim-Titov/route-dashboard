@@ -246,19 +246,30 @@ def post_filter_passengers(
 
     return result
 
-def post_search_cities(q):
+def post_passenger_trips(passenger_id):
     conn = get_connection("users_data")
     cursor = conn.cursor(dictionary=True)
-    
+
     cursor.execute("""
-        SELECT id, city
-        FROM cities
-        WHERE city LIKE %s
-        LIMIT 20
-    """, (q + '%',))
-    
-    res = cursor.fetchall()
+        SELECT
+            t.id,
+            cf.city AS city_from,
+            ct.city AS city_to,
+            t.date,
+            t.time,
+            t.status
+        FROM trip_passengers tp
+        JOIN trips t ON tp.trip_id = t.id
+        JOIN routes r ON t.route_id = r.id
+        JOIN cities cf ON r.from_city_id = cf.id
+        JOIN cities ct ON r.to_city_id = ct.id
+        WHERE tp.passenger_id = %s
+        ORDER BY t.date DESC
+    """, (passenger_id, ))
+
+    trips = cursor.fetchall()
+
     cursor.close()
     conn.close()
 
-    return res
+    return trips

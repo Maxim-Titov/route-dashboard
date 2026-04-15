@@ -3,4 +3,7 @@ from src.post.trips import *
 from src.post.passengers import *
 from src.post.cities import *
 from src.post.user import *
+from src.post.users import *
 from src.post.settings import *
+from src.post.journal import *
+from src.post.ticket import *

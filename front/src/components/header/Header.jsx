@@ -21,6 +21,10 @@ class Header extends React.Component {
                 return 'Маршрути'
             case 'trips':
                 return 'Поїздки'
+            case 'users':
+                return 'Команда'
+            case 'journal':
+                return 'Журнал'
             case 'settings':
                 return 'Налаштування'
             default:
@@ -33,7 +37,7 @@ class Header extends React.Component {
             <header>
                 <SiteBranding activeView={this.props.activeView} title={this.renderTitle()} logoSize={32} showSubTile={false} />
                 <SearchPanel setActiveView={this.props.setActiveView} onResults={(results) => this.setPassengers(results)} />
-                <UserLogo context={this.props.context} />
+                <UserLogo context={this.props.context} setIsRenderProfileModal={this.props.setIsRenderProfileModal} />
             </header>
         )
     }

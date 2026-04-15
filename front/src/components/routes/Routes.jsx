@@ -27,9 +27,17 @@ class Routes extends React.Component {
         }
     }
 
+    componentDidUpdate(prevProps) {
+        if (prevProps.routesList !== this.props.routesList) {
+            this.setState({
+                routesToShow: this.props.routesList
+            })
+        }
+    }
+
     filterRoutes = async () => {
         const { filters, sortTypeDesc } = this.state
-        
+
         try {
             const res = await fetch(
                 `${import.meta.env.VITE_API_URL}/routes/filter`,
@@ -71,7 +79,7 @@ class Routes extends React.Component {
     }
 
     setIsFilters = () => {
-        this.setState({isFilters: !this.state.isFilters})
+        this.setState({ isFilters: !this.state.isFilters })
     }
 
     toggleSort = () => {
@@ -102,24 +110,24 @@ class Routes extends React.Component {
 
     render() {
         return (
-            <div className="routes-wrapper">  
+            <div className="routes-wrapper">
                 {this.props.renderRoutesModal && (
-                    <AddRouteModal setRenderRoutesModal={this.props.setRenderRoutesModal} fetchRoutes={this.props.fetchRoutes} fetchRoutesCount={this.props.fetchRoutesCount}/>
+                    <AddRouteModal user={this.props.user} setRenderRoutesModal={this.props.setRenderRoutesModal} fetchRoutes={this.props.fetchRoutes} fetchRoutesCount={this.props.fetchRoutesCount} />
                 )}
 
                 <div className="container">
                     <div className="header">
                         <ViewHeader title='Маршрути' subtitle='Керуйте своїми маршрутами' />
-                        
+
                         <div className="buttons-wrapper">
                             <FilterButton setIsFilters={this.setIsFilters} />
-                            <AddRouteButton setRenderRoutesModal={this.props.setRenderRoutesModal} />
+                            <AddRouteButton role={this.props.user?.role} setRenderRoutesModal={this.props.setRenderRoutesModal} />
                         </div>
                     </div>
 
-                    {this.state.isFilters && <Filters filters={this.state.filters} sortTypeDesc={this.state.sortTypeDesc} setFilters={this.setFilters}  onToggle={this.toggleSort} onApply={this.filterRoutes} onReset={this.resetFilters} />}
+                    {this.state.isFilters && <Filters filters={this.state.filters} sortTypeDesc={this.state.sortTypeDesc} setFilters={this.setFilters} onToggle={this.toggleSort} onApply={this.filterRoutes} onReset={this.resetFilters} />}
 
-                    <RoutesList routesList={this.state.routesToShow} fetchRoutes={this.props.fetchRoutes} fetchRoutesCount={this.props.fetchRoutesCount} />
+                    <RoutesList user={this.props.user} routesList={this.state.routesToShow} fetchRoutes={this.props.fetchRoutes} fetchRoutesCount={this.props.fetchRoutesCount} />
                 </div>
 
                 {this.state.isError && (

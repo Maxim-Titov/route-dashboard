@@ -4,6 +4,8 @@ import { Save } from 'lucide-react'
 import TripPassengersListModal from "./TripPassengersListModal"
 import TripStationsListModal from "./TripStationsListModal"
 import MessageModal from "./MessageModal"
+import CitySearchInput from "../CitySearchInput"
+import StationSearchInput from "../StationSearchInput"
 
 class EditTripModal extends React.Component {
     constructor(props) {
@@ -12,13 +14,22 @@ class EditTripModal extends React.Component {
         this.state = {
             tripData: {
                 from: '',
+                from_id: null,
+                from_station: '',
+                from_station_id: null,
+
                 to: '',
+                to_id: null,
+                to_station: '',
+                to_station_id: null,
+
                 date: '',
                 time: '',
                 passengers: [],
                 maxPassengers: '',
+                passengerStations: [],
                 stations: [],
-                status: ''
+                status: 'planned'
             },
 
             errors: {},
@@ -27,54 +38,149 @@ class EditTripModal extends React.Component {
             isFail: false,
             failMessage: ''
         }
-
-        this.formRef = React.createRef()
     }
 
     async componentDidMount() {
         const tripData = { ...this.props.data }
 
+        const fromCity = await this.searchCityByName(tripData.from)
+        const toCity = await this.searchCityByName(tripData.to)
+
+        tripData.from = fromCity?.city || ''
+        tripData.from_id = fromCity?.id || null
+
+        tripData.to = toCity?.city || ''
+        tripData.to_id = toCity?.id || null
+
+        const fromStation = await this.searchStationByName(
+            tripData.from_id,
+            this.props.data.from_station_name
+        )
+
+        const toStation = await this.searchStationByName(
+            tripData.to_id,
+            this.props.data.to_station_name
+        )
+
+        tripData.from_station = fromStation?.station_name || this.props.data.from_station_name || ''
+        tripData.from_station_id = fromStation?.id || null
+
+        tripData.to_station = toStation?.station_name || this.props.data.to_station_name || ''
+        tripData.to_station_id = toStation?.id || null
+
         tripData.stations = await this.formatStations(tripData.stations)
 
-        await this.setStateAsync({ tripData })
+        this.setState({ tripData })
     }
 
-    setStateAsync(state) {
-        return new Promise(resolve => this.setState(state, resolve))
+    searchCityByName = async (name) => {
+        if (!name) return null
+        try {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/cities/search`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ q: name })
+            })
+
+            const data = await res.json()
+            return data?.[0] || null
+        } catch (e) {
+            console.error(e)
+            return null
+        }
     }
 
-    editTrip = async () => {
+    searchStationByName = async (cityId, name) => {
+        if (!cityId || !name) return null
+
         try {
             const res = await fetch(
-                `${import.meta.env.VITE_API_URL}/trips/edit`,
+                `${import.meta.env.VITE_API_URL}/cities/search/station`,
                 {
                     method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
+                    headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
-                        trip_id: this.props.id,
-                        city_from: this.state.tripData?.from,
-                        city_to: this.state.tripData?.to,
-                        date: this.state.tripData?.date,
-                        time: this.state.tripData?.time,
-                        max_passengers: this.parseNumber(this.state.tripData?.maxPassengers),
-                        passenger_ids: this.state.tripData?.passengers.map(p => p.id),
-                        stations: this.state.tripData?.stations,
-                        status: this.state.tripData?.status
+                        city_id: cityId,
+                        q: name
                     })
                 }
             )
 
             const data = await res.json()
+            return data?.[0] || null
+        } catch (e) {
+            console.error(e)
+            return null
+        }
+    }
 
-            console.log(data)
+    editTrip = async () => {
+        try {
+            let res = await fetch(`${import.meta.env.VITE_API_URL}/trips/edit`, {
+                method: "POST",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${localStorage.getItem("token")}`
+                },
+                body: JSON.stringify({
+                    trip_id: this.props.id,
+                    city_from: this.state.tripData.from_id,
+                    city_to: this.state.tripData.to_id,
+                    from_station_id: this.state.tripData.from_station_id,
+                    to_station_id: this.state.tripData.to_station_id,
+                    date: this.state.tripData.date,
+                    time: this.state.tripData.time,
+                    max_passengers: this.parseNumber(this.state.tripData.maxPassengers),
+                    passenger_ids: this.state.tripData.passengers.map(p => p.id),
+                    passenger_stations: this.state.tripData?.passengerStations,
+                    stations: this.state.tripData.stations,
+                    status: this.state.tripData.status
+                })
+            })
+
+            if (res.status === 401) {
+                const refreshRes = await fetch(`${import.meta.env.VITE_API_URL}/auth/refresh`, {
+                    method: "POST",
+                    credentials: "include"
+                })
+
+                if (!refreshRes.ok) {
+                    context.logout()
+                    return null
+                }
+
+                const data = await refreshRes.json()
+                localStorage.setItem("token", data.access_token)
+
+                res = await fetch(`${import.meta.env.VITE_API_URL}/trips/edit`, {
+                    method: "POST",
+                    credentials: "include",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${localStorage.getItem("token")}`
+                    },
+                    body: JSON.stringify({
+                        trip_id: this.props.id,
+                        city_from: this.state.tripData.from_id,
+                        city_to: this.state.tripData.to_id,
+                        from_station_id: this.state.tripData.from_station_id,
+                        to_station_id: this.state.tripData.to_station_id,
+                        date: this.state.tripData.date,
+                        time: this.state.tripData.time,
+                        max_passengers: this.parseNumber(this.state.tripData.maxPassengers),
+                        passenger_ids: this.state.tripData.passengers.map(p => p.id),
+                        passenger_stations: this.state.tripData?.passengerStations,
+                        stations: this.state.tripData.stations,
+                        status: this.state.tripData.status
+                    })
+                })
+            }
+
+            const data = await res.json()
 
             if (!data.success) {
-                this.setState({
-                    isFail: true,
-                    failMessage: data.message
-                })
+                this.setState({ isFail: true, failMessage: data.message })
             }
 
             return data
@@ -83,78 +189,57 @@ class EditTripModal extends React.Component {
         }
     }
 
-    searchCities = async (index, query) => {
-        if (!query || query.length < 2) {
-            this.setState(prev => ({
-                resultsList: { ...prev.resultsList, [index]: [] }
-            }))
-            return
-        }
-
+    writeToJournal = async () => {
         try {
-            const res = await fetch(`${import.meta.env.VITE_API_URL}/cities/search`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ q: query })
-            })
-            
-            const data = await res.json()
+            const res = await fetch(
+                `${import.meta.env.VITE_API_URL}/journal/write`,
+                {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        user_id: this.props.user?.id,
+                        entity_type: 'trips',
+                        action: 'edit',
+                        description: `Редагування поїздки "#${this.props.id} ${this.state.tripData.from} → ${this.state.tripData.to}"`
+                    })
+                }
+            )
 
-            return data
+            return await res.json()
         } catch (err) {
             console.error(err)
-            this.setState(prev => ({
-                resultsList: { ...prev.resultsList, [index]: [] }
-            }))
         }
     }
 
     parseNumber = (v) =>
         v === '' || v === null ? null : Number(v)
 
-    setIsFail = (value) => {
-        this.setState({ isFail: value })
-    }
-
-    setFailMessage = (value) => {
-        this.setState({ failMessage: value })
-    }
-
-    setIsRenderTripPassengersModal = (value) => {
-        this.setState({ isRenderTripPassengersModal: value })
-    }
-
-    setIsRenderTripStationsModal = (value) => {
-        this.setState({ isRenderTripStationsModal: value })
-    }
-
     formatStations = async (stations) => {
         if (!stations || !Array.isArray(stations)) return []
 
-        const formattedStations = []
+        const formatted = []
 
-        for (let index = 0; index < stations.length; index++) {
-            const station = stations[index]
+        for (let i = 0; i < stations.length; i++) {
+            const city = await this.searchCityByName(stations[i].city)
+            const station = await this.searchStationByName(city?.id, stations[i].station_name)
 
-            const searchRes = await this.searchCities(index, station.city)
-
-            const id = searchRes && searchRes.length > 0 ? searchRes[0].id : null
-
-            formattedStations.push({
-                id,
-                city: station.city,
-                order: index + 1
+            formatted.push({
+                city_id: city?.id || null,
+                city: stations[i].city,
+                station_id: station?.id,
+                station: stations[i].station_name ?? null,
+                order: i + 1
             })
         }
 
-        return formattedStations
+        return formatted
     }
 
     validateForm = () => {
         const errors = {}
 
-        if (!this.state.tripData.from) errors.from = true
-        if (!this.state.tripData.to) errors.to = true
+        if (!this.state.tripData.from_id) errors.from = true
+        if (!this.state.tripData.to_id) errors.to = true
         if (!this.state.tripData.date) errors.date = true
         if (!this.state.tripData.time) errors.time = true
 
@@ -162,11 +247,12 @@ class EditTripModal extends React.Component {
         return Object.keys(errors).length === 0
     }
 
-    applyPassengersData = ({ passengers, maxPassengers }) => {
+    applyPassengersData = ({ passengers, stations, maxPassengers }) => {
         this.setState(prev => ({
             tripData: {
                 ...prev.tripData,
                 passengers,
+                passengerStations: stations,
                 maxPassengers
             },
             isRenderTripPassengersModal: false
@@ -175,10 +261,7 @@ class EditTripModal extends React.Component {
 
     applyStationsData = (stations) => {
         this.setState(prev => ({
-            tripData: {
-                ...prev.tripData,
-                stations
-            },
+            tripData: { ...prev.tripData, stations },
             isRenderTripStationsModal: false
         }))
     }
@@ -186,10 +269,10 @@ class EditTripModal extends React.Component {
     onEdit = async () => {
         if (!this.validateForm()) return
 
-        const data = await this.editTrip();
+        const data = await this.editTrip()
+        if (!data.success) return
 
-        if (!data.success) return; 
-
+        await this.writeToJournal()
         await this.props.fetchRoutes()
         await this.props.fetchRoutesCount()
         await this.props.fetchTrips()
@@ -199,36 +282,39 @@ class EditTripModal extends React.Component {
 
         this.props.setRenderEditTripModal(false)
     }
-    
-    handleChange = (e) => {
-        const { name, value } = e.target
-
-        this.setState(prev => ({
-            tripData: { ...prev.tripData, [name]: value },
-            errors: { ...prev.errors, [name]: undefined }
-        }))
-    }
 
     render() {
         const { tripData, errors } = this.state
 
+        console.log(this.state.tripData?.passengerStations)
+
         return (
-            <>            
-                {this.state.isRenderTripPassengersModal && <TripPassengersListModal
-                    passengers={tripData.passengers}
-                    maxPassengers={tripData.maxPassengers}
-                    onSave={this.applyPassengersData}
-                    setIsRenderTripPassengersModal={this.setIsRenderTripPassengersModal}
-                />}
+            <>
+                {this.state.isRenderTripPassengersModal && (
+                    <TripPassengersListModal
+                        passengers={tripData.passengers}
+                        maxPassengers={tripData.maxPassengers}
+                        passengerStations={tripData.passengerStations}
+                        onSave={this.applyPassengersData}
+                        setIsRenderTripPassengersModal={(v) => this.setState({ isRenderTripPassengersModal: v })}
+                    />
+                )}
 
-                {this.state.isRenderTripStationsModal && <TripStationsListModal
-                    stations={tripData.stations}
-                    handleChange={this.handleChange}
-                    onSave={this.applyStationsData}
-                    setIsRenderTripStationsModal={this.setIsRenderTripStationsModal}
-                />}
+                {this.state.isRenderTripStationsModal && (
+                    <TripStationsListModal
+                        stations={tripData.stations}
+                        onSave={this.applyStationsData}
+                        setIsRenderTripStationsModal={(v) => this.setState({ isRenderTripStationsModal: v })}
+                    />
+                )}
 
-                {this.state.isFail && <MessageModal header='Невідомий маршрут' body='Такого маршруту не існує' action={this.setIsFail} />}
+                {this.state.isFail && (
+                    <MessageModal
+                        header="Невідомий маршрут"
+                        body={this.state.failMessage}
+                        action={(v) => this.setState({ isFail: v })}
+                    />
+                )}
 
                 <div className="modal-wrapper">
                     <div className="add-trip-modal">
@@ -238,40 +324,97 @@ class EditTripModal extends React.Component {
 
                         <div className="body">
                             <form id="trip-info">
+
                                 <div className="form-group">
-                                    <label htmlFor="from">Вирушаємо з <span>*</span></label>
-                                    <input
-                                        className={`inter-font ${errors.from ? 'not-valid' : ''}`}
-                                        onChange={this.handleChange}
+                                    <label>Вирушаємо з <span>*</span></label>
+                                    <CitySearchInput
                                         value={tripData.from}
-                                        type="text"
-                                        name="from"
-                                        id="from"
                                         placeholder="Луцьк"
+                                        className={`inter-font ${errors.from ? 'not-valid' : ''}`}
+                                        onChange={(v) => this.setState(prev => ({
+                                            tripData: {
+                                                ...prev.tripData,
+                                                from: v,
+                                                from_id: null,
+                                                from_station: '',
+                                                from_station_id: null
+                                            }
+                                        }))}
+                                        onSelect={(city) => this.setState(prev => ({
+                                            tripData: { ...prev.tripData, from: city.city, from_id: city.id }
+                                        }))}
+                                    />
+
+                                    <StationSearchInput
+                                        cityId={tripData.from_id}
+                                        value={tripData.from_station}
+                                        placeholder="Зупинка відправлення"
+                                        onChange={(v) => this.setState(prev => ({
+                                            tripData: {
+                                                ...prev.tripData,
+                                                from_station: v,
+                                                from_station_id: null
+                                            }
+                                        }))}
+                                        onSelect={(s) => this.setState(prev => ({
+                                            tripData: {
+                                                ...prev.tripData,
+                                                from_station: s.station_name,
+                                                from_station_id: s.id
+                                            }
+                                        }))}
                                     />
                                 </div>
 
                                 <div className="form-group">
-                                    <label htmlFor="to">Прибуваємо до <span>*</span></label>
-                                    <input
-                                        className={`inter-font ${errors.to ? 'not-valid' : ''}`}
-                                        onChange={this.handleChange}
+                                    <label>Прибуваємо до <span>*</span></label>
+                                    <CitySearchInput
                                         value={tripData.to}
-                                        type="text"
-                                        name="to"
-                                        id="to"
                                         placeholder="Варшава"
+                                        className={`inter-font ${errors.to ? 'not-valid' : ''}`}
+                                        onChange={(v) => this.setState(prev => ({
+                                            tripData: {
+                                                ...prev.tripData,
+                                                to: v,
+                                                to_id: null,
+                                                to_station: '',
+                                                to_station_id: null
+                                            }
+                                        }))}
+                                        onSelect={(city) => this.setState(prev => ({
+                                            tripData: { ...prev.tripData, to: city.city, to_id: city.id }
+                                        }))}
+                                    />
+
+                                    <StationSearchInput
+                                        cityId={tripData.to_id}
+                                        value={tripData.to_station}
+                                        placeholder="Зупинка прибуття"
+                                        onChange={(v) => this.setState(prev => ({
+                                            tripData: {
+                                                ...prev.tripData,
+                                                to_station: v,
+                                                to_station_id: null
+                                            }
+                                        }))}
+                                        onSelect={(s) => this.setState(prev => ({
+                                            tripData: {
+                                                ...prev.tripData,
+                                                to_station: s.station_name,
+                                                to_station_id: s.id
+                                            }
+                                        }))}
                                     />
                                 </div>
 
                                 <div className="form-group">
-                                    <label htmlFor="status">Статус</label>
+                                    <label>Статус</label>
                                     <select
-                                        className={`inter-font ${errors.status ? 'not-valid' : ''}`}
-                                        onChange={this.handleChange}
+                                        className="inter-font"
                                         value={tripData.status}
-                                        name="status"
-                                        id="status"
+                                        onChange={(e) => this.setState(prev => ({
+                                            tripData: { ...prev.tripData, status: e.target.value }
+                                        }))}
                                     >
                                         <option value="planned">Заплановано</option>
                                         <option value="active">В дорозі</option>
@@ -282,62 +425,54 @@ class EditTripModal extends React.Component {
 
                                 <div className="form-group row">
                                     <div>
-                                        <label htmlFor="date">День виїзду <span>*</span></label>
+                                        <label>День виїзду <span>*</span></label>
                                         <input
-                                            className={`inter-font ${errors.date ? 'not-valid' : ''}`}
-                                            onChange={this.handleChange}
-                                            value={tripData.date}
                                             type="date"
-                                            name="date"
-                                            id="date"
+                                            className={`inter-font ${errors.date ? 'not-valid' : ''}`}
+                                            value={tripData.date}
+                                            onChange={(e) => this.setState(prev => ({
+                                                tripData: { ...prev.tripData, date: e.target.value }
+                                            }))}
                                         />
                                     </div>
 
                                     <div>
-                                        <label htmlFor="time">Час виїзду <span>*</span></label>
+                                        <label>Час виїзду <span>*</span></label>
                                         <input
-                                            className={`inter-font ${errors.time ? 'not-valid' : ''}`}
-                                            onChange={this.handleChange}
-                                            value={tripData.time}
                                             type="time"
-                                            name="time"
-                                            id="time"
+                                            className={`inter-font ${errors.time ? 'not-valid' : ''}`}
+                                            value={tripData.time}
+                                            onChange={(e) => this.setState(prev => ({
+                                                tripData: { ...prev.tripData, time: e.target.value }
+                                            }))}
                                         />
                                     </div>
                                 </div>
 
                                 <div className="form-group">
                                     <label>Пасажири</label>
-                                    <button type="button" onClick={() => this.setIsRenderTripPassengersModal(true)}>
+                                    <button type="button" onClick={() => this.setState({ isRenderTripPassengersModal: true })}>
                                         Список пасажирів
                                     </button>
                                 </div>
 
                                 <div className="form-group">
                                     <label>Зупинки</label>
-                                    <button type="button" onClick={() => this.setIsRenderTripStationsModal(true)}>
+                                    <button type="button" onClick={() => this.setState({ isRenderTripStationsModal: true })}>
                                         Список зупинок
                                     </button>
                                 </div>
+
                             </form>
                         </div>
 
                         <div className="footer">
-                            <button
-                                className="no inter-font"
-                                type="button"
-                                onClick={() => this.props.setRenderEditTripModal(false)}
-                            >
-                                <p>Скасувати</p>
+                            <button className="no" onClick={() => this.props.setRenderEditTripModal(false)}>
+                                Скасувати
                             </button>
 
-                            <button
-                                className="yes inter-font"
-                                type="button"
-                                onClick={this.onEdit}
-                            >
-                                <Save />
-                                <p>Зберегти</p>
+                            <button className="yes" onClick={this.onEdit}>
+                                <Save /> Зберегти
                             </button>
                         </div>
                     </div>

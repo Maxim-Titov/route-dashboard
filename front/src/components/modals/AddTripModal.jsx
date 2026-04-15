@@ -4,6 +4,8 @@ import { Save } from 'lucide-react'
 import TripPassengersListModal from "./TripPassengersListModal"
 import TripStationsListModal from "./TripStationsListModal"
 import MessageModal from "./MessageModal"
+import CitySearchInput from "../CitySearchInput"
+import StationSearchInput from "../StationSearchInput"
 
 class AddTripModal extends React.Component {
     constructor(props) {
@@ -12,11 +14,20 @@ class AddTripModal extends React.Component {
         this.state = {
             tripData: {
                 from: '',
+                from_id: null,
+                from_station: '',
+                from_station_id: null,
+
                 to: '',
+                to_id: null,
+                to_station: '',
+                to_station_id: null,
+
                 date: '',
                 time: '',
                 passengers: [],
                 maxPassengers: '',
+                passengerStations: [],
                 stations: []
             },
             errors: {},
@@ -31,24 +42,68 @@ class AddTripModal extends React.Component {
 
     addTrip = async () => {
         try {
-            const res = await fetch(
+            let res = await fetch(
                 `${import.meta.env.VITE_API_URL}/trips/add`,
                 {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
+                        credentials: "include",
+                        Authorization: `Bearer ${localStorage.getItem("token")}`
                     },
                     body: JSON.stringify({
-                        city_from: this.state.tripData?.from,
-                        city_to: this.state.tripData?.to,
+                        city_from: this.state.tripData.from_id,
+                        city_to: this.state.tripData.to_id,
+                        from_station_id: this.state.tripData.from_station_id,
+                        to_station_id: this.state.tripData.to_station_id,
                         date: this.state.tripData?.date,
                         time: this.state.tripData?.time,
                         max_passengers: this.parseNumber(this.state.tripData?.maxPassengers),
                         passenger_ids: this.state.tripData?.passengers.map(p => p.id),
+                        passenger_stations: this.state.tripData?.passengerStations,
                         stations: this.state.tripData?.stations
                     })
                 }
             )
+
+            if (res.status === 401) {
+                const refreshRes = await fetch(`${import.meta.env.VITE_API_URL}/auth/refresh`, {
+                    method: "POST",
+                    credentials: "include"
+                })
+
+                if (!refreshRes.ok) {
+                    context.logout()
+                    return null
+                }
+
+                const data = await refreshRes.json()
+                localStorage.setItem("token", data.access_token)
+
+                res = await fetch(
+                    `${import.meta.env.VITE_API_URL}/trips/add`,
+                    {
+                        method: "POST",
+                        credentials: "include",
+                        headers: {
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${localStorage.getItem("token")}`
+                        },
+                        body: JSON.stringify({
+                            city_from: this.state.tripData.from_id,
+                            city_to: this.state.tripData.to_id,
+                            from_station_id: this.state.tripData.from_station_id,
+                            to_station_id: this.state.tripData.to_station_id,
+                            date: this.state.tripData?.date,
+                            time: this.state.tripData?.time,
+                            max_passengers: this.parseNumber(this.state.tripData?.maxPassengers),
+                            passenger_ids: this.state.tripData?.passengers.map(p => p.id),
+                            passenger_stations: this.state.tripData?.passengerStations,
+                            stations: this.state.tripData?.stations
+                        })
+                    }
+                )
+            }
 
             const data = await res.json()
 
@@ -60,6 +115,28 @@ class AddTripModal extends React.Component {
             }
 
             return data
+        } catch (err) {
+            console.error(err)
+        }
+    }
+
+    writeToJournal = async () => {
+        try {
+            const res = await fetch(
+                `${import.meta.env.VITE_API_URL}/journal/write`,
+                {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        user_id: this.props.user?.id,
+                        entity_type: 'trips',
+                        action: 'create',
+                        description: `Додавання поїздки для маршруту "${this.state.tripData.from} → ${this.state.tripData.to}"`
+                    })
+                }
+            )
+
+            return await res.json()
         } catch (err) {
             console.error(err)
         }
@@ -87,8 +164,12 @@ class AddTripModal extends React.Component {
     validateForm = () => {
         const errors = {}
 
+        if (!this.state.tripData.from_id) errors.from = true
+        if (!this.state.tripData.to_id) errors.to = true
         if (!this.state.tripData.from) errors.from = true
         if (!this.state.tripData.to) errors.to = true
+        if (!this.state.tripData.from_station_id) errors.from_station = true
+        if (!this.state.tripData.to_station_id) errors.to_station = true
         if (!this.state.tripData.date) errors.date = true
         if (!this.state.tripData.time) errors.time = true
 
@@ -96,11 +177,12 @@ class AddTripModal extends React.Component {
         return Object.keys(errors).length === 0
     }
 
-    applyPassengersData = ({ passengers, maxPassengers }) => {
+    applyPassengersData = ({ passengers, stations, maxPassengers }) => {
         this.setState(prev => ({
             tripData: {
                 ...prev.tripData,
                 passengers,
+                passengerStations: stations,
                 maxPassengers
             },
             isRenderTripPassengersModal: false
@@ -122,15 +204,16 @@ class AddTripModal extends React.Component {
 
         const data = await this.addTrip();
 
-        if (!data.success) return; 
+        if (!data.success) return;
 
+        await this.writeToJournal()
         await this.props.fetchPassengers()
         await this.props.fetchTrips()
         await this.props.fetchTripsCount()
 
         this.props.setRenderTripsModal(false)
     }
-    
+
     handleChange = (e) => {
         const { name, value } = e.target
 
@@ -144,10 +227,11 @@ class AddTripModal extends React.Component {
         const { tripData, errors } = this.state
 
         return (
-            <>                
+            <>
                 {this.state.isRenderTripPassengersModal && <TripPassengersListModal
                     passengers={tripData.passengers}
                     maxPassengers={tripData.maxPassengers}
+                    passengerStations={tripData.passengerStations}
                     onSave={this.applyPassengersData}
                     setIsRenderTripPassengersModal={this.setIsRenderTripPassengersModal}
                 />}
@@ -171,27 +255,73 @@ class AddTripModal extends React.Component {
                             <form id="trip-info">
                                 <div className="form-group">
                                     <label htmlFor="from">Вирушаємо з <span>*</span></label>
-                                    <input
-                                        className={`inter-font ${errors.from ? 'not-valid' : ''}`}
-                                        onChange={this.handleChange}
+                                    <CitySearchInput
                                         value={tripData.from}
-                                        type="text"
-                                        name="from"
-                                        id="from"
                                         placeholder="Луцьк"
+                                        className={`inter-font ${errors.from ? 'not-valid' : ''}`}
+                                        onChange={(v) => this.setState(prev => ({
+                                            tripData: { ...prev.tripData, from: v, from_id: null, from_station: '', from_station_id: null }
+                                        }))}
+                                        onSelect={(city) => this.setState(prev => ({
+                                            tripData: { ...prev.tripData, from: city.city, from_id: city.id }
+                                        }))}
+                                    />
+
+                                    <StationSearchInput
+                                        cityId={tripData.from_id}
+                                        value={tripData.from_station}
+                                        placeholder="Зупинка відправлення"
+                                        className={`inter-font ${tripData.from_id ? '' : 'forbidden'} ${errors.from_station ? 'not-valid' : ''}`}
+                                        onChange={(v) => this.setState(prev => ({
+                                            tripData: {
+                                                ...prev.tripData,
+                                                from_station: v,
+                                                from_station_id: null
+                                            }
+                                        }))}
+                                        onSelect={(s) => this.setState(prev => ({
+                                            tripData: {
+                                                ...prev.tripData,
+                                                from_station: s.station_name,
+                                                from_station_id: s.id
+                                            }
+                                        }))}
                                     />
                                 </div>
 
                                 <div className="form-group">
                                     <label htmlFor="to">Прибуваємо до <span>*</span></label>
-                                    <input
-                                        className={`inter-font ${errors.to ? 'not-valid' : ''}`}
-                                        onChange={this.handleChange}
+                                    <CitySearchInput
                                         value={tripData.to}
-                                        type="text"
-                                        name="to"
-                                        id="to"
                                         placeholder="Варшава"
+                                        className={`inter-font ${errors.to ? 'not-valid' : ''}`}
+                                        onChange={(v) => this.setState(prev => ({
+                                            tripData: { ...prev.tripData, to: v, to_id: null, to_station: '', to_station_id: null }
+                                        }))}
+                                        onSelect={(city) => this.setState(prev => ({
+                                            tripData: { ...prev.tripData, to: city.city, to_id: city.id }
+                                        }))}
+                                    />
+
+                                    <StationSearchInput
+                                        cityId={tripData.to_id}
+                                        value={tripData.to_station}
+                                        placeholder="Зупинка прибуття"
+                                        className={`inter-font ${tripData.to_id ? '' : 'forbidden'} ${errors.to_station ? 'not-valid' : ''}`}
+                                        onChange={(v) => this.setState(prev => ({
+                                            tripData: {
+                                                ...prev.tripData,
+                                                to_station: v,
+                                                to_station_id: null
+                                            }
+                                        }))}
+                                        onSelect={(s) => this.setState(prev => ({
+                                            tripData: {
+                                                ...prev.tripData,
+                                                to_station: s.station_name,
+                                                to_station_id: s.id
+                                            }
+                                        }))}
                                     />
                                 </div>
 

@@ -1,5 +1,5 @@
 import React from "react"
-import { LayoutDashboard, Users, Route, Car, Settings, Building2 } from 'lucide-react'
+import { LayoutDashboard, BookUser, Route, Car, Users, Settings, NotebookText, Building2 } from 'lucide-react'
 
 import Logo from "/logo.png"
 
@@ -10,12 +10,16 @@ class SiteBranding extends React.Component {
                 return <LayoutDashboard />
             case 'cities':
                 return <Building2 />
-            case 'passengers':
-                return <Users />
             case 'routes':
                 return <Route />
             case 'trips':
                 return <Car />
+            case 'passengers':
+                return <BookUser />
+            case 'users':
+                return <Users />
+            case 'journal':
+                return <NotebookText />
             case 'settings':
                 return <Settings />
             default:
@@ -25,15 +29,26 @@ class SiteBranding extends React.Component {
 
     render() {
         return (
-            <div className="site-branding">
-                <div className="logo" style={{width: this.props.logoSize, height: this.props.logoSize}}>
+            <div className="site-branding" onClick={() => this.props.onOpen(!this.props.isMenuOpen)}>
+                <div className="logo" style={{ width: this.props.logoSize, height: this.props.logoSize }}>
                     {this.props.activeView
                         ? this.renderIcon()
-                        : <img src={Logo} alt="site logo" />
+                        : <>
+                            <div className="icon">
+                                <img src={Logo} alt="site logo" />
+                            </div>
+
+                            <div className="burger-icon">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                        </>
                     }
                 </div>
 
-                <div>
+                <div className="title-and-subtitle">
                     <div className="title">
                         <h1 className={`${this.props.activeView ? "on-header" : ''}`}>{this.props.title}</h1>
                     </div>

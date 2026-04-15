@@ -20,20 +20,11 @@ class AccessControl extends React.Component {
                     <div className="icon">
                         <PersonStanding />
                     </div>
-                    
+
                     <h3>Контроль доступу</h3>
                 </div>
 
                 <form className="content">
-                    <div className="form-row">
-                        <label htmlFor="role">Роль за замовчуванням</label>
-                        <select id="role" name="default_role" value={value?.default_role} onChange={this.handleChange}>
-                            <option value="user">Користувач</option>
-                            <option value="moderator">Модератор</option>
-                            <option value="admin">Адміністратор</option>
-                        </select>
-                    </div>
-
                     <div className="form-row checkbox">
                         <label>
                             <input

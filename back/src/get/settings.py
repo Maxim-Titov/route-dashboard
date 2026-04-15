@@ -14,3 +14,17 @@ def get_settings():
         settings[row["key"]] = json.loads(row["value"])
 
     return settings
+
+def get_load_settings():
+    conn = get_connection("users_data")
+    cursor = conn.cursor(dictionary=True)
+
+    cursor.execute("SELECT `key`, `value` FROM settings")
+    rows = cursor.fetchall()
+
+    settings = {}
+
+    for row in rows:
+        settings[row["key"]] = json.loads(row["value"])
+
+    return settings

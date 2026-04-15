@@ -1,12 +1,18 @@
 @import '../global/variables';
 @import '../global/mixins';
 
+.add-city-modal,
 .add-route-modal,
 .add-trip-modal,
 .trip-passenger-list-modal,
 .trip-station-list-modal,
 .add-passanger-modal,
 .confirm-modal,
+.profile-modal,
+.add-user-modal,
+.set-driver-modal,
+.ticket-modal,
+.clear-journal-modal,
 .message-modal {
     position: fixed;
     top: 50%;
@@ -19,8 +25,46 @@
     background-color: $component-background;
     border: 1px solid $border;
     border-radius: $radius;
-    box-shadow: 0 20px 25px rgba(0,0,0,.15);
+    box-shadow: 0 20px 25px rgba(0, 0, 0, .15);
     z-index: 996;
+
+    .autocomplete-dropdown {
+        @include li-reset;
+
+        position: absolute;
+        top: calc(100% + $gutterS);
+        left: 0;
+        right: 0;
+        background-color: $component-background;
+        border: 1px solid $border;
+        border-bottom-left-radius: $radius;
+        border-bottom-right-radius: $radius;
+        max-height: 200px;
+        overflow-y: auto;
+        margin: 0;
+        padding: 0;
+        z-index: 10;
+
+        li {
+            cursor: pointer;
+            align-items: center;
+            padding: 8px 16px;
+            transition: background-color 200ms ease-in-out;
+
+            span {
+                padding: 16px;
+                height: 100%;
+                width: 60%;
+                border-left: 1px solid $primary;
+                margin-left: 16px;
+                text-align: center;
+            }
+
+            &:hover {
+                background-color: $input-background;
+            }
+        }
+    }
 
     .header {
         position: sticky;
@@ -70,7 +114,9 @@
                     }
                 }
 
-                input, textarea, select {
+                input,
+                textarea,
+                select {
                     width: 100%;
                     padding: 8px 16px;
                     background-color: $input-background;
@@ -78,7 +124,7 @@
                     border-radius: $radius;
                     font-size: $font-size;
                     color: $foreground;
-                    
+
                     &::placeholder {
                         color: rgba($muted-foreground, .7);
                     }
@@ -86,11 +132,12 @@
                     &:focus {
                         outline: none;
                         border-color: $primary;
-                        box-shadow: 0 0 0 2px rgba($primary,.3);
+                        box-shadow: 0 0 0 2px rgba($primary, .3);
                     }
 
                     &::placeholder {
-                        color: rgba($muted-foreground, .7);;
+                        color: rgba($muted-foreground, .7);
+                        ;
                     }
 
                     &.required {
@@ -100,8 +147,13 @@
                     &.not-valid {
                         border-color: $destructive;
                         background-color: rgba($destructive, .2);
-                        box-shadow: 0 0 0 2px rgba($destructive,.3);
+                        box-shadow: 0 0 0 2px rgba($destructive, .3);
                     }
+                }
+
+                .search-input {
+                    margin-bottom: .5rem;
+                    position: relative;
                 }
 
                 textarea {
@@ -186,6 +238,36 @@
                     background-color: rgba($primary, .9);
                 }
             }
+
+            &.logout {
+                background-color: $destructive;
+                color: $foreground;
+
+                &:hover {
+                    background-color: rgba($destructive, .8);
+                }
+            }
+        }
+    }
+}
+
+.add-city-modal {
+    .body {
+        .form-group {
+            display: grid;
+            grid-template-columns: 1fr 36px;
+            align-items: end;
+            gap: 16px;
+
+            button {
+                height: 36px;
+                padding: 0 !important;
+
+                svg {
+                    width: 16px;
+                    height: 16px;
+                }
+            }
         }
     }
 }
@@ -212,12 +294,14 @@
                     margin: 0 auto;
                     position: relative;
                     flex: 1 1 auto;
+                    padding-bottom: 16px;
+                    border-bottom: 1px solid $border;
 
                     .search-icon {
                         position: absolute;
                         left: 0.75rem;
                         top: 50%;
-                        transform: translateY(-50%);
+                        transform: translateY(calc(-50% - 8px));
                         width: 1.25rem;
                         height: 1.25rem;
                         color: $muted-foreground;
@@ -281,25 +365,36 @@
                 .selected-passengers {
                     @include li-reset;
 
+                    display: flex;
+                    flex-direction: column;
                     margin-top: 16px;
-                    display: grid;
-                    grid-template-columns: repeat(2, 1fr);
                     gap: 16px;
 
                     li {
-                        display: flex;
-                        align-items: center;
-                        gap: 8px;
+                        .name {
+                            display: flex;
+                            align-items: center;
+                            gap: 8px;
+                            padding-bottom: 8px;
 
-                        button {
-                            border: 1px solid $border;
-                            border-radius: $radius;
-                            width: fit-content;
-                            background-color: $input-background;
+                            button {
+                                border: 1px solid $border;
+                                border-radius: $radius;
+                                width: fit-content;
+                                background-color: $input-background;
 
-                            svg {
-                                width: 16px;
-                                height: 16px;
+                                svg {
+                                    width: 16px;
+                                    height: 16px;
+                                }
+                            }
+                        }
+
+                        .data {
+                            .search-input {
+                                input {
+                                    width: 100%;
+                                }
                             }
                         }
                     }
@@ -325,44 +420,6 @@
                         flex: 1 1 auto;
                         height: fit-content;
                         position: relative;
-
-                        .autocomplete-dropdown {
-                            @include li-reset;
-
-                            position: absolute;
-                            top: calc(100% + $gutterS);
-                            left: 0;
-                            right: 0;
-                            background-color: $component-background;
-                            border: 1px solid $border;
-                            border-bottom-left-radius: $radius;
-                            border-bottom-right-radius: $radius;
-                            max-height: 200px;
-                            overflow-y: auto;
-                            margin: 0;
-                            padding: 0;
-                            z-index: 10;
-
-                            li {
-                                cursor: pointer;
-                                align-items: center;
-                                padding: 8px 16px;
-                                transition: background-color 200ms ease-in-out;
-
-                                span {
-                                    padding: 16px;
-                                    height: 100%;
-                                    width: 60%;
-                                    border-left: 1px solid $primary;
-                                    margin-left: 16px;
-                                    text-align: center;
-                                }
-
-                                &:hover {
-                                    background-color: $input-background;
-                                }
-                            }
-                        }
                     }
 
                     .remove-button {
@@ -396,11 +453,64 @@
     }
 }
 
+.ticket-modal {
+    max-width: 800px;
+
+    .header {
+        .icon-wrapper {
+            cursor: pointer;
+        }
+    }
+}
+
 .message-modal {
     z-index: 999 !important;
 }
 
-.trip-details-modal {
+.route-details-modal {
+    max-width: fit-content !important;
+    min-width: 600px;
+
+    .autocomplete-dropdown {
+        @include li-reset;
+
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background-color: $component-background;
+        border: 1px solid $border;
+        border-bottom-left-radius: $radius;
+        border-bottom-right-radius: $radius;
+        max-height: 200px;
+        overflow-y: auto;
+        margin: 0;
+        padding: 0;
+        z-index: 10;
+
+        li {
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: $gutterS 16px;
+
+            span {
+                padding: 16px;
+                height: 100%;
+                width: 60%;
+                border-left: 1px solid $primary;
+                margin-left: 16px;
+                text-align: center;
+            }
+        }
+    }
+}
+
+.city-details-modal,
+.route-details-modal,
+.trip-details-modal,
+.passenger-details-modal {
     height: 100vh;
     max-width: 600px;
     width: 100%;
@@ -409,7 +519,7 @@
     border: 1px solid $border;
     border-top-left-radius: $radius;
     border-bottom-left-radius: $radius;
-    box-shadow: 0 20px 25px rgba(0,0,0,.15);
+    box-shadow: 0 20px 25px rgba(0, 0, 0, .15);
     z-index: 996;
     float: right;
     padding-right: 16px;
@@ -453,7 +563,8 @@
             gap: 1.5rem;
             margin-bottom: 1.5rem;
 
-            .time, .passengers {
+            .time,
+            .passengers {
                 background-color: $background;
                 border-radius: $radius;
                 padding: 1rem;
@@ -461,7 +572,7 @@
                 transition: box-shadow .2s ease;
 
                 &:hover {
-                    box-shadow: 0 4px 6px rgba(0,0,0,.1);
+                    box-shadow: 0 4px 6px rgba(0, 0, 0, .1);
                 }
 
                 p {
@@ -482,7 +593,14 @@
             }
         }
 
-        .route-card {
+        .stations-card,
+        .route-card,
+        .passengers-card,
+        .passenger-info-card,
+        .note-card,
+        .trips-card,
+        .table-card,
+        .user-card {
             background-color: $background;
             border-radius: $radius;
             padding: 1rem;
@@ -491,7 +609,7 @@
             margin-bottom: 1.5rem;
 
             &:hover {
-                box-shadow: 0 4px 6px rgba(0,0,0,.1);
+                box-shadow: 0 4px 6px rgba(0, 0, 0, .1);
             }
 
             .title {
@@ -499,8 +617,84 @@
                 font-size: $text-sm;
                 margin-bottom: .5rem;
             }
+        }
 
+        .stations-card {
+            .info {
+                ol {
+                    margin: 0;
+
+                    li {
+                        &::marker {
+                            color: $muted-foreground;
+                        }
+
+                        .stop-row {
+                            display: flex;
+                            gap: 1.5rem;
+                            margin-bottom: 1rem;
+
+                            .stop-info {
+                                flex: 1;
+                                display: flex;
+                                flex-direction: column;
+
+                                input {
+                                    width: 100%;
+                                    padding: 8px 40px 8px 16px;
+                                    background-color: $input-background;
+                                    border: 1px solid $border;
+                                    border-radius: $radius;
+                                    font-size: $font-size;
+                                    color: $foreground;
+
+                                    &:focus {
+                                        outline: none;
+                                    }
+
+                                    &::placeholder {
+                                        color: rgba($muted-foreground, .7);
+                                    }
+                                }
+                            }
+
+                            button {
+                                color: $foreground;
+                                border-radius: 0.5rem;
+                                transition: background-color 0.2s ease;
+                                cursor: pointer;
+                                border: none;
+                                width: 36px;
+                                height: 36px;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                padding: 0;
+                                background-color: $destructive;
+
+                                svg {
+                                    width: 16px;
+                                    height: 16px;
+                                }
+
+                                &:hover {
+                                    background-color: rgba($destructive, 0.9);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                .actions {
+                    display: flex;
+                    gap: 1.5rem;
+                }
+            }
+        }
+
+        .route-card {
             .from {
+                position: relative;
                 display: flex;
                 align-items: center;
                 gap: 12px;
@@ -509,26 +703,46 @@
                 svg {
                     color: $primary;
                 }
+
+                p {
+                    span {
+                        position: absolute;
+                        left: 125px;
+                        color: $muted-foreground;
+                        font-size: $text-sm;
+                    }
+                }
             }
 
             .stations {
                 .station {
+                    position: relative;
                     display: flex;
                     align-items: center;
                     gap: 12px;
                     margin-bottom: .8rem;
-                    
+
                     &:last-child {
                         margin-bottom: none;
                     }
-                    
+
                     svg {
                         scale: 1.5;
+                    }
+
+                    p {
+                        span {
+                            position: absolute;
+                            left: 125px;
+                            color: $muted-foreground;
+                            font-size: $text-sm;
+                        }
                     }
                 }
             }
 
             .to {
+                position: relative;
                 display: flex;
                 align-items: center;
                 gap: 12px;
@@ -537,26 +751,19 @@
                 svg {
                     color: $secondary;
                 }
+
+                p {
+                    span {
+                        position: absolute;
+                        left: 125px;
+                        color: $muted-foreground;
+                        font-size: $text-sm;
+                    }
+                }
             }
         }
 
         .passengers-card {
-            background-color: $background;
-            border-radius: $radius;
-            padding: 1rem;
-            border: 1px solid $border;
-            transition: box-shadow .2s ease;
-
-            &:hover {
-                box-shadow: 0 4px 6px rgba(0,0,0,.1);
-            }
-
-            .title {
-                color: $muted-foreground;
-                font-size: $text-sm;
-                margin-bottom: .5rem;
-            }
-
             .passengers {
                 .passenger {
                     padding-left: 24px;
@@ -565,13 +772,210 @@
                         p {
                             display: grid;
                             grid-template-columns: repeat(3, 1fr);
+                            align-items: center;
 
                             span {
-                                &:nth-child(2), &:last-child {
+
+                                &:nth-child(2) {
+                                    font-size: $text-sm;
+                                }
+                            }
+
+                            button {
+                                width: 100%;
+                                flex: 1;
+                                display: flex;
+                                justify-content: center;
+                                gap: 8px;
+                                padding: 5px 16px;
+                                border-radius: $radius;
+                                border: none;
+                                cursor: pointer;
+                                transition: background-color .2s ease;
+                                background-color: $primary;
+
+                                &:hover {
+                                    background-color: rgba($primary, .8);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        .table-card {
+            .table-wrapper {
+                table {
+                    width: 100%;
+
+                    .search-input {
+                        position: relative;
+                    }
+
+                    input {
+                        width: 100%;
+                        padding: 8px 40px 8px 16px;
+                        background-color: $input-background;
+                        border: 1px solid $border;
+                        border-radius: $radius;
+                        font-size: $font-size;
+                        color: $foreground;
+
+                        &:focus {
+                            outline: none;
+                        }
+
+                        &::placeholder {
+                            color: rgba($muted-foreground, .7);
+                        }
+                    }
+
+                    button {
+                        color: $foreground;
+                        border-radius: 0.5rem;
+                        transition: background-color 0.2s ease;
+                        cursor: pointer;
+                        border: none;
+                        width: 36px;
+                        height: 36px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        padding: 0;
+
+                        svg {
+                            width: 16px;
+                            height: 16px;
+                        }
+
+                        &.add {
+                            background-color: $primary;
+
+                            &:hover {
+                                background-color: rgba($primary, 0.9);
+                            }
+                        }
+
+                        &.remove {
+                            background-color: $destructive;
+
+                            &:hover {
+                                background-color: rgba($destructive, 0.9);
+                            }
+                        }
+                    }
+
+                    thead {
+                        tr {
+                            th {
+                                padding: .5rem;
+
+                                &:first-child {
+                                    border: 1px solid $border;
+                                    border-radius: $radius;
+                                }
+
+                                .column-header {
+                                    position: relative;
+                                    display: flex;
+                                    gap: .5rem;
+
+                                    button {
+                                        position: absolute;
+                                        top: 50%;
+                                        right: 0;
+                                        transform: translateY(-50%);
+                                        border-radius: 0 $radius $radius 0;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    tbody {
+                        position: relative;
+
+                        tr {
+                            td {
+                                padding: .5rem;
+                            }
+
+                            &.empty-row {
+                                td {
+                                    position: absolute;
+                                    top: 50%;
+                                    left: 50%;
+                                    transform: translate(-50%, -50%);
+                                    color: $muted-foreground;
                                     font-size: $text-sm;
                                 }
                             }
                         }
+                    }
+                }
+            }
+        }
+
+        .passenger-info-card {
+            .info {
+                display: flex;
+                flex-direction: column;
+                gap: 4px;
+            }
+        }
+
+        .trips-card {
+            ul {
+                @include li-reset;
+
+                display: grid;
+                gap: 4px;
+
+                li {
+                    display: flex;
+                    gap: 3.5rem;
+
+                    p {
+
+                        &:nth-child(2),
+                        &:last-child {
+                            font-size: $text-sm;
+                        }
+                    }
+                }
+            }
+        }
+
+        .user-card {
+            .user-info {
+                .driver {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+
+                    .unset {
+                        color: $destructive;
+                        cursor: pointer;
+                    }
+                }
+
+                button {
+                    width: 100%;
+                    flex: 1;
+                    display: flex;
+                    justify-content: center;
+                    gap: 8px;
+                    padding: 12px 16px;
+                    border-radius: $radius;
+                    border: none;
+                    cursor: pointer;
+                    font-size: $font-size;
+                    transition: background-color .2s ease;
+                    background-color: $primary;
+
+                    &:hover {
+                        background-color: rgba($primary, .8);
                     }
                 }
             }
@@ -589,6 +993,9 @@
 
         button {
             flex: 1;
+            display: flex;
+            justify-content: center;
+            gap: 8px;
             padding: 12px 16px;
             border-radius: $radius;
             border: none;
@@ -600,6 +1007,155 @@
             &:hover {
                 background-color: rgba($destructive, .8);
             }
+
+            &.add {
+                background-color: $primary;
+
+                &:hover {
+                    background-color: rgba($primary, 0.9);
+                }
+            }
+
+            &.save {
+                background-color: $secondary;
+
+                &:hover {
+                    background-color: rgba($secondary, 0.9);
+                }
+            }
+        }
+    }
+}
+
+.profile-modal {
+    .body {
+        p {
+            &.name-and-surname {
+                font-size: $text-lg;
+                font-weight: $font-weight-medium;
+                margin-bottom: .5rem;
+            }
+
+            &.role {
+                color: $muted-foreground;
+                font-size: $text-sm;
+            }
+        }
+    }
+}
+
+.add-user-modal,
+.set-driver-modal {
+    .body {
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+
+            .search-input {
+                flex: 1 1 auto;
+                height: fit-content;
+                position: relative;
+            }
+
+            .form-row,
+            .search-input {
+                label {
+                    display: flex;
+                    align-items: center;
+                    margin-bottom: 8px;
+                    color: $muted-foreground;
+                    font-size: $font-size;
+
+                    span {
+                        color: $destructive;
+                    }
+                }
+
+                input {
+                    width: 100%;
+                    padding: 8px 16px;
+                    background-color: $input-background;
+                    border: 1px solid $border;
+                    border-radius: $radius;
+                    font-size: $font-size;
+                    color: $foreground;
+
+                    &:focus {
+                        outline: none;
+                        border-color: $primary;
+                        box-shadow: 0 0 0 2px rgba($primary, .3);
+                    }
+
+                    &.required {
+                        border-color: $destructive;
+                    }
+
+                    &.not-valid {
+                        border-color: $destructive;
+                        background-color: rgba($destructive, .2);
+                        box-shadow: 0 0 0 2px rgba($destructive, .3);
+                    }
+
+                    &[type="checkbox"] {
+                        width: 25px;
+                        height: 25px;
+                        padding: 0 !important;
+                        appearance: none;
+                        border: 1px solid $border;
+                        border-radius: 4px;
+                        cursor: pointer;
+                        margin-right: 8px;
+
+                        &:checked {
+                            background: $primary;
+                            position: relative;
+
+                            &::after {
+                                content: "✓";
+                                color: white;
+                                position: absolute;
+                                left: 50%;
+                                top: 50%;
+                                transform: translate(-50%, -50%);
+                                font-size: $font-size;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media (max-width: $mobile) {
+
+    .add-city-modal,
+    .add-route-modal,
+    .add-trip-modal,
+    .trip-passenger-list-modal,
+    .trip-station-list-modal,
+    .add-passanger-modal,
+    .confirm-modal,
+    .add-user-modal,
+    .set-driver-modal,
+    .ticket-modal,
+    .clear-journal-modal,
+    .message-modal {
+        top: 0;
+        left: 0;
+        transform: translate(0, 0);
+        height: 100vh;
+        max-height: none;
+        border-radius: 0;
+
+        .body {
+            height: calc(100% - 10rem);
+        }
+
+        .footer {
+            position: sticky;
+            bottom: 0;
         }
     }
 }

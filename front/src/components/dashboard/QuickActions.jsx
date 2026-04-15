@@ -8,13 +8,13 @@ import AddPassengerButton from "../AddPassengerButton"
 class QuickActions extends React.Component {
     render() {
         return (
-            <div className="quick-actions">
+            <div className={`quick-actions ${this.props.role === "user" ? 'forbidden' : ''}`}>
                 <h2>Швидкі дії</h2>
 
                 <div className="actions">
-                    <AddCityButton background='#F5F7FA' setRenderCitiesModal={this.props.setRenderCitiesModal}/>
+                    <AddCityButton background='#F5F7FA' setRenderCitiesModal={this.props.setRenderCitiesModal} />
                     <AddRouteButton background='#F7EEDB' setRenderRoutesModal={this.props.setRenderRoutesModal} />
-                    <AddTripButton background='#76B5A9' setRenderTripsModal={this.props.setRenderTripsModal}/>
+                    <AddTripButton background='#76B5A9' setRenderTripsModal={this.props.setRenderTripsModal} />
                     <AddPassengerButton setRenderPassengersModal={this.props.setRenderPassengersModal} />
                 </div>
             </div>

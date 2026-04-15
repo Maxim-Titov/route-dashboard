@@ -175,7 +175,7 @@ class Filters extends React.Component {
                             </div>
 
                             {/* STATUS */}
-                            <div className="form-row column">
+                            <div className="form-row column status">
                                 <div className="form-group">
                                     <label>Статус</label>
                                     <div className="buttons">

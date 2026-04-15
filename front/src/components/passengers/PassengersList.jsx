@@ -1,16 +1,18 @@
 import React from "react"
-import { Edit2, Trash2 } from 'lucide-react'
+import { Info, Edit2, Trash2 } from 'lucide-react'
 
-import EditPassengerModal from "../modals/EditPaasengerModal"
+import PassengerDetailsModal from "../modals/PassengersDetailsModal"
+import EditPassengerModal from "../modals/EditPassengerModal"
 import DeletePassengerModal from "../modals/DeletePassengerModal"
 
 import { formatPhone } from "../../utils/formatPhoneNumber"
 
 class PassengersList extends React.Component {
-    constructor(props){
+    constructor(props) {
         super(props)
 
         this.state = {
+            renderPassengerDetailsModal: false,
             renderDeletePassengerModal: false,
             renderEditPassengerModal: false,
             passengerId: null,
@@ -20,25 +22,58 @@ class PassengersList extends React.Component {
                 surname: '',
                 phone: '',
                 dateOfBirth: '',
-                note: ''
+                note: '',
+                tripsCount: 0
             },
         }
     }
 
     deletePassenger = async (id) => {
         try {
-            const res = await fetch(
+            let res = await fetch(
                 `${import.meta.env.VITE_API_URL}/passengers/delete`,
                 {
                     method: "POST",
+                    credentials: "include",
                     headers: {
                         "Content-Type": "application/json",
+                        Authorization: `Bearer ${localStorage.getItem("token")}`
                     },
                     body: JSON.stringify({
                         passenger_id: id
                     })
                 }
             )
+
+            if (res.status === 401) {
+                const refreshRes = await fetch(`${import.meta.env.VITE_API_URL}/auth/refresh`, {
+                    method: "POST",
+                    credentials: "include"
+                })
+
+                if (!refreshRes.ok) {
+                    context.logout()
+                    return null
+                }
+
+                const data = await refreshRes.json()
+                localStorage.setItem("token", data.access_token)
+
+                res = await fetch(
+                    `${import.meta.env.VITE_API_URL}/passengers/delete`,
+                    {
+                        method: "POST",
+                        credentials: "include",
+                        headers: {
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${localStorage.getItem("token")}`
+                        },
+                        body: JSON.stringify({
+                            passenger_id: id
+                        })
+                    }
+                )
+            }
 
             const data = await res.json()
             return data
@@ -52,6 +87,10 @@ class PassengersList extends React.Component {
         await this.props.fetchPassengers()
         await this.props.fetchTripsCount()
         await this.props.fetchPassengersCount()
+    }
+
+    setRenderPassengerDetailsModal = (value) => {
+        this.setState({ renderPassengerDetailsModal: value })
     }
 
     setRenderDeletePassengerModal = (value) => {
@@ -69,11 +108,10 @@ class PassengersList extends React.Component {
             passengerData: data
         })
     }
-    
+
     render() {
         const { passengersList, searchQuery, generateRightForm, fetchPassengers } = this.props;
 
-        // Визначаємо, кого показувати: всі пасажири або відфільтровані
         const passengersToShow = (searchQuery && searchQuery.length > 0)
             ? passengersList.filter((passenger) =>
                 searchQuery.some((q) => q.id === passenger.id)
@@ -103,7 +141,7 @@ class PassengersList extends React.Component {
                             </div>
 
                             <div className="actions">
-                                <div className="icon-wrapper edit" onClick={() => {
+                                <div className="icon-wrapper info" onClick={async () => {
                                     this.setPassenger(
                                         passenger.id,
                                         `${passenger.name} ${passenger.surname}`,
@@ -112,7 +150,26 @@ class PassengersList extends React.Component {
                                             surname: passenger.surname,
                                             phone: passenger.phone,
                                             dateOfBirth: passenger.dateOfBirth,
-                                            note: passenger.note
+                                            note: passenger.note,
+                                            tripsCount: passenger.tripsCount
+                                        }
+                                    );
+                                    this.setRenderPassengerDetailsModal(true)
+                                }}>
+                                    <Info />
+                                </div>
+
+                                <div className={`icon-wrapper edit ${this.props.user?.role === 'user' ? 'forbidden' : ''}`} onClick={() => {
+                                    this.setPassenger(
+                                        passenger.id,
+                                        `${passenger.name} ${passenger.surname}`,
+                                        {
+                                            name: passenger.name,
+                                            surname: passenger.surname,
+                                            phone: passenger.phone,
+                                            dateOfBirth: passenger.dateOfBirth,
+                                            note: passenger.note,
+                                            tripsCount: passenger.tripsCount
                                         }
                                     );
                                     this.setRenderEditPassengerModal(true);
@@ -120,7 +177,7 @@ class PassengersList extends React.Component {
                                     <Edit2 />
                                 </div>
 
-                                <div className="icon-wrapper trash" onClick={() => {
+                                <div className={`icon-wrapper trash ${this.props.user?.role === 'user' ? 'forbidden' : ''}`} onClick={() => {
                                     this.setPassenger(
                                         passenger.id,
                                         `${passenger.name} ${passenger.surname}`,
@@ -129,7 +186,8 @@ class PassengersList extends React.Component {
                                             surname: passenger.surname,
                                             phone: passenger.phone,
                                             dateOfBirth: passenger.dateOfBirth,
-                                            note: passenger.note
+                                            note: passenger.note,
+                                            tripsCount: passenger.tripsCount
                                         }
                                     );
                                     this.setRenderDeletePassengerModal(true);
@@ -155,8 +213,17 @@ class PassengersList extends React.Component {
                     </div>
                 ))}
 
+                {this.state.renderPassengerDetailsModal && (
+                    <PassengerDetailsModal
+                        setRenderPassengerDetailsModal={this.setRenderPassengerDetailsModal}
+                        id={this.state.passengerId}
+                        data={this.state.passengerData}
+                    />
+                )}
+
                 {this.state.renderEditPassengerModal && (
                     <EditPassengerModal
+                        user={this.props.user}
                         setRenderEditPassengerModal={this.setRenderEditPassengerModal}
                         passengerId={this.state.passengerId}
                         passengerData={this.state.passengerData}
@@ -166,6 +233,7 @@ class PassengersList extends React.Component {
 
                 {this.state.renderDeletePassengerModal && (
                     <DeletePassengerModal
+                        user={this.props.user}
                         setRenderDeletePassengerModal={this.setRenderDeletePassengerModal}
                         passengerId={this.state.passengerId}
                         passengerName={this.state.passengerName}

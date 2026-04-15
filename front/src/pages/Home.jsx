@@ -1,8 +1,10 @@
 import React from "react"
 import { motion, AnimatePresence } from "framer-motion"
+import { LayoutDashboard, Building2, Users as UsersIcon, Route, Car, BookUser, NotebookText, Settings as SettingsIcon } from 'lucide-react'
 
 import AuthContext from "../context/AuthContext"
 
+import ProfileModal from "../components/modals/ProfileModal"
 import Header from "../components/header/Header"
 import Sidebar from "../components/sidebar/Sidebar"
 import DashboardMain from "../components/dashboard/DashboardMain"
@@ -10,6 +12,8 @@ import Cities from "../components/cities/Cities"
 import Routes from "../components/routes/Routes"
 import Trips from "../components/trips/Trips"
 import Passengers from "../components/passengers/Passengers"
+import Users from "../components/users/Users"
+import Journal from "../components/journal/Journal"
 import Settings from "../components/settings/Settings"
 
 class Home extends React.Component {
@@ -19,7 +23,22 @@ class Home extends React.Component {
         super(props)
 
         this.state = {
+            isRenderProfileModal: false,
+
             activeView: 'dashboard',
+
+            menuItems: [
+                { id: 'dashboard', icon: LayoutDashboard, label: 'Головна' },
+                { id: 'cities', icon: Building2, label: 'Міста' },
+                { id: 'routes', icon: Route, label: 'Маршрути' },
+                { id: 'trips', icon: Car, label: 'Поїздки' },
+                { id: 'passengers', icon: BookUser, label: 'Пасажири' },
+                { id: 'users', icon: UsersIcon, label: 'Команда' },
+                { id: 'journal', icon: NotebookText, label: 'Журнал' },
+                { id: 'settings', icon: SettingsIcon, label: 'Налаштування' },
+            ],
+
+            settings: {},
 
             citiesList: [],
             routesList: [],
@@ -40,20 +59,46 @@ class Home extends React.Component {
         }
     }
 
-    componentDidMount() {
-        this.fetchCities()
-        this.fetchCitiesCount()
-        this.fetchRoutes()
-        this.fetchRoutesCount()
-        this.fetchTrips()
-		this.fetchTripsCount()
-        this.fetchPassengers()
-        this.fetchPassengersCount()
-	}
+    async componentDidMount() {
+        await this.fetchSettings()
+        await this.fetchCities()
+        await this.fetchCitiesCount()
+        await this.fetchRoutes()
+        await this.fetchRoutesCount()
+        await this.fetchTrips()
+        await this.fetchTripsCount()
+        await this.fetchPassengers()
+        await this.fetchPassengersCount()
+    }
+
+    fetchSettings = async () => {
+        try {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/settings/load`, {
+                method: "GET",
+                credentials: "include",
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`
+                }
+            })
+            const data = await res.json()
+
+            this.setState({
+                settings: data
+            })
+        } catch (err) {
+            console.error(err)
+        }
+    }
 
     fetchCities = async () => {
         try {
-            const res = await fetch(`${import.meta.env.VITE_API_URL}/cities`)
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/cities`, {
+                method: "GET",
+                credentials: "include",
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`
+                }
+            })
             const data = await res.json()
 
             this.setState({
@@ -66,7 +111,13 @@ class Home extends React.Component {
 
     fetchCitiesCount = async () => {
         try {
-            const res = await fetch(`${import.meta.env.VITE_API_URL}/cities/count`)
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/cities/count`, {
+                method: "GET",
+                credentials: "include",
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`
+                }
+            })
             const data = await res.json()
 
             this.setState({
@@ -79,7 +130,13 @@ class Home extends React.Component {
 
     fetchRoutes = async () => {
         try {
-            const res = await fetch(`${import.meta.env.VITE_API_URL}/routes`)
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/routes`, {
+                method: "GET",
+                credentials: "include",
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`
+                }
+            })
             const data = await res.json()
 
             this.setState({
@@ -92,7 +149,13 @@ class Home extends React.Component {
 
     fetchRoutesCount = async () => {
         try {
-            const res = await fetch(`${import.meta.env.VITE_API_URL}/routes/count`)
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/routes/count`, {
+                method: "GET",
+                credentials: "include",
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`
+                }
+            })
             const data = await res.json()
 
             this.setState({
@@ -105,20 +168,42 @@ class Home extends React.Component {
 
     fetchTrips = async () => {
         try {
-            const res = await fetch(`${import.meta.env.VITE_API_URL}/trips`)
+            const res = await fetch(
+                `${import.meta.env.VITE_API_URL}/trips`,
+                {
+                    method: "POST",
+                    credentials: "include",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${localStorage.getItem("token")}`
+                    },
+                    body: JSON.stringify({
+                        user_id: this.context.user?.id
+                    })
+                }
+            )
+
             const data = await res.json()
 
             this.setState({
                 tripsList: data
             })
+
+            return data
         } catch (err) {
             console.error(err)
         }
     }
 
-	fetchTripsCount = async () => {		
-		try {
-            const res = await fetch(`${import.meta.env.VITE_API_URL}/trips/count`)
+    fetchTripsCount = async () => {
+        try {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/trips/count`, {
+                method: "GET",
+                credentials: "include",
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`
+                }
+            })
             const data = await res.json()
 
             this.setState({
@@ -127,11 +212,17 @@ class Home extends React.Component {
         } catch (err) {
             console.error(err)
         }
-	}
+    }
 
     fetchPassengers = async () => {
         try {
-            const res = await fetch(`${import.meta.env.VITE_API_URL}/passengers`)
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/passengers`, {
+                method: "GET",
+                credentials: "include",
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`
+                }
+            })
             const data = await res.json()
 
             this.setState({
@@ -144,7 +235,13 @@ class Home extends React.Component {
 
     fetchPassengersCount = async () => {
         try {
-            const res = await fetch(`${import.meta.env.VITE_API_URL}/passengers/count`)
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/passengers/count`, {
+                method: "GET",
+                credentials: "include",
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`
+                }
+            })
             const data = await res.json()
 
             const count = data.count || 0
@@ -159,6 +256,10 @@ class Home extends React.Component {
 
     setActiveView = (view) => {
         this.setState({ activeView: view })
+    }
+
+    setIsRenderProfileModal = (value) => {
+        this.setState({ isRenderProfileModal: value })
     }
 
     setRenderCitiesModal = (value) => {
@@ -197,7 +298,7 @@ class Home extends React.Component {
             case 'dashboard':
                 return <DashboardMain
                     user={this.context.user}
-                
+
                     citiesCount={this.state.citiesCount}
                     fetchCities={this.fetchCities}
                     fetchCitiesCount={this.fetchCitiesCount}
@@ -228,35 +329,41 @@ class Home extends React.Component {
 
                     renderPassengersModal={this.state.renderPassengersModal}
                     setRenderPassengersModal={this.setRenderPassengersModal}
-                    
+
 
                     generateRightForm={this.generateRightForm}
                 />
             case 'cities':
                 return <Cities
+                    user={this.context.user}
+
                     citiesList={this.state.citiesList}
 
                     renderCitiesModal={this.state.renderCitiesModal}
                     setRenderCitiesModal={this.setRenderCitiesModal}
-                    
+
                     fetchCities={this.fetchCities}
                     fetchCitiesCount={this.fetchCitiesCount}
                 />
             case 'routes':
                 return <Routes
+                    user={this.context.user}
+
                     routesList={this.state.routesList}
 
                     renderRoutesModal={this.state.renderRoutesModal}
                     setRenderRoutesModal={this.setRenderRoutesModal}
-                    
+
                     fetchRoutes={this.fetchRoutes}
                     fetchRoutesCount={this.fetchRoutesCount}
                 />
             case 'trips':
                 return <Trips
+                    user={this.context.user}
+
                     fetchRoutes={this.fetchRoutes}
                     fetchRoutesCount={this.fetchRoutesCount}
-                    
+
                     tripsList={this.state.tripsList}
                     fetchTrips={this.fetchTrips}
                     fetchTripsCount={this.fetchTripsCount}
@@ -268,21 +375,86 @@ class Home extends React.Component {
                     fetchPassengersCount={this.fetchPassengersCount}
                 />
             case 'passengers':
-                return <Passengers searchQuery={this.state.searchQuery} renderPassengersModal={this.state.renderPassengersModal} tripsCount={this.state.tripsCount} passengersList={this.state.passengersList} passengersCount={this.state.passengersCount} generateRightForm={this.generateRightForm} fetchTripsCount={this.fetchTripsCount} fetchPassengers={this.fetchPassengers} fetchPassengersCount={this.fetchPassengersCount} setRenderPassengersModal={this.setRenderPassengersModal} />
+                return <Passengers
+                    user={this.context.user}
+
+                    searchQuery={this.state.searchQuery}
+
+                    renderPassengersModal={this.state.renderPassengersModal}
+                    setRenderPassengersModal={this.setRenderPassengersModal}
+
+                    passengersList={this.state.passengersList}
+                    passengersCount={this.state.passengersCount}
+                    fetchPassengers={this.fetchPassengers}
+                    fetchPassengersCount={this.fetchPassengersCount}
+
+                    tripsCount={this.state.tripsCount}
+                    fetchTripsCount={this.fetchTripsCount}
+
+                    generateRightForm={this.generateRightForm}
+                />
+            case 'users':
+                return <Users
+                    user={this.context.user}
+                />
+            case 'journal':
+                return <Journal
+                    user={this.context.user}
+                />
             case 'settings':
-                return <Settings />
+                return <Settings
+                    user={this.context.user}
+                />
             default:
-                return <DashboardMain renderPassengersModal={this.state.renderPassengersModal} tripsCount={this.state.tripsCount} passengersCount={this.state.passengersCount} generateRightForm={this.generateRightForm} setRenderPassengersModal={this.setRenderPassengersModal} />
+                return <DashboardMain
+                    user={this.context.user}
+
+                    citiesCount={this.state.citiesCount}
+                    fetchCities={this.fetchCities}
+                    fetchCitiesCount={this.fetchCitiesCount}
+
+                    renderCitiesModal={this.state.renderCitiesModal}
+                    setRenderCitiesModal={this.setRenderCitiesModal}
+
+
+                    routesCount={this.state.routesCount}
+                    fetchRoutes={this.fetchRoutes}
+                    fetchRoutesCount={this.fetchRoutesCount}
+
+                    renderRoutesModal={this.state.renderRoutesModal}
+                    setRenderRoutesModal={this.setRenderRoutesModal}
+
+
+                    tripsCount={this.state.tripsCount}
+                    fetchTrips={this.fetchTrips}
+                    fetchTripsCount={this.fetchTripsCount}
+
+                    renderTripsModal={this.state.renderTripsModal}
+                    setRenderTripsModal={this.setRenderTripsModal}
+
+
+                    passengersCount={this.state.passengersCount}
+                    fetchPassengers={this.fetchPassengers}
+                    fetchPassengersCount={this.fetchPassengersCount}
+
+                    renderPassengersModal={this.state.renderPassengersModal}
+                    setRenderPassengersModal={this.setRenderPassengersModal}
+
+
+                    generateRightForm={this.generateRightForm}
+                />
         }
     }
 
     render() {
-        console.log(this.context)
-
         return (
             <>
+                {this.state.isRenderProfileModal && (
+                    <ProfileModal context={this.context} setIsRenderProfileModal={this.setIsRenderProfileModal} />
+                )}
+
                 <div className="wrapper">
-                    <Header context={this.context} activeView={this.state.activeView} setActiveView={this.setActiveView} setSearchQuery={this.setSearchQuery} />
+                    <Header context={this.context} activeView={this.state.activeView} setActiveView={this.setActiveView} setSearchQuery={this.setSearchQuery} setIsRenderProfileModal={this.setIsRenderProfileModal} />
 
                     <main>
                         <AnimatePresence mode="wait">
@@ -299,7 +471,7 @@ class Home extends React.Component {
                     </main>
                 </div>
 
-                <Sidebar activeView={this.state.activeView} setActiveView={this.setActiveView} />
+                <Sidebar siteName={this.state.settings?.general?.site_name} menuItems={this.state.menuItems} activeView={this.state.activeView} setActiveView={this.setActiveView} />
             </>
         )
     }

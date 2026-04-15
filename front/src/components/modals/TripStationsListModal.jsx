@@ -2,12 +2,17 @@ import React from "react"
 import { Save, X, Plus } from 'lucide-react'
 
 import MessageModal from "./MessageModal"
+import CitySearchInput from "../CitySearchInput"
+import StationSearchInput from "../StationSearchInput"
 
 class TripStationsListModal extends React.Component {
     constructor(props) {
         super(props)
+
         this.state = {
-            tempStations: props.stations?.length ? [...props.stations] : [{ id: null, city: '' }],
+            tempStations: props.stations?.length
+                ? props.stations
+                : [{ city_id: null, city: '', station_id: null, station: '', order: 1 }],
             resultsList: {},
             isError: false
         }
@@ -17,13 +22,32 @@ class TripStationsListModal extends React.Component {
         this.setState({ isError: value })
     }
 
+    handleCityChange = (index, value) => {
+        this.setState(prev => {
+            const tempStations = [...prev.tempStations]
+            tempStations[index] = {
+                ...tempStations[index],
+                city_id: null,
+                city: value,
+                station_id: null,
+                station: ''
+            }
+            return { tempStations }
+        })
+    }
+
     handleStationChange = (index, value) => {
         this.setState(prev => {
             const tempStations = [...prev.tempStations]
-            tempStations[index] = { id: null, city: value } // id скидаємо, бо користувач щось пише
+
+            tempStations[index] = {
+                ...tempStations[index],
+                station: value,
+                station_id: null
+            }
+
             return { tempStations }
         })
-        this.searchCities(index, value)
     }
 
     searchCities = async (index, query) => {
@@ -40,7 +64,7 @@ class TripStationsListModal extends React.Component {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ q: query })
             })
-            
+
             const data = await res.json()
 
             this.setState(prev => ({
@@ -54,48 +78,66 @@ class TripStationsListModal extends React.Component {
         }
     }
 
-    handleSelect = (index, city) => {
-        console.log(city)
-
+    handleCitySelect = (index, city) => {
         this.setState(prev => {
             const tempStations = [...prev.tempStations]
-            tempStations[index] = city // {id, city, order}
-            return {
-                tempStations,
-                resultsList: { ...prev.resultsList, [index]: [] }
+            tempStations[index] = {
+                ...tempStations[index],
+                city_id: city.id,
+                city: city.city,
+                station_id: null,
+                station: ''
             }
+            return { tempStations }
+        })
+    }
+
+    handleStationSelect = (index, station) => {
+        this.setState(prev => {
+            const tempStations = [...prev.tempStations]
+            tempStations[index] = {
+                ...tempStations[index],
+                station_id: station.id,
+                station: station.station_name
+            }
+            return { tempStations }
         })
     }
 
     addStationInput = () => {
         this.setState(prev => ({
-            tempStations: [...prev.tempStations, { id: null, city: '' }]
+            tempStations: [
+                ...prev.tempStations,
+                { city_id: null, city: '', station_id: null, station: '', order: prev.tempStations.length + 1 }
+            ]
         }))
     }
 
     removeStation = (index) => {
         this.setState(prev => ({
-            tempStations: prev.tempStations.filter((_, i) => i !== index),
-            resultsList: Object.fromEntries(
-                Object.entries(prev.resultsList).filter(([k]) => Number(k) !== index)
-            )
+            tempStations: prev.tempStations.filter((_, i) => i !== index)
         }))
     }
 
     onSave = () => {
-        // перевірка: всі станції повинні мати id
-        const invalid = this.state.tempStations.filter(s => !s.id || !s.city.trim())
-        if (invalid.length > 0) {
+        const invalid = this.state.tempStations.some(
+            s => !s.city_id || !s.station_id
+        )
+
+        if (invalid) {
             this.setIsError(true)
             return
         }
 
-        this.props.onSave(this.state.tempStations)
+        this.props.onSave(
+            this.state.tempStations.map((s, i) => ({
+                ...s,
+                order: i + 1
+            }))
+        )
     }
 
     render() {
-        console.log(this.state.tempStations)
-
         return (
             <>
                 {this.state.isError && (
@@ -119,29 +161,29 @@ class TripStationsListModal extends React.Component {
                                         <label htmlFor="city">Місто {index + 1}</label>
 
                                         <div className="row">
-                                            <div className="search-input">
-                                                <input
-                                                    type="text"
-                                                    className="inter-font"
-                                                    placeholder={`Зупинка ${index + 1}`}
-                                                    value={station.city}
-                                                    onChange={(e) => this.handleStationChange(index, e.target.value)}
-                                                    name="city"
-                                                    id="city"
-                                                />
+                                            <div>
+                                                <div className="search-input">
+                                                    <CitySearchInput
+                                                        value={station.city}
+                                                        placeholder="Місто"
+                                                        onChange={(v) => this.handleCityChange(index, v)}
+                                                        onSelect={(city) => this.handleCitySelect(index, city)}
+                                                    />
+                                                </div>
 
-                                                {this.state.resultsList[index]?.length > 0 && (
-                                                    <ul className="autocomplete-dropdown">
-                                                        {this.state.resultsList[index].map(city => (
-                                                            <li key={city.id} onClick={() => this.handleSelect(index, { ...city, order: index + 1 })}>
-                                                                {city.city}
-                                                            </li>
-                                                        ))}
-                                                    </ul>
-                                                )}
+                                                <div className="search-input">
+                                                    <StationSearchInput
+                                                        cityId={station.city_id}
+                                                        value={station.station || station.station_name}
+                                                        placeholder="Станція"
+                                                        disabled={!station.city_id}
+                                                        onSelect={(s) => this.handleStationSelect(index, s)}
+                                                        onChange={(v) => this.handleStationChange(index, v)}
+                                                    />
+                                                </div>
                                             </div>
 
-                                            {this.state.tempStations.length > 1 && (
+                                            {this.state.tempStations.length > 0 && (
                                                 <button
                                                     type="button"
                                                     className="remove-button"

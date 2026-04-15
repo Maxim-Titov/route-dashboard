@@ -14,15 +14,9 @@ class DangerZone extends React.Component {
                 </div>
 
                 <div className="content">
-                    <div className="buttons-wrapper">
-                        <button className="danger">
-                            Очистити кеш
-                        </button>
-
-                        <button className="danger">
-                            Скинути налаштування
-                        </button>
-                    </div>
+                    <button className="danger">
+                        Скинути налаштування
+                    </button>
                 </div>
             </div>
         )

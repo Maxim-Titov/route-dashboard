@@ -16,7 +16,7 @@ CREATE TABLE users (
     name VARCHAR(100) NOT NULL,
     surname VARCHAR(100) NOT NULL,
 
-    role ENUM('user','admin', 'moderator') NOT NULL DEFAULT 'user',
+    role ENUM('user','admin') NOT NULL DEFAULT 'user',
 
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
@@ -42,6 +42,19 @@ CREATE TABLE IF NOT EXISTS cities (
     id BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
 
     city VARCHAR(255) NOT NULL UNIQUE
+) ENGINE=InnoDB;
+
+-- ============================
+--  Таблиця city_stations
+-- ============================
+CREATE TABLE IF NOT EXISTS city_stations (
+    id BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+
+    city_id BIGINT UNSIGNED NOT NULL,
+    station_name VARCHAR(255) NOT NULL,
+    station_address VARCHAR(500) NOT NULL,
+
+    FOREIGN KEY (city_id) REFERENCES cities(id)
 ) ENGINE=InnoDB;
 
 -- ============================
@@ -71,6 +84,9 @@ CREATE TABLE IF NOT EXISTS trips (
     id BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
 
     route_id BIGINT UNSIGNED NOT NULL,
+    from_city_station_id BIGINT UNSIGNED NULL,
+    to_city_station_id BIGINT UNSIGNED NULL,
+    user_id BIGINT UNSIGNED NULL,
 
     max_passengers_count INT NOT NULL,
     date DATE NOT NULL,
@@ -78,7 +94,10 @@ CREATE TABLE IF NOT EXISTS trips (
     status ENUM('planned','active','completed','cancelled') DEFAULT 'planned',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
-    FOREIGN KEY (route_id) REFERENCES routes(id)
+    FOREIGN KEY (route_id) REFERENCES routes(id),
+    FOREIGN KEY (from_city_station_id) REFERENCES city_stations(id),
+    FOREIGN KEY (to_city_station_id) REFERENCES city_stations(id),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
 ) ENGINE=InnoDB;
 
 -- ============================
@@ -89,11 +108,13 @@ CREATE TABLE IF NOT EXISTS trip_stations (
 
     trip_id BIGINT UNSIGNED NOT NULL,
     city_id BIGINT UNSIGNED NOT NULL,
+    city_station_id BIGINT UNSIGNED NULL,
 
     city_order INT NOT NULL,
 
     FOREIGN KEY (trip_id) REFERENCES trips(id) ON DELETE CASCADE,
     FOREIGN KEY (city_id) REFERENCES cities(id),
+    FOREIGN KEY (city_station_id) REFERENCES city_stations(id),
 
     UNIQUE (trip_id, city_order)
 ) ENGINE=InnoDB;
@@ -129,9 +150,13 @@ CREATE TABLE IF NOT EXISTS trip_passengers (
 
     trip_id BIGINT UNSIGNED,
     passenger_id BIGINT UNSIGNED,
+    city_id BIGINT UNSIGNED NULL,
+    station_id BIGINT UNSIGNED NULL,
 
     FOREIGN KEY (trip_id) REFERENCES trips(id) ON DELETE CASCADE,
     FOREIGN KEY (passenger_id) REFERENCES passengers(id) ON DELETE CASCADE,
+    FOREIGN KEY (city_id) REFERENCES cities(id),
+    FOREIGN KEY (station_id) REFERENCES city_stations(id),
 
     UNIQUE (trip_id, passenger_id)
 ) ENGINE=InnoDB;
@@ -151,4 +176,49 @@ CREATE TABLE IF NOT EXISTS notes (
     FOREIGN KEY (passenger_id) REFERENCES passengers(id) ON DELETE CASCADE,
 
     UNIQUE (passenger_id)
+) ENGINE=InnoDB;
+
+-- ============================
+--  Таблиця journal
+-- ============================
+CREATE TABLE IF NOT EXISTS journal (
+    id BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+
+    user_id BIGINT UNSIGNED NOT NULL,
+
+    entity_type VARCHAR(64) NOT NULL,
+
+    action ENUM('create', 'edit', 'delete'),
+    description TEXT,
+
+    event_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    INDEX idx_entity (entity_type),
+    INDEX idx_user (user_id),
+    INDEX idx_time (event_time)
+) ENGINE=InnoDB;
+
+-- ============================
+--  Таблиця pricing
+-- ============================
+CREATE TABLE IF NOT EXISTS pricing (
+    id BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+
+    route_id BIGINT UNSIGNED NOT NULL,
+    from_city_id BIGINT UNSIGNED NOT NULL,
+    to_city_id BIGINT UNSIGNED NOT NULL,
+
+    price INT UNSIGNED NOT NULL,
+
+    CHECK (from_city_id <> to_city_id),
+
+    FOREIGN KEY (route_id) REFERENCES routes(id),
+    FOREIGN KEY (from_city_id) REFERENCES cities(id),
+    FOREIGN KEY (to_city_id) REFERENCES cities(id),
+
+    UNIQUE (route_id, from_city_id, to_city_id),
+
+    INDEX idx_route (route_id),
+    INDEX idx_from (from_city_id),
+    INDEX idx_to (to_city_id)
 ) ENGINE=InnoDB;

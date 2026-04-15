@@ -1,6 +1,7 @@
 import React from "react"
-import { Trash2 } from "lucide-react"
+import { Info, Trash2 } from "lucide-react"
 
+import CityDetailsModal from "../modals/CityDetailsModal"
 import DeleteCityModal from "../modals/DeleteCityModal"
 import MessageModal from "../modals/MessageModal"
 
@@ -9,6 +10,7 @@ class CitiesList extends React.Component {
         super(props)
 
         this.state = {
+            renderCityDetailsModal: false,
             renderDeleteCityModal: false,
             cityId: null,
             cityName: null,
@@ -25,6 +27,10 @@ class CitiesList extends React.Component {
         this.setState({ failMessage: value })
     }
 
+    setRenderCityDetailsModal = (value) => {
+        this.setState({ renderCityDetailsModal: value })
+    }
+
     setRenderDeleteCityModal = (value) => {
         this.setState({ renderDeleteCityModal: value })
     }
@@ -38,16 +44,46 @@ class CitiesList extends React.Component {
 
     deleteCity = async (id) => {
         try {
-            const res = await fetch(
+            let res = await fetch(
                 `${import.meta.env.VITE_API_URL}/cities/delete`,
                 {
                     method: "POST",
+                    credentials: "include",
                     headers: {
-                        "Content-Type": "application/json"
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${localStorage.getItem("token")}`
                     },
                     body: JSON.stringify({ city_id: id })
                 }
             )
+
+            if (res.status === 401) {
+                const refreshRes = await fetch(`${import.meta.env.VITE_API_URL}/auth/refresh`, {
+                    method: "POST",
+                    credentials: "include"
+                })
+
+                if (!refreshRes.ok) {
+                    context.logout()
+                    return null
+                }
+
+                const data = await refreshRes.json()
+                localStorage.setItem("token", data.access_token)
+
+                res = await fetch(
+                    `${import.meta.env.VITE_API_URL}/cities/delete`,
+                    {
+                        method: "POST",
+                        credentials: "include",
+                        headers: {
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${localStorage.getItem("token")}`
+                        },
+                        body: JSON.stringify({ city_id: id })
+                    }
+                )
+            }
 
             const data = await res.json()
 
@@ -84,8 +120,15 @@ class CitiesList extends React.Component {
                             {city.city}
 
                             <div className="actions">
+                                <div className="icon-wrapper info" onClick={async () => {
+                                    this.setCity(city.id, city.city)
+                                    this.setRenderCityDetailsModal(true)
+                                }}>
+                                    <Info />
+                                </div>
+
                                 <div
-                                    className="icon-wrapper trash"
+                                    className={`icon-wrapper trash ${this.props.user?.role === 'user' ? 'forbidden' : ''}`}
                                     onClick={() => {
                                         this.setCity(city.id, city.city)
                                         this.setRenderDeleteCityModal(true)
@@ -98,8 +141,18 @@ class CitiesList extends React.Component {
                     </div>
                 ))}
 
+                {this.state.renderCityDetailsModal && (
+                    <CityDetailsModal
+                        user={this.props.user}
+                        setRenderCityDetailsModal={this.setRenderCityDetailsModal}
+                        cityId={this.state.cityId}
+                        cityName={this.state.cityName}
+                    />
+                )}
+
                 {this.state.renderDeleteCityModal && (
                     <DeleteCityModal
+                        user={this.props.user}
                         setRenderDeleteCityModal={this.setRenderDeleteCityModal}
                         cityId={this.state.cityId}
                         cityName={this.state.cityName}

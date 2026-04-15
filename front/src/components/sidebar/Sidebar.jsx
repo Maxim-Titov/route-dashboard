@@ -1,5 +1,4 @@
 import React from "react"
-import { LayoutDashboard, Building2, Users, Route, Car, Settings } from 'lucide-react'
 
 import SiteBranding from "../SiteBranding"
 import Navigation from "./Navigation"
@@ -9,22 +8,19 @@ class Sidebar extends React.Component {
         super(props)
 
         this.state = {
-            menuItems: [
-                {id: 'dashboard', icon: LayoutDashboard, label: 'Головна'},
-                {id: 'cities', icon: Building2, label: 'Міста'},
-                {id: 'routes', icon: Route, label: 'Маршрути'},
-                {id: 'trips', icon: Car, label: 'Поїздки'},
-                {id: 'passengers', icon: Users, label: 'Пасажири'},
-                {id: 'settings', icon: Settings, label: 'Налаштування'},
-            ]
+            isMenuOpen: false
         }
+    }
+
+    setIsMenuOpen = (value) => {
+        this.setState({ isMenuOpen: value })
     }
 
     render() {
         return (
-            <aside>
-                <SiteBranding activeView={null} title="Dashboard" logoSize={40} showSubTile={true} />
-                <Navigation activeView={this.props.activeView} setActiveView={this.props.setActiveView} menuItems={this.state.menuItems} />
+            <aside className={this.state.isMenuOpen ? "open" : ""}>
+                <SiteBranding onOpen={this.setIsMenuOpen} isMenuOpen={this.state.isMenuOpen} activeView={null} title={this.props.siteName} logoSize={40} showSubTile={true} />
+                <Navigation setIsMenuOpen={this.setIsMenuOpen} activeView={this.props.activeView} setActiveView={this.props.setActiveView} menuItems={this.props.menuItems} />
             </aside>
         )
     }

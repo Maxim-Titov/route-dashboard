@@ -146,10 +146,13 @@ h5 {
     }
 }
 
+.add-city-button,
 .add-route-button,
 .add-trip-button,
 .add-passenger-button,
-.save-settings-button {
+.add-user-button,
+.save-settings-button,
+.clear-journal-button {
     background-color: $primary;
     display: flex;
     align-items: center;
@@ -238,11 +241,11 @@ h5 {
         border-radius: $radius;
         padding: 1.5rem;
         border: 1px solid $border;
-        box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
         transition: box-shadow 0.3s ease;
 
         &:hover {
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
         .header {
@@ -254,7 +257,7 @@ h5 {
 
             svg {
                 width: 24px;
-                height: 24px; 
+                height: 24px;
                 color: $primary;
             }
 
@@ -264,12 +267,12 @@ h5 {
             }
         }
 
-        .content {                   
+        .content {
             display: flex;
 
             #filters {
                 width: 100%;
-                
+
                 .settings-wrapper {
                     display: flex;
                     align-items: center;
@@ -432,11 +435,11 @@ h5 {
                             &:focus {
                                 outline: none;
                                 border-color: $primary;
-                                box-shadow: 0 0 0 2px rgba($primary,.3);
+                                box-shadow: 0 0 0 2px rgba($primary, .3);
                             }
 
                             &::placeholder {
-                                color: rgba($muted-foreground, .7);;
+                                color: rgba($muted-foreground, .7);
                             }
 
                             &.free-seats {
@@ -471,6 +474,151 @@ h5 {
 
                                 &.active {
                                     background-color: $primary;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+.forbidden {
+    pointer-events: none;
+    opacity: .5;
+    transition: opacity 200ms ease;
+}
+
+.not-found {
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    overflow: hidden;
+    position: relative;
+
+    .scene {
+        position: relative;
+        max-width: 500px;
+
+        .bus-wrapper {
+            position: relative;
+            margin-bottom: 40px;
+
+            .bus {
+                color: #1e293b;
+                animation: bounce 3s ease-in-out infinite;
+            }
+
+            .smoke {
+                position: absolute;
+                left: -20px;
+                color: #94a3b8;
+
+                &.smoke-1 {
+                    top: 100px;
+                    left: -50px;
+                }
+
+                &.smoke-2 {
+                    top: 80px;
+                    left: -70px;
+                }
+            }
+
+            .wrench {
+                position: absolute;
+                bottom: 30px;
+                right: 125px;
+                color: $destructive;
+            }
+        }
+
+        .title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: $foreground;
+        }
+
+        .subtitle {
+            font-size: 18px;
+            color: $muted-foreground;
+        }
+    }
+}
+
+@keyframes bounce {
+    0% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-6px);
+    }
+
+    100% {
+        transform: translateY(0px);
+    }
+}
+
+@media (max-width: $tabletL) {
+    main {
+        padding-left: 78px;
+    }
+}
+
+@media (max-width: $mobile) {
+    .container {
+        padding: 24px 12px;
+    }
+
+    .filters-wrapper {
+        .card {
+            padding: 1.5rem .5rem;
+
+            .header {
+                margin-bottom: 8px !important;
+            }
+
+            .content {
+                display: flex;
+
+                #filters {
+                    width: 100%;
+
+                    .settings-wrapper {
+                        flex-direction: column;
+                        align-items: normal;
+
+                        .view {
+                            position: static;
+                            order: 1;
+                            display: flex;
+                            justify-content: center;
+                            margin-bottom: 16px;
+                        }
+
+                        .buttons {
+                            flex-direction: column;
+                            gap: 16px;
+                            order: 2;
+
+                            button {
+                                width: 100%;
+                            }
+                        }
+                    }
+
+                    .form-row {
+                        grid-template-columns: repeat(1, 1fr);
+
+                        &.status {
+                            .form-group {
+                                .buttons {
+                                    grid-template-columns: repeat(1, 1fr);
                                 }
                             }
                         }
