@@ -8,7 +8,7 @@ def post_update_setting(key: str, value: dict):
 
     cursor.execute(
         """
-        INSERT INTO settings (`key`, `value`)
+        INSERT INTO settings (`type`, `value`)
         VALUES (%s, %s)
         ON DUPLICATE KEY UPDATE value = VALUES(value)
         """,
