@@ -105,7 +105,7 @@ def post_login(req):
         value=refresh_token,
         httponly=True,
         secure=True,  # 👉 True в проді
-        samesite=""
+        samesite="none"
     )
 
     return response
