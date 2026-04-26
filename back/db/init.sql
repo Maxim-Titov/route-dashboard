@@ -18,7 +18,7 @@ SET FOREIGN_KEY_CHECKS = 1;
 -- ============================
 -- SETTINGS
 -- ============================
-INSERT INTO settings (`key`, `value`) VALUES
+INSERT INTO settings (`type`, `value`) VALUES
 ('general', JSON_OBJECT('site_name','Route Dashboard')),
 ('security', JSON_OBJECT('access_ttl',60, 'refresh_ttl',7)),
 ('access', JSON_OBJECT('allow_registration',TRUE));

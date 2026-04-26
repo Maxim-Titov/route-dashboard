@@ -286,8 +286,6 @@ class EditTripModal extends React.Component {
     render() {
         const { tripData, errors } = this.state
 
-        console.log(this.state.tripData?.passengerStations)
-
         return (
             <>
                 {this.state.isRenderTripPassengersModal && (
