@@ -121,9 +121,11 @@ class EditUserModal extends React.Component {
     onEdit = async () => {
         if (!this.validateForm()) return
 
-        await this.writeToJournal()
         await this.editUser()
-        await this.props.fetchUsers()
+        await Promise.all([
+            this.writeToJournal(),
+            this.props.fetchUsers(),
+        ])
 
         this.props.setRenderEditUserModal(false)
     }

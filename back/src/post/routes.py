@@ -148,13 +148,16 @@ def post_get_route_prices(route_id):
     cursor.execute("""
         SELECT pricing.route_id, pricing.from_city_id, pricing.to_city_id, pricing.price, from_city_name.city AS from_city_name, to_city_name.city AS to_city_name
         FROM pricing
-                   
+
         JOIN cities AS from_city_name ON pricing.from_city_id = from_city_name.id
         JOIN cities AS to_city_name ON pricing.to_city_id = to_city_name.id
-        
+
         WHERE pricing.route_id = %s
     """, (route_id, ))
     pricing = cursor.fetchall()
+
+    cursor.close()
+    conn.close()
 
     return pricing
 

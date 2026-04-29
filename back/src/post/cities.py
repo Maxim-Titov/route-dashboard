@@ -8,8 +8,10 @@ def post_add_city(city):
     is_city = cursor.fetchone()
 
     if is_city:
+        cursor.close()
+        conn.close()
         return "exists"
-    
+
     cursor.execute("INSERT INTO cities(city) VALUES (%s)", (city, ))
 
     conn.commit()
@@ -22,7 +24,6 @@ def post_delete_city(city_id):
     cursor = conn.cursor(dictionary=True)
 
     try:
-        # 1. Перевірка існування міста
         cursor.execute(
             "SELECT id FROM cities WHERE id = %s",
             (city_id,)
@@ -35,7 +36,6 @@ def post_delete_city(city_id):
                 "message": "city not found"
             }
 
-        # 2. Перевірка використання в маршрутах
         cursor.execute(
             """
             SELECT id
@@ -52,7 +52,7 @@ def post_delete_city(city_id):
                 "success": False,
                 "message": "city has routes"
             }
-        
+
         cursor.execute("""
             SELECT id
             FROM trip_stations
@@ -66,7 +66,6 @@ def post_delete_city(city_id):
                 "message": "city has routes"
             }
 
-        # 3. Видалення
         cursor.execute(
             "DELETE FROM cities WHERE id = %s",
             (city_id,)
@@ -95,6 +94,8 @@ def post_city_stations(city_id):
     city = cursor.fetchone()
 
     if not city:
+        cursor.close()
+        conn.close()
         return {
             "success": False,
             "message": "city not found"
@@ -124,19 +125,19 @@ def post_update_city_stations(city_id, stations):
     city = cursor.fetchone()
 
     if not city:
+        cursor.close()
+        conn.close()
         return {
             "success": False,
             "message": "city not found"
         }
 
     try:
-        # Видалення існуючих станцій
         cursor.execute("""
             DELETE FROM city_stations
             WHERE city_id = %s;
         """, (city_id, ))
 
-        # Додавання нових станцій
         for station in stations:
             cursor.execute("""
                 INSERT INTO city_stations (city_id, station_name, station_address)
@@ -165,14 +166,14 @@ def post_update_city_stations(city_id, stations):
 def post_search_cities(q):
     conn = get_connection()
     cursor = conn.cursor(dictionary=True)
-    
+
     cursor.execute("""
         SELECT id, city
         FROM cities
         WHERE city LIKE %s
         LIMIT 20
     """, (q + '%',))
-    
+
     res = cursor.fetchall()
     cursor.close()
     conn.close()
@@ -182,14 +183,14 @@ def post_search_cities(q):
 def post_search_citie_station(q, city_id):
     conn = get_connection()
     cursor = conn.cursor(dictionary=True)
-    
+
     cursor.execute("""
         SELECT id, station_name, station_address
         FROM city_stations
         WHERE (station_name LIKE %s OR station_address LIKE %s) AND city_id = %s
         LIMIT 20
     """, (q + '%', q + '%', city_id))
-    
+
     res = cursor.fetchall()
     cursor.close()
     conn.close()

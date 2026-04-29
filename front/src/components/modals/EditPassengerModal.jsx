@@ -132,8 +132,10 @@ class EditPassengerModal extends React.Component {
         if (!this.validateForm()) return
 
         await this.editPassenger()
-        await this.writeToJournal()
-        await this.props.fetchPassengers()
+        await Promise.all([
+            this.writeToJournal(),
+            this.props.fetchPassengers(),
+        ])
 
         this.props.setRenderEditPassengerModal(false)
     }
