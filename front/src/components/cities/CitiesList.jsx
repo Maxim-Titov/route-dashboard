@@ -103,8 +103,10 @@ class CitiesList extends React.Component {
 
         if (this.state.isFail) return
 
-        await this.props.fetchCities()
-        await this.props.fetchCitiesCount()
+        await Promise.all([
+            this.props.fetchCities(),
+            this.props.fetchCitiesCount(),
+        ])
 
         this.setRenderDeleteCityModal(false)
     }

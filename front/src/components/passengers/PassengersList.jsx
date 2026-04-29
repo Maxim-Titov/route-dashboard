@@ -84,9 +84,11 @@ class PassengersList extends React.Component {
 
     onDelete = async (id) => {
         await this.deletePassenger(id)
-        await this.props.fetchPassengers()
-        await this.props.fetchTripsCount()
-        await this.props.fetchPassengersCount()
+        await Promise.all([
+            this.props.fetchPassengers(),
+            this.props.fetchTripsCount(),
+            this.props.fetchPassengersCount(),
+        ])
     }
 
     setRenderPassengerDetailsModal = (value) => {

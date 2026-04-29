@@ -153,10 +153,12 @@ class AddPassengerModal extends React.Component {
         if (!this.validateForm()) return
 
         await this.addPassenger()
-        await this.writeToJournal()
-        await this.props.fetchPassengers()
-        await this.props.fetchTripsCount()
-        await this.props.fetchPassengersCount()
+        await Promise.all([
+            this.writeToJournal(),
+            this.props.fetchPassengers(),
+            this.props.fetchTripsCount(),
+            this.props.fetchPassengersCount(),
+        ])
 
         if (!this.state.isPassengerExists && !this.state.isTripExists) {
             this.props.setRenderPassengersModal(false)

@@ -85,8 +85,10 @@ class RoutesList extends React.Component {
 
     onDelete = async (id) => {
         await this.deleteRoute(id)
-        await this.props.fetchRoutes()
-        await this.props.fetchRoutesCount()
+        await Promise.all([
+            this.props.fetchRoutes(),
+            this.props.fetchRoutesCount(),
+        ])
 
         if (this.state.isFail) {
             return

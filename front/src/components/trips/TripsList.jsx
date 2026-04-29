@@ -189,12 +189,14 @@ class TripsList extends React.Component {
             return
         }
 
-        await this.props.fetchRoutes()
-        await this.props.fetchRoutesCount()
-        await this.props.fetchTrips()
-        await this.props.fetchTripsCount()
-        await this.props.fetchPassengers()
-        await this.props.fetchPassengersCount()
+        await Promise.all([
+            this.props.fetchRoutes(),
+            this.props.fetchRoutesCount(),
+            this.props.fetchTrips(),
+            this.props.fetchTripsCount(),
+            this.props.fetchPassengers(),
+            this.props.fetchPassengersCount(),
+        ])
 
         this.setRenderDeleteTripModal(false)
     }

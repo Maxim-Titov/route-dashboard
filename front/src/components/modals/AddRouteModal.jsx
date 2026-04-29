@@ -165,9 +165,11 @@ class AddRouteModal extends React.Component {
             return
         }
 
-        await this.writeToJournal()
-        await this.props.fetchRoutes()
-        await this.props.fetchRoutesCount()
+        await Promise.all([
+            this.writeToJournal(),
+            this.props.fetchRoutes(),
+            this.props.fetchRoutesCount(),
+        ])
 
         this.props.setRenderRoutesModal(false)
     }

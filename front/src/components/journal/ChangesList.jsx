@@ -67,7 +67,7 @@ class ChangesList extends React.Component {
                             </div>
 
                             <div className="time">
-                                {new Date(change.event_time).toLocaleString("uk-UA", {
+                                {new Date(change.event_time + "Z").toLocaleString("uk-UA", {
                                     year: "numeric",
                                     month: "2-digit",
                                     day: "2-digit",

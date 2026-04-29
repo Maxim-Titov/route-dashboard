@@ -272,13 +272,15 @@ class EditTripModal extends React.Component {
         const data = await this.editTrip()
         if (!data.success) return
 
-        await this.writeToJournal()
-        await this.props.fetchRoutes()
-        await this.props.fetchRoutesCount()
-        await this.props.fetchTrips()
-        await this.props.fetchTripsCount()
-        await this.props.fetchPassengers()
-        await this.props.fetchPassengersCount()
+        await Promise.all([
+            this.writeToJournal(),
+            this.props.fetchRoutes(),
+            this.props.fetchRoutesCount(),
+            this.props.fetchTrips(),
+            this.props.fetchTripsCount(),
+            this.props.fetchPassengers(),
+            this.props.fetchPassengersCount(),
+        ])
 
         this.props.setRenderEditTripModal(false)
     }

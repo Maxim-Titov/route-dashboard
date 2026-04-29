@@ -119,9 +119,11 @@ class AddCityModal extends React.Component {
             return
         }
 
-        await this.writeToJournal()
-        await this.props.fetchCities()
-        await this.props.fetchCitiesCount()
+        await Promise.all([
+            this.writeToJournal(),
+            this.props.fetchCities(),
+            this.props.fetchCitiesCount(),
+        ])
 
         this.props.setRenderCitiesModal(false)
     }

@@ -206,10 +206,12 @@ class AddTripModal extends React.Component {
 
         if (!data.success) return;
 
-        await this.writeToJournal()
-        await this.props.fetchPassengers()
-        await this.props.fetchTrips()
-        await this.props.fetchTripsCount()
+        await Promise.all([
+            this.writeToJournal(),
+            this.props.fetchPassengers(),
+            this.props.fetchTrips(),
+            this.props.fetchTripsCount(),
+        ])
 
         this.props.setRenderTripsModal(false)
     }

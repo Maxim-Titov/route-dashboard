@@ -60,15 +60,17 @@ class Home extends React.Component {
     }
 
     async componentDidMount() {
-        await this.fetchSettings()
-        await this.fetchCities()
-        await this.fetchCitiesCount()
-        await this.fetchRoutes()
-        await this.fetchRoutesCount()
-        await this.fetchTrips()
-        await this.fetchTripsCount()
-        await this.fetchPassengers()
-        await this.fetchPassengersCount()
+        await Promise.all([
+            this.fetchSettings(),
+            this.fetchCities(),
+            this.fetchCitiesCount(),
+            this.fetchRoutes(),
+            this.fetchRoutesCount(),
+            this.fetchTrips(),
+            this.fetchTripsCount(),
+            this.fetchPassengers(),
+            this.fetchPassengersCount(),
+        ])
     }
 
     fetchSettings = async () => {
