@@ -5,7 +5,12 @@ def post_get_ticket_price(trip_id, passenger_id, city_id):
     cursor = conn.cursor(dictionary=True)
 
     cursor.execute("SELECT route_id FROM trips WHERE id = %s", (trip_id, ))
-    route_id = cursor.fetchone()["route_id"]
+    row = cursor.fetchone()
+    if row is None:
+        cursor.close()
+        conn.close()
+        return None
+    route_id = row["route_id"]
 
     cursor.execute("""
         SELECT city_id
@@ -13,10 +18,12 @@ def post_get_ticket_price(trip_id, passenger_id, city_id):
         JOIN trips ON city_stations.id = trips.to_city_station_id
         WHERE trips.id = %s
     """, (trip_id, ))
-    to_city_id = cursor.fetchone()["city_id"]
-
-    if route_id is None or to_city_id is None:
+    row = cursor.fetchone()
+    if row is None:
+        cursor.close()
+        conn.close()
         return None
+    to_city_id = row["city_id"]
 
     cursor.execute("""
         SELECT price
@@ -26,5 +33,8 @@ def post_get_ticket_price(trip_id, passenger_id, city_id):
             AND from_city_id = %s
     """, (route_id, to_city_id, city_id))
     price = cursor.fetchone()
+
+    cursor.close()
+    conn.close()
 
     return price["price"] if price else None

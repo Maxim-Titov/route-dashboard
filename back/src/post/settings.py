@@ -16,4 +16,8 @@ def post_update_setting(key: str, value: dict):
     )
 
     conn.commit()
+
+    cursor.close()
+    conn.close()
+
     return True

@@ -9,6 +9,9 @@ def get_settings():
     cursor.execute("SELECT `type`, `value` FROM settings")
     rows = cursor.fetchall()
 
+    cursor.close()
+    conn.close()
+
     settings = {}
     for row in rows:
         settings[row["type"]] = json.loads(row["value"])
@@ -22,8 +25,10 @@ def get_load_settings():
     cursor.execute("SELECT `type`, `value` FROM settings")
     rows = cursor.fetchall()
 
-    settings = {}
+    cursor.close()
+    conn.close()
 
+    settings = {}
     for row in rows:
         settings[row["type"]] = json.loads(row["value"])
 

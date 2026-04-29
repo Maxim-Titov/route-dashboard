@@ -150,6 +150,8 @@ def post_search_passengers(name=None, surname=None, phone=None):
         params.append(surname + '%')
 
     if not conditions:
+        cursor.close()
+        conn.close()
         return []
 
     sql = f"""

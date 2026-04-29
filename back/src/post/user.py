@@ -25,6 +25,8 @@ def post_register(req):
     )
     
     if cursor.fetchone():
+        cursor.close()
+        conn.close()
         raise HTTPException(status_code=409, detail="Login already exists")
 
     hashed_password = hash_password(req.password)
@@ -40,6 +42,9 @@ def post_register(req):
     conn.commit()
 
     user_id = cursor.lastrowid
+
+    cursor.close()
+    conn.close()
 
     token = create_access_token(
         {
@@ -73,7 +78,12 @@ def post_login(req):
     user = cursor.fetchone()
 
     if not user or not verify_password(req.password, user["password"]):
+        cursor.close()
+        conn.close()
         raise HTTPException(status_code=401, detail="Invalid credentials")
+
+    cursor.close()
+    conn.close()
 
     access_token = create_access_token(
         {
