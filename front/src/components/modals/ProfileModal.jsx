@@ -26,7 +26,7 @@ class ProfileModal extends React.Component {
                         <button
                             className="logout inter-font"
                             type="button"
-                            onClick={() => this.props.return null}
+                            onClick={() => this.props.context.logout()}
                         >
                             <p>Вийти</p>
                         </button>
