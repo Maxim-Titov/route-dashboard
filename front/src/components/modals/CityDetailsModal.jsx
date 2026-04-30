@@ -81,7 +81,6 @@ class CityDetailsModal extends React.Component {
                 })
 
                 if (!refreshRes.ok) {
-                    context.logout()
                     return null
                 }
 

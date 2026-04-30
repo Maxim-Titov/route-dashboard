@@ -233,7 +233,7 @@ def post_filter_passengers(
         query += " AND ct.city = %s"
         params.append(city_to)
 
-    query += "GROUP BY p.id, p.first_name, p.last_name, p.phone, cf.city, ct.city, nt.note"
+    query += " GROUP BY p.id, p.first_name, p.last_name, p.phone, cf.city, ct.city, nt.note"
 
     # ---------------------------
     # SORTING

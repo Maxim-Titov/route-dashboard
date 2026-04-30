@@ -53,7 +53,6 @@ class AddPassengerModal extends React.Component {
                 })
 
                 if (!refreshRes.ok) {
-                    context.logout()
                     return null
                 }
 
@@ -152,7 +151,9 @@ class AddPassengerModal extends React.Component {
     onAdd = async () => {
         if (!this.validateForm()) return
 
-        await this.addPassenger()
+        const result = await this.addPassenger()
+        if (!result) return
+
         await Promise.all([
             this.writeToJournal(),
             this.props.fetchPassengers(),
@@ -160,9 +161,7 @@ class AddPassengerModal extends React.Component {
             this.props.fetchPassengersCount(),
         ])
 
-        if (!this.state.isPassengerExists && !this.state.isTripExists) {
-            this.props.setRenderPassengersModal(false)
-        }
+        this.props.setRenderPassengersModal(false)
     }
 
     handleChange = (e) => {

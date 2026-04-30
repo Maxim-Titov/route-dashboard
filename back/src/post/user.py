@@ -49,7 +49,8 @@ def post_register(req):
     token = create_access_token(
         {
             "sub": str(user_id),
-            "role": "user"
+            "role": "user",
+            "type": "access"
         },
         int(settings["security"]["access_ttl"])
     )

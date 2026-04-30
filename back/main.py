@@ -1,7 +1,9 @@
+from dotenv import load_dotenv
+load_dotenv()
+
 from fastapi import FastAPI, Body, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
-from dotenv import load_dotenv
 from typing import Literal, List
 
 import os
@@ -11,8 +13,6 @@ from src.get import *
 from src.post import *
 from deps.auth import *
 from utils.jwt import verify_token, create_access_token
-
-load_dotenv()
 
 app = FastAPI()
 

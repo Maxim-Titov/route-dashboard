@@ -1,10 +1,10 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from jose import jwt, JWTError
 
 import os
 
 SECRET_KEY = os.getenv("JWT_SECRET")
-ALGORITHM = os.getenv("JWT_ALGORITHM")
+ALGORITHM = "HS256"
 
 def create_refresh_token(data: dict, ttl_days: int = 7):
     to_encode = data.copy()
@@ -12,7 +12,7 @@ def create_refresh_token(data: dict, ttl_days: int = 7):
     if "sub" in to_encode:
         to_encode["sub"] = str(to_encode["sub"])
 
-    expire = datetime.utcnow() + timedelta(days=ttl_days)
+    expire = datetime.now(timezone.utc) + timedelta(days=ttl_days)
     to_encode.update({
         "exp": expire,
         "type": "refresh"
@@ -26,7 +26,7 @@ def create_access_token(data: dict, ttl_minutes: int):
     if "sub" in to_encode:
         to_encode["sub"] = str(to_encode["sub"])
 
-    expire = datetime.utcnow() + timedelta(minutes=ttl_minutes)
+    expire = datetime.now(timezone.utc) + timedelta(minutes=ttl_minutes)
     to_encode.update({"exp": expire})
 
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)

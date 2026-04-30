@@ -37,9 +37,11 @@ class DeleteUserModal extends React.Component {
 
                     <div className="footer">
                         <button className="no" type="button" onClick={() => this.props.setRenderDeleteUserModal(false)}>Ні</button>
-                        <button className="yes" type="button" onClick={() => {
-                            this.props.onDelete(this.props.userId)
-                            this.writeToJournal()
+                        <button className="yes" type="button" onClick={async () => {
+                            await Promise.all([
+                                this.props.onDelete(this.props.userId),
+                                this.writeToJournal()
+                            ])
                             this.props.setRenderDeleteUserModal(false)
                         }}>Так</button>
                     </div>

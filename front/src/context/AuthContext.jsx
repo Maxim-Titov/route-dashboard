@@ -75,7 +75,8 @@ export class AuthProvider extends React.Component {
 		this.setState({
 			isAuth: false,
 			token: null,
-			user: null
+			user: null,
+			loading: false
 		})
 	}
 

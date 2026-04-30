@@ -52,7 +52,6 @@ class AddUserModal extends React.Component {
                 })
 
                 if (!refreshRes.ok) {
-                    context.logout()
                     return null
                 }
 
@@ -183,9 +182,10 @@ class AddUserModal extends React.Component {
                                 className="yes inter-font"
                                 type="button"
                                 onClick={async () => {
-                                    await this.register()
+                                    const result = await this.register()
+                                    if (!result) return
                                     await this.writeToJournal()
-                                    await this.props.setRenderAddUserModal(false)
+                                    this.props.setRenderAddUserModal(false)
                                 }}
                             >
                                 <Save />

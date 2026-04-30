@@ -19,6 +19,8 @@ def post_add_city(city):
     cursor.close()
     conn.close()
 
+    return "added"
+
 def post_delete_city(city_id):
     conn = get_connection()
     cursor = conn.cursor(dictionary=True)
@@ -127,37 +129,57 @@ def post_update_city_stations(city_id, stations):
     if not city:
         cursor.close()
         conn.close()
-        return {
-            "success": False,
-            "message": "city not found"
-        }
+        return {"success": False, "message": "city not found"}
 
     try:
-        cursor.execute("""
-            DELETE FROM city_stations
-            WHERE city_id = %s;
-        """, (city_id, ))
+        cursor.execute("SELECT id FROM city_stations WHERE city_id = %s", (city_id,))
+        existing_ids = {row[0] for row in cursor.fetchall()}
+
+        updated_ids = set()
 
         for station in stations:
+            station_id = station.get('id')
+            name = station['station_name']
+            address = station['station_address']
+
+            if station_id and station_id in existing_ids:
+                cursor.execute("""
+                    UPDATE city_stations
+                    SET station_name = %s, station_address = %s
+                    WHERE id = %s AND city_id = %s
+                """, (name, address, station_id, city_id))
+                updated_ids.add(station_id)
+            else:
+                cursor.execute("""
+                    INSERT INTO city_stations (city_id, station_name, station_address)
+                    VALUES (%s, %s, %s)
+                """, (city_id, name, address))
+
+        for station_id in existing_ids - updated_ids:
             cursor.execute("""
-                INSERT INTO city_stations (city_id, station_name, station_address)
-                VALUES (%s, %s, %s);
-            """, (city_id, station['station_name'], station['station_address']))
+                SELECT 1 FROM (
+                    SELECT from_city_station_id AS sid FROM trips WHERE from_city_station_id = %s
+                    UNION ALL
+                    SELECT to_city_station_id   FROM trips WHERE to_city_station_id   = %s
+                    UNION ALL
+                    SELECT station_id           FROM trip_passengers WHERE station_id  = %s
+                    UNION ALL
+                    SELECT city_station_id      FROM trip_stations   WHERE city_station_id = %s
+                ) AS refs LIMIT 1
+            """, (station_id, station_id, station_id, station_id))
+
+            if cursor.fetchone():
+                continue
+
+            cursor.execute("DELETE FROM city_stations WHERE id = %s", (station_id,))
 
         conn.commit()
-
-        return {
-            "success": True,
-            "message": "stations updated"
-        }
+        return {"success": True, "message": "stations updated"}
 
     except Exception as e:
         conn.rollback()
         print("Update city stations error:", e)
-        return {
-            "success": False,
-            "message": "internal error"
-        }
+        return {"success": False, "message": "internal error"}
 
     finally:
         cursor.close()
