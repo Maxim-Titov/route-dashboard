@@ -33,6 +33,10 @@ class Settings extends React.Component {
         await this.fetchSettings()
     }
 
+    setSettings = (value) => {
+        this.setState({ settings: value })
+    }
+
     fetchSettings = async () => {
         try {
             const res = await fetch(`${import.meta.env.VITE_API_URL}/settings`, {
@@ -123,7 +127,7 @@ class Settings extends React.Component {
                     <GeneralSettings value={this.state.settings.general} onChange={(data) => this.updateSettings("general", data)} />
                     <SecuritySettings value={this.state.settings.security} onChange={(data) => this.updateSettings("security", data)} />
                     <AccessControl value={this.state.settings.access} onChange={(data) => this.updateSettings("access", data)} />
-                    <DangerZone />
+                    <DangerZone setSettings={this.setSettings} save={this.save} />
                 </div>
 
                 {this.state.renderSuccessMessage && (

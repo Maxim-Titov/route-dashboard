@@ -47,7 +47,7 @@ class TicketModal extends React.Component {
                     <div className="body">
                         <div id="ticket" style={{ padding: 20, background: "#fff", width: 750 }}>
                             <div className="ticket-header" style={{ marginBottom: 30 }}>
-                                <h2>MY WAY</h2>
+                                <h2>Автосервіс тур</h2>
                             </div>
 
                             <div className="ticket-body">
@@ -75,14 +75,14 @@ class TicketModal extends React.Component {
                                 <div className="ticket-footer-contacts" style={{ textAlign: 'center' }}>
                                     <div style={{ marginBottom: 10 }}>
                                         <b>Ваш персональний менеджер:</b>
-                                        <p>MyWay</p>
-                                        <p>+38 068 216 1163</p>
+                                        <p>Автосервіс тур</p>
+                                        <p>+38 068 436 9589</p>
                                     </div>
 
                                     <div>
                                         <b>Менеджер лінії:</b>
-                                        <p>MyWay</p>
-                                        <p>+38 068 216 1163</p>
+                                        <p>Автосервіс тур</p>
+                                        <p>+38 068 436 9589</p>
                                     </div>
                                 </div>
 

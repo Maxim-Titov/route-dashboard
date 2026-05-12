@@ -462,14 +462,14 @@ async def delete_trip(req: deleteTripRequest, user=Depends(get_current_user)):
 
 @app.post("/trips/stations")
 async def trip_stations(req: tripStationsRequest, user=Depends(get_current_user)):
-    if user["role"] != "admin":
+    if not user:
         raise HTTPException(403)
     
     return post_trip_stations(req.trip_id)
 
 @app.post("/trips/passengers")
 async def trip_passengers(req: tripPassengersRequest, user=Depends(get_current_user)):
-    if user["role"] != "admin":
+    if not user:
         raise HTTPException(403)
     
     return post_trip_passengers(req.trip_id)

@@ -14,7 +14,21 @@ class DangerZone extends React.Component {
                 </div>
 
                 <div className="content">
-                    <button className="danger">
+                    <button className="danger" onClick={async () => {
+                        this.props.setSettings({
+                            general: {
+                                site_name: "Route Dashboard"
+                            },
+                            security: {
+                                access_ttl: 60,
+                                refresh_ttl: 7
+                            },
+                            access: {
+                                allow_registration: true
+                            }
+                        })
+                        await this.props.save()
+                    }}>
                         Скинути налаштування
                     </button>
                 </div>
