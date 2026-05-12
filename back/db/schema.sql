@@ -212,7 +212,7 @@ CREATE TABLE IF NOT EXISTS pricing (
 
     CHECK (from_city_id <> to_city_id),
 
-    FOREIGN KEY (route_id) REFERENCES routes(id),
+    FOREIGN KEY (route_id) REFERENCES routes(id) ON DELETE CASCADE,
     FOREIGN KEY (from_city_id) REFERENCES cities(id),
     FOREIGN KEY (to_city_id) REFERENCES cities(id),
 
