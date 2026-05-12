@@ -12,7 +12,7 @@ class Filters extends React.Component {
                         <Filter />
                         Фільтри
                     </div>
-                    
+
                     <div className="content">
                         <form id="filters">
                             <div className="settings-wrapper">
@@ -47,7 +47,7 @@ class Filters extends React.Component {
 
                                 <div className="view">
                                     <p>Вигляд: </p>
-                                    
+
                                     <button
                                         type="button"
                                         className="reset-filters"
@@ -111,6 +111,30 @@ class Filters extends React.Component {
                                         value={filters.cityTo}
                                         onChange={(e) => setFilters('cityTo', e.target.value)}
                                         placeholder="Варшава" />
+                                </div>
+                            </div>
+
+                            <div className="form-row">
+                                <div className="form-group">
+                                    <label htmlFor="trip-num">№ поїздки</label>
+                                    <input
+                                        type="number"
+                                        name="trip-num"
+                                        id="trip-num"
+                                        value={filters.tripNum}
+                                        onChange={(e) => setFilters('tripNum', e.target.value)}
+                                        placeholder="1" />
+                                </div>
+
+                                <div className="form-group">
+                                    <label htmlFor="route-num">№ маршруту</label>
+                                    <input
+                                        type="number"
+                                        name="route-num"
+                                        id="route-num"
+                                        value={filters.routeNum}
+                                        onChange={(e) => setFilters('routeNum', e.target.value)}
+                                        placeholder="1" />
                                 </div>
                             </div>
                         </form>

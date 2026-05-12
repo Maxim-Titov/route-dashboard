@@ -111,8 +111,7 @@ class getTripsRequest(BaseModel):
     user_id: int
 
 class addTripRequest(BaseModel):
-    city_from: int
-    city_to: int
+    route_id: int
     from_station_id: int
     to_station_id: int
     date: str
@@ -124,8 +123,7 @@ class addTripRequest(BaseModel):
 
 class editTripRequest(BaseModel):
     trip_id: int
-    city_from: int
-    city_to: int
+    route_id: int
     from_station_id: int
     to_station_id: int
     date: str
@@ -157,6 +155,7 @@ class FilterTripsRequest(BaseModel):
     time_from: str | None = None
     time_to: str | None = None
     status: List[Literal['planned', 'active', 'completed', 'cancelled']] | None = None
+    route_id: int | None = None
     city_from: str | None = None
     city_to: str | None = None
     station_city: str | None = None
@@ -192,6 +191,8 @@ class filterPassengersRequest(BaseModel):
     age_to: int | None = Field(None, ge=0, le=120)
     city_from: str | None = None
     city_to: str | None = None
+    trip_id: int | None = None
+    route_id: int | None = None
 
 class passengerTripsRequest(BaseModel):
     passenger_id: int
@@ -432,7 +433,7 @@ async def add_trip(req: addTripRequest, user=Depends(get_current_user)):
     
     max_passengers = 0 if req.max_passengers == None else req.max_passengers
 
-    success = post_add_trip(req.city_from, req.city_to, req.from_station_id, req.to_station_id, req.date, req.time, max_passengers, req.passenger_ids, req.passenger_stations, req.stations)
+    success = post_add_trip(req.route_id, req.from_station_id, req.to_station_id, req.date, req.time, max_passengers, req.passenger_ids, req.passenger_stations, req.stations)
 
     if success == 'added':
         return {"success": True, "message": success}
@@ -444,7 +445,7 @@ async def edit_trip(req: editTripRequest, user=Depends(get_current_user)):
     if user["role"] != "admin":
         raise HTTPException(403)
     
-    success = post_edit_trip(req.trip_id, req.city_from, req.city_to, req.from_station_id, req.to_station_id, req.date, req.time, req.max_passengers, req.passenger_ids, req.passenger_stations, req.stations, req.status)
+    success = post_edit_trip(req.trip_id, req.route_id, req.from_station_id, req.to_station_id, req.date, req.time, req.max_passengers, req.passenger_ids, req.passenger_stations, req.stations, req.status)
 
     if not success or success != 'edited':
         return {"success": False, "message": success}
@@ -569,7 +570,7 @@ def filter_passengers(req: filterPassengersRequest):
             "error": "age_from cannot be greater than age_to"
         }
     
-    res = post_filter_passengers(req.sort_by, req.age_from, req.age_to, req.city_from, req.city_to)
+    res = post_filter_passengers(req.sort_by, req.age_from, req.age_to, req.city_from, req.city_to, req.trip_id, req.route_id)
 
     return res
 

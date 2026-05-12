@@ -156,6 +156,20 @@ class Filters extends React.Component {
                                 </div>
                             </div>
 
+                            <div className="form-row column">
+                                <div className="form-group">
+                                    <label htmlFor="route-num">№ маршруту</label>
+                                    <input
+                                        type="number"
+                                        name="route-num"
+                                        id="route-num"
+                                        value={filters.routeNum}
+                                        onChange={e => setFilters("routeNum", e.target.value)}
+                                        placeholder="1"
+                                    />
+                                </div>
+                            </div>
+
                             {/* CHECKBOX */}
                             <div className="form-row">
                                 <div className="form-group">

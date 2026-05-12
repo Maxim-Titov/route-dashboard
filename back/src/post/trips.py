@@ -9,7 +9,7 @@ def post_get_trips(user_id):
 
     if role and role['role'] == 'admin':
         cursor.execute("""
-            SELECT trips.id, from_city.city AS from_city, to_city.city AS to_city, from_station.station_name AS from_station_name, to_station.station_name AS to_station_name, from_station.station_address AS from_station_address, to_station.station_address AS to_station_address, COUNT(trip_passengers.trip_id) AS passengers_count, max_passengers_count, date, time, status, users.name AS user_name, users.surname AS user_surname, users.login AS user_login
+            SELECT trips.id, trips.route_id, from_city.city AS from_city, to_city.city AS to_city, from_station.station_name AS from_station_name, to_station.station_name AS to_station_name, from_station.station_address AS from_station_address, to_station.station_address AS to_station_address, COUNT(trip_passengers.trip_id) AS passengers_count, max_passengers_count, date, time, status, users.name AS user_name, users.surname AS user_surname, users.login AS user_login
             FROM trips
                     
             JOIN routes ON routes.id = trips.route_id
@@ -25,7 +25,7 @@ def post_get_trips(user_id):
         """)
     else:
         cursor.execute("""
-            SELECT trips.id, from_city.city AS from_city, to_city.city AS to_city, from_station.station_name AS from_station_name, to_station.station_name AS to_station_name, from_station.station_address AS from_station_address, to_station.station_address AS to_station_address, COUNT(trip_passengers.trip_id) AS passengers_count, max_passengers_count, date, time, status, users.name AS user_name, users.surname AS user_surname, users.login AS user_login
+            SELECT trips.id, trips.route_id, from_city.city AS from_city, to_city.city AS to_city, from_station.station_name AS from_station_name, to_station.station_name AS to_station_name, from_station.station_address AS from_station_address, to_station.station_address AS to_station_address, COUNT(trip_passengers.trip_id) AS passengers_count, max_passengers_count, date, time, status, users.name AS user_name, users.surname AS user_surname, users.login AS user_login
             FROM trips
                     
             JOIN routes ON routes.id = trips.route_id
@@ -48,7 +48,7 @@ def post_get_trips(user_id):
 
     return trips
 
-def post_add_trip(from_city_id, to_city_id, from_station_id, to_station_id, date, time, max_passengers, passenger_ids, passenger_stations, stations):
+def post_add_trip(route_id, from_station_id, to_station_id, date, time, max_passengers, passenger_ids, passenger_stations, stations):
     conn = get_connection()
     cursor = conn.cursor(dictionary=True)
 
@@ -57,8 +57,8 @@ def post_add_trip(from_city_id, to_city_id, from_station_id, to_station_id, date
         cursor.execute("""
             SELECT id
             FROM routes
-            WHERE from_city_id = %s AND to_city_id = %s
-        """, (from_city_id, to_city_id))
+            WHERE id = %s
+        """, (route_id,))
 
         route = cursor.fetchone()
         if not route:
@@ -106,7 +106,7 @@ def post_add_trip(from_city_id, to_city_id, from_station_id, to_station_id, date
         cursor.close()
         conn.close()
 
-def post_edit_trip(trip_id, from_city_id, to_city_id, from_station_id, to_station_id, date, time, max_passengers, passenger_ids, passenger_stations, stations, status):
+def post_edit_trip(trip_id, route_id, from_station_id, to_station_id, date, time, max_passengers, passenger_ids, passenger_stations, stations, status):
     conn = get_connection()
     cursor = conn.cursor(dictionary=True)
 
@@ -115,8 +115,8 @@ def post_edit_trip(trip_id, from_city_id, to_city_id, from_station_id, to_statio
         cursor.execute("""
             SELECT id
             FROM routes
-            WHERE from_city_id = %s AND to_city_id = %s
-        """, (from_city_id, to_city_id))
+            WHERE id = %s
+        """, (route_id,))
 
         route = cursor.fetchone()
         if not route:
@@ -278,6 +278,7 @@ def post_filter_trips(req):
     query = """
         SELECT
             t.id,
+            t.route_id,
             t.date,
             t.time,
             t.status,
@@ -338,6 +339,11 @@ def post_filter_trips(req):
         placeholders = ",".join(["%s"] * len(req.status))
         query += f" AND t.status IN ({placeholders})"
         params.extend(req.status)
+
+    # -------- ROUTE ID --------
+    if req.route_id:
+        query += " AND t.route_id = %s"
+        params.append(req.route_id)
 
     # -------- ROUTE --------
     if req.city_from:

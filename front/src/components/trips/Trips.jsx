@@ -18,6 +18,7 @@ class Trips extends React.Component {
             isError: false,
 
             filters: {
+                routeNum: '',
                 dateFrom: '',
                 dateTo: '',
                 cityFrom: '',
@@ -76,6 +77,7 @@ class Trips extends React.Component {
                         date_from: filters.dateFrom || null,
                         date_to: filters.dateTo || null,
 
+                        route_id: filters.routeNum || null,
                         city_from: filters.cityFrom || null,
                         city_to: filters.cityTo || null,
                         station_city: filters.stationCity || null,
@@ -106,6 +108,7 @@ class Trips extends React.Component {
         this.setState({
             sortTypeDesc: true,
             filters: {
+                routeNum: '',
                 dateFrom: '',
                 dateTo: '',
                 cityFrom: '',

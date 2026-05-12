@@ -13,6 +13,8 @@ class AddTripModal extends React.Component {
 
         this.state = {
             tripData: {
+                route_id: '',
+
                 from: '',
                 from_id: null,
                 from_station: '',
@@ -52,8 +54,7 @@ class AddTripModal extends React.Component {
                         Authorization: `Bearer ${localStorage.getItem("token")}`
                     },
                     body: JSON.stringify({
-                        city_from: this.state.tripData.from_id,
-                        city_to: this.state.tripData.to_id,
+                        route_id: this.parseNumber(this.state.tripData.route_id),
                         from_station_id: this.state.tripData.from_station_id,
                         to_station_id: this.state.tripData.to_station_id,
                         date: this.state.tripData?.date,
@@ -89,8 +90,7 @@ class AddTripModal extends React.Component {
                             Authorization: `Bearer ${localStorage.getItem("token")}`
                         },
                         body: JSON.stringify({
-                            city_from: this.state.tripData.from_id,
-                            city_to: this.state.tripData.to_id,
+                            route_id: this.parseNumber(this.state.tripData.route_id),
                             from_station_id: this.state.tripData.from_station_id,
                             to_station_id: this.state.tripData.to_station_id,
                             date: this.state.tripData?.date,
@@ -254,6 +254,17 @@ class AddTripModal extends React.Component {
 
                         <div className="body">
                             <form id="trip-info">
+                                <div className="form-group">
+                                    <label htmlFor="route_id">Номер маршруту</label>
+                                    <input
+                                        type="number"
+                                        name="route_id"
+                                        value={tripData.route_id}
+                                        onChange={this.handleChange}
+                                        placeholder="1"
+                                    />
+                                </div>
+
                                 <div className="form-group">
                                     <label htmlFor="from">Вирушаємо з <span>*</span></label>
                                     <CitySearchInput

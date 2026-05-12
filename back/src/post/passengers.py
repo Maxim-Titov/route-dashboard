@@ -173,7 +173,9 @@ def post_filter_passengers(
     age_from=None,
     age_to=None,
     city_from=None,
-    city_to=None
+    city_to=None,
+    trip_id=None,
+    route_id=None
 ):
     conn = get_connection()
     cursor = conn.cursor(dictionary=True)
@@ -232,6 +234,17 @@ def post_filter_passengers(
     if city_to:
         query += " AND ct.city = %s"
         params.append(city_to)
+
+    # ---------------------------
+    # TRIP / ROUTE FILTERS
+    # ---------------------------
+    if trip_id:
+        query += " AND tp.trip_id = %s"
+        params.append(trip_id)
+
+    if route_id:
+        query += " AND r.id = %s"
+        params.append(route_id)
 
     query += " GROUP BY p.id, p.first_name, p.last_name, p.phone, cf.city, ct.city, nt.note"
 

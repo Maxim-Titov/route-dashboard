@@ -22,6 +22,8 @@ class Passengers extends React.Component {
                 ageTo: '',
                 cityFrom: '',
                 cityTo: '',
+                tripNum: '',
+                routeNum: '',
             },
             passengersToShow: this.props.passengersList,
             viewType: 'flex',
@@ -50,10 +52,12 @@ class Passengers extends React.Component {
                     },
                     body: JSON.stringify({
                         sort_by: sortTypeDesc ? 'desc' : 'asc',
-                        age_from: +filters.ageFrom,
-                        age_to: +filters.ageTo,
-                        city_from: filters.cityFrom,
-                        city_to: filters.cityTo
+                        age_from: filters.ageFrom ? +filters.ageFrom : null,
+                        age_to: filters.ageTo ? +filters.ageTo : null,
+                        city_from: filters.cityFrom || null,
+                        city_to: filters.cityTo || null,
+                        trip_id: filters.tripNum ? +filters.tripNum : null,
+                        route_id: filters.routeNum ? +filters.routeNum : null,
                     })
                 }
             )
@@ -106,6 +110,8 @@ class Passengers extends React.Component {
                 ageTo: '',
                 cityFrom: '',
                 cityTo: '',
+                tripNum: '',
+                routeNum: '',
             },
             passengersToShow: this.props.passengersList
         })
