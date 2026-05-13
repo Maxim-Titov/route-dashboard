@@ -94,7 +94,7 @@ class RouteDetailsModal extends React.Component {
 
                 const price = row.prices[col.id]
 
-                if (price !== '' && price !== null) {
+                if (price !== '' && price !== null && Number.isInteger(col.id) && Number.isInteger(row.id)) {
 
                     pricing.push({
 
