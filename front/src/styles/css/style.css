@@ -3410,6 +3410,50 @@ aside .navigation nav ul li svg {
 .passenger-details-modal .body .passengers-card .passengers .passenger li p button:hover {
   background-color: rgba(163, 196, 243, 0.8);
 }
+.city-details-modal .body .passengers-card .passengers .passenger li .seat-edit,
+.route-details-modal .body .passengers-card .passengers .passenger li .seat-edit,
+.trip-details-modal .body .passengers-card .passengers .passenger li .seat-edit,
+.passenger-details-modal .body .passengers-card .passengers .passenger li .seat-edit {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+  padding-left: 2px;
+}
+.city-details-modal .body .passengers-card .passengers .passenger li .seat-edit label,
+.route-details-modal .body .passengers-card .passengers .passenger li .seat-edit label,
+.trip-details-modal .body .passengers-card .passengers .passenger li .seat-edit label,
+.passenger-details-modal .body .passengers-card .passengers .passenger li .seat-edit label {
+  font-size: clamp(0.75rem, 0.7rem + 0.2vw, 0.875rem);
+  color: #6B7280;
+  white-space: nowrap;
+}
+.city-details-modal .body .passengers-card .passengers .passenger li .seat-edit input,
+.route-details-modal .body .passengers-card .passengers .passenger li .seat-edit input,
+.trip-details-modal .body .passengers-card .passengers .passenger li .seat-edit input,
+.passenger-details-modal .body .passengers-card .passengers .passenger li .seat-edit input {
+  width: 72px;
+  padding: 4px 8px;
+  background-color: #FAFBFC;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 0.75rem;
+  font-size: clamp(0.75rem, 0.7rem + 0.2vw, 0.875rem);
+  color: #3D4551;
+}
+.city-details-modal .body .passengers-card .passengers .passenger li .seat-edit input:focus,
+.route-details-modal .body .passengers-card .passengers .passenger li .seat-edit input:focus,
+.trip-details-modal .body .passengers-card .passengers .passenger li .seat-edit input:focus,
+.passenger-details-modal .body .passengers-card .passengers .passenger li .seat-edit input:focus {
+  outline: none;
+  border-color: #A3C4F3;
+  box-shadow: 0 0 0 2px rgba(163, 196, 243, 0.3);
+}
+.city-details-modal .body .passengers-card .passengers .passenger li .seat-edit input::placeholder,
+.route-details-modal .body .passengers-card .passengers .passenger li .seat-edit input::placeholder,
+.trip-details-modal .body .passengers-card .passengers .passenger li .seat-edit input::placeholder,
+.passenger-details-modal .body .passengers-card .passengers .passenger li .seat-edit input::placeholder {
+  color: rgba(107, 114, 128, 0.5);
+}
 .city-details-modal .body .table-card .table-wrapper table,
 .route-details-modal .body .table-card .table-wrapper table,
 .trip-details-modal .body .table-card .table-wrapper table,
@@ -3535,6 +3579,51 @@ aside .navigation nav ul li svg {
 .trip-details-modal .body .table-card .table-wrapper table tbody tr td,
 .passenger-details-modal .body .table-card .table-wrapper table tbody tr td {
   padding: 0.5rem;
+}
+.city-details-modal .body .table-card .table-wrapper table tbody tr td .price-cell,
+.route-details-modal .body .table-card .table-wrapper table tbody tr td .price-cell,
+.trip-details-modal .body .table-card .table-wrapper table tbody tr td .price-cell,
+.passenger-details-modal .body .table-card .table-wrapper table tbody tr td .price-cell {
+  display: flex;
+  gap: 4px;
+  width: 100%;
+}
+.city-details-modal .body .table-card .table-wrapper table tbody tr td .price-cell .price-input,
+.route-details-modal .body .table-card .table-wrapper table tbody tr td .price-cell .price-input,
+.trip-details-modal .body .table-card .table-wrapper table tbody tr td .price-cell .price-input,
+.passenger-details-modal .body .table-card .table-wrapper table tbody tr td .price-cell .price-input {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.city-details-modal .body .table-card .table-wrapper table tbody tr td .price-cell .price-input .currency-badge,
+.route-details-modal .body .table-card .table-wrapper table tbody tr td .price-cell .price-input .currency-badge,
+.trip-details-modal .body .table-card .table-wrapper table tbody tr td .price-cell .price-input .currency-badge,
+.passenger-details-modal .body .table-card .table-wrapper table tbody tr td .price-cell .price-input .currency-badge {
+  font-size: clamp(14px, 0.9vw, 18px);
+  font-weight: 600;
+  min-width: 14px;
+  text-align: center;
+  flex-shrink: 0;
+}
+.city-details-modal .body .table-card .table-wrapper table tbody tr td .price-cell .price-input .currency-badge.uah,
+.route-details-modal .body .table-card .table-wrapper table tbody tr td .price-cell .price-input .currency-badge.uah,
+.trip-details-modal .body .table-card .table-wrapper table tbody tr td .price-cell .price-input .currency-badge.uah,
+.passenger-details-modal .body .table-card .table-wrapper table tbody tr td .price-cell .price-input .currency-badge.uah {
+  color: #A3C4F3;
+}
+.city-details-modal .body .table-card .table-wrapper table tbody tr td .price-cell .price-input .currency-badge.pln,
+.route-details-modal .body .table-card .table-wrapper table tbody tr td .price-cell .price-input .currency-badge.pln,
+.trip-details-modal .body .table-card .table-wrapper table tbody tr td .price-cell .price-input .currency-badge.pln,
+.passenger-details-modal .body .table-card .table-wrapper table tbody tr td .price-cell .price-input .currency-badge.pln {
+  color: #76B5A9;
+}
+.city-details-modal .body .table-card .table-wrapper table tbody tr td .price-cell .price-input input,
+.route-details-modal .body .table-card .table-wrapper table tbody tr td .price-cell .price-input input,
+.trip-details-modal .body .table-card .table-wrapper table tbody tr td .price-cell .price-input input,
+.passenger-details-modal .body .table-card .table-wrapper table tbody tr td .price-cell .price-input input {
+  width: 100px;
+  padding: 5px 8px;
 }
 .city-details-modal .body .table-card .table-wrapper table tbody tr.empty-row td,
 .route-details-modal .body .table-card .table-wrapper table tbody tr.empty-row td,

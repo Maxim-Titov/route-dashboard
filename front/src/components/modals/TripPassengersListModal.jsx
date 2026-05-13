@@ -16,7 +16,8 @@ class TripPassengersListModal extends React.Component {
                 city_id: null,
                 city: '',
                 station_id: null,
-                station: ''
+                station: '',
+                seat_number: null
             })),
             tempMaxPassengers: props.maxPassengers || '',
             isError: false
@@ -44,7 +45,7 @@ class TripPassengersListModal extends React.Component {
                 tempPassengers: [...prev.tempPassengers, passenger],
                 tempStations: [
                     ...prev.tempStations,
-                    { city_id: null, city: '', station_id: null, station: '' }
+                    { city_id: null, city: '', station_id: null, station: '', seat_number: null }
                 ]
             }
         })
@@ -98,6 +99,17 @@ class TripPassengersListModal extends React.Component {
                 city: city.city,
                 station_id: null,
                 station: ''
+            }
+            return { tempStations }
+        })
+    }
+
+    handleSeatNumberChange = (index, value) => {
+        this.setState(prev => {
+            const tempStations = [...prev.tempStations]
+            tempStations[index] = {
+                ...tempStations[index],
+                seat_number: value === '' ? null : Number(value)
             }
             return { tempStations }
         })
@@ -193,6 +205,15 @@ class TripPassengersListModal extends React.Component {
                                                                 disabled={!station.city_id}
                                                                 onSelect={(s) => this.handleStationSelect(index, s)}
                                                                 onChange={(v) => this.handleStationChange(index, v)}
+                                                            />
+
+                                                            <input
+                                                                className="inter-font"
+                                                                type="number"
+                                                                placeholder="Місце №"
+                                                                min="1"
+                                                                value={station.seat_number ?? ''}
+                                                                onChange={(e) => this.handleSeatNumberChange(index, e.target.value)}
                                                             />
                                                         </div>
                                                     </li>

@@ -109,18 +109,15 @@ class EditPassengerModal extends React.Component {
     }
 
     validateForm = () => {
-        let { name, surname, phone, dateOfBirth } = this.state.passengerData
+        let { surname, phone } = this.state.passengerData
         const errors = {}
 
-        if (!name.trim()) errors.name = "Імʼя обовʼязкове"
         if (!surname.trim()) errors.surname = "Прізвище обовʼязкове"
         if (!phone.trim()) errors.phone = "Телефон обовʼязковий"
 
         if (phone && !/^(\+?380\d{9})$/.test(phone)) {
             errors.phone = "Формат: +380XXXXXXXXX або 380XXXXXXXXX"
         }
-
-        if (!dateOfBirth) errors.dateOfBirth = "Дата народження обовʼязкова"
 
         this.setState({ errors })
 
@@ -171,7 +168,7 @@ class EditPassengerModal extends React.Component {
 
                             {/* Імʼя */}
                             <div className="form-group">
-                                <label htmlFor="name">Ім'я <span>*</span></label>
+                                <label htmlFor="name">Ім'я</label>
                                 <input
                                     className={`inter-font ${errors.name ? 'not-valid' : ''}`}
                                     onChange={this.handleChange}
@@ -181,7 +178,6 @@ class EditPassengerModal extends React.Component {
                                     id="name"
                                     placeholder="Введіть ім'я"
                                 />
-                                {/* {errors.name && <div className="error-popup">{errors.name}</div>} */}
                             </div>
 
                             {/* Прізвище */}
@@ -196,7 +192,6 @@ class EditPassengerModal extends React.Component {
                                     id="surname"
                                     placeholder="Введіть прізвище"
                                 />
-                                {/* {errors.surname && <div className="error-popup">{errors.surname}</div>} */}
                             </div>
 
                             {/* Телефон */}
@@ -211,12 +206,11 @@ class EditPassengerModal extends React.Component {
                                     id="phone"
                                     placeholder="380123456789"
                                 />
-                                {/* {errors.phone && <div className="error-popup">{errors.phone}</div>} */}
                             </div>
 
                             {/* Дата народження */}
                             <div className="form-group">
-                                <label htmlFor="date-of-birth">Дата народження <span>*</span></label>
+                                <label htmlFor="date-of-birth">Дата народження</label>
                                 <input
                                     className={`inter-font ${errors.dateOfBirth ? 'not-valid' : ''}`}
                                     onChange={this.handleChange}
@@ -225,7 +219,6 @@ class EditPassengerModal extends React.Component {
                                     name="dateOfBirth"
                                     id="date-of-birth"
                                 />
-                                {/* {errors.dateOfBirth && <div className="error-popup">{errors.dateOfBirth}</div>} */}
                             </div>
 
                             {/* Замітка */}

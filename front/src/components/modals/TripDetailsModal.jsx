@@ -3,6 +3,7 @@ import { X, Clock, Users, MapPin, GitCommitVertical, MapPinCheckInside } from 'l
 
 import SetDriverModal from "./SetDriverModal"
 import TicketModal from "./TicketModal"
+import MessageModal from "./MessageModal"
 
 import { formatPhone } from "../../utils/formatPhoneNumber"
 
@@ -18,7 +19,9 @@ class TripDetailsModal extends React.Component {
                 "data": "",
                 "from_station": "",
                 "price": 0
-            }
+            },
+            seatEdits: {},
+            isSeatTaken: false
         }
     }
 
@@ -144,6 +147,22 @@ class TripDetailsModal extends React.Component {
         })
     }
 
+    setIsSeatTaken = (value) => {
+        this.setState({ isSeatTaken: value })
+    }
+
+    handleSeatChange = (index, value) => {
+        this.setState(prev => ({
+            seatEdits: { ...prev.seatEdits, [index]: value }
+        }))
+    }
+
+    getSeatValue = (index) => {
+        const { seatEdits } = this.state
+        if (seatEdits[index] !== undefined) return seatEdits[index]
+        return this.props.data.passengerStations[index]?.seat_number ?? ''
+    }
+
     render() {
         const { id, name, data } = this.props
 
@@ -155,6 +174,10 @@ class TripDetailsModal extends React.Component {
 
                 {this.state.renderTicketModal && (
                     <TicketModal ticketData={this.state.ticketData} formatTimeFromSeconds={this.props.formatTimeFromSeconds} setRenderTicketModal={this.setRenderTicketModal} />
+                )}
+
+                {this.state.isSeatTaken && (
+                    <MessageModal header="Місце зайняте" body="Це місце вже зайняте в даній поїздці" action={this.setIsSeatTaken} />
                 )}
 
                 <div className="trip-details-modal">
@@ -233,9 +256,12 @@ class TripDetailsModal extends React.Component {
                                                     const price = await this.getPrice(passenger.id, data.passengerStations[index].city_id)
                                                     this.setTicketData(passenger, data, from_station, price)
                                                     this.setRenderTicketModal(true)
-
                                                 }}>Квиток</button>
                                             </p>
+
+                                            <div className="seat-edit">
+                                                <label>Місце № {this.getSeatValue(index)}</label>
+                                            </div>
                                         </li>
                                     </ul>
                                 ))}

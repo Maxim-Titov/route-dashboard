@@ -72,8 +72,14 @@ def post_add_trip(route_id, from_station_id, to_station_id, date, time, max_pass
 
         trip_id = cursor.lastrowid
 
+        if passenger_stations:
+            seats = [ps.get("seat_number") for ps in passenger_stations if ps.get("seat_number")]
+            if len(seats) != len(set(seats)):
+                return 'duplicate_seats'
+
         i = 0
         for i in range(len(passenger_ids)):
+            seat = passenger_stations[i].get("seat_number") if passenger_stations else None
             if passenger_stations == None:
                 cursor.execute("""
                     INSERT INTO trip_passengers (trip_id, passenger_id)
@@ -81,9 +87,9 @@ def post_add_trip(route_id, from_station_id, to_station_id, date, time, max_pass
                 """, (trip_id, passenger_ids[i]))
             else:
                 cursor.execute("""
-                    INSERT INTO trip_passengers (trip_id, passenger_id, city_id, station_id)
-                    VALUES (%s, %s, %s, %s)
-                """, (trip_id, passenger_ids[i], passenger_stations[i].get("city_id"), passenger_stations[i].get("station_id")))
+                    INSERT INTO trip_passengers (trip_id, passenger_id, city_id, station_id, seat_number)
+                    VALUES (%s, %s, %s, %s, %s)
+                """, (trip_id, passenger_ids[i], passenger_stations[i].get("city_id"), passenger_stations[i].get("station_id"), seat))
 
             i += 1
 
@@ -140,8 +146,14 @@ def post_edit_trip(trip_id, route_id, from_station_id, to_station_id, date, time
             (trip_id,)
         )
 
+        if passenger_stations:
+            seats = [ps.get("seat_number") for ps in passenger_stations if ps.get("seat_number")]
+            if len(seats) != len(set(seats)):
+                return 'duplicate_seats'
+
         i = 0
         for i in range(len(passenger_ids)):
+            seat = passenger_stations[i].get("seat_number") if passenger_stations else None
             if passenger_stations == None:
                 cursor.execute("""
                     INSERT INTO trip_passengers (trip_id, passenger_id)
@@ -149,9 +161,9 @@ def post_edit_trip(trip_id, route_id, from_station_id, to_station_id, date, time
                 """, (trip_id, passenger_ids[i]))
             else:
                 cursor.execute("""
-                    INSERT INTO trip_passengers (trip_id, passenger_id, city_id, station_id)
-                    VALUES (%s, %s, %s, %s)
-                """, (trip_id, passenger_ids[i], passenger_stations[i].get("city_id"), passenger_stations[i].get("station_id")))
+                    INSERT INTO trip_passengers (trip_id, passenger_id, city_id, station_id, seat_number)
+                    VALUES (%s, %s, %s, %s, %s)
+                """, (trip_id, passenger_ids[i], passenger_stations[i].get("city_id"), passenger_stations[i].get("station_id"), seat))
 
             i += 1
 
@@ -222,7 +234,7 @@ def post_trip_passengers(id):
         passengers = cursor.fetchall()
 
         cursor.execute("""
-            SELECT trip_passengers.city_id, cities.city, trip_passengers.station_id, city_stations.station_name AS station, city_stations.station_address
+            SELECT trip_passengers.city_id, cities.city, trip_passengers.station_id, city_stations.station_name AS station, city_stations.station_address, trip_passengers.seat_number
             FROM trip_passengers
             LEFT JOIN cities ON cities.id = trip_passengers.city_id
             LEFT JOIN city_stations ON city_stations.id = trip_passengers.station_id

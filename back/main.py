@@ -18,8 +18,8 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    # allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
-    allow_origins=["https://autoservicetourdashboard.onrender.com"],
+    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
+    # allow_origins=["https://autoservicetourdashboard.onrender.com"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -92,7 +92,8 @@ class PricingItem(BaseModel):
     route_id: int
     from_city_id: int
     to_city_id: int
-    price: int
+    price: int | None = None
+    price_pln: int | None = None
 
 class getRoutePrices(BaseModel):
     route_id: int
@@ -164,23 +165,29 @@ class FilterTripsRequest(BaseModel):
     passengers_to: int | None = Field(None, ge=0)
 
 class addPassengerRequest(BaseModel):
-    name: str
+    name: str | None = None
     surname: str
     phone: str
-    date_of_birth: str
+    date_of_birth: str | None = None
     trip_id: int | None = None
+    seat_number: int | None = None
     note: str | None = None
 
 class editPassengerRequest(BaseModel):
     passenger_id: int
-    name: str
+    name: str | None = None
     surname: str
     phone: str
-    date_of_birth: str
+    date_of_birth: str | None = None
     note: str | None = None
 
 class deletePassengerRequest(BaseModel):
     passenger_id: int
+
+class updateSeatRequest(BaseModel):
+    passenger_id: int
+    trip_id: int
+    seat_number: int | None = None
 
 class searchPassengersRequest(BaseModel):
     q: str = Field(..., min_length=2)
@@ -511,7 +518,7 @@ async def add_passenger(req: addPassengerRequest, user=Depends(get_current_user)
         phone = ''.join(filter(str.isdigit, req.phone))
 
     note = None if req.note == '' else req.note
-    res = post_add_passenger(req.name, req.surname, phone, req.date_of_birth, req.trip_id, note)
+    res = post_add_passenger(req.name, req.surname, phone, req.date_of_birth, req.trip_id, note, req.seat_number)
 
     return {"result": res}
 
@@ -526,6 +533,14 @@ async def edit_passenger(req: editPassengerRequest, user=Depends(get_current_use
     note = None if req.note == '' else req.note
     res = post_edit_passenger(req.passenger_id, req.name, req.surname, phone, req.date_of_birth, note)
 
+    return {"result": res}
+
+@app.post("/passengers/update_seat")
+async def update_passenger_seat(req: updateSeatRequest, user=Depends(get_current_user)):
+    if user["role"] != "admin":
+        raise HTTPException(403)
+
+    res = post_update_passenger_seat(req.passenger_id, req.trip_id, req.seat_number)
     return {"result": res}
 
 @app.post("/passengers/delete")

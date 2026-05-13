@@ -14,11 +14,13 @@ class AddPassengerModal extends React.Component {
                 phone: '',
                 dateOfBirth: '',
                 trip: '',
+
                 note: ''
             },
             errors: {},
             isPassengerExists: false,
-            isTripExists: false
+            isTripExists: false,
+            isSeatTaken: false
         }
 
         this.formRef = React.createRef()
@@ -36,11 +38,12 @@ class AddPassengerModal extends React.Component {
                         Authorization: `Bearer ${localStorage.getItem("token")}`
                     },
                     body: JSON.stringify({
-                        name: this.state.passengerData?.name,
+                        name: this.state.passengerData?.name || null,
                         surname: this.state.passengerData?.surname,
                         phone: this.state.passengerData?.phone,
-                        date_of_birth: this.state.passengerData?.dateOfBirth,
+                        date_of_birth: this.state.passengerData?.dateOfBirth || null,
                         trip_id: this.parseNumber(this.state.passengerData?.trip),
+
                         note: this.state.passengerData?.note
                     })
                 }
@@ -69,11 +72,12 @@ class AddPassengerModal extends React.Component {
                             Authorization: `Bearer ${localStorage.getItem("token")}`
                         },
                         body: JSON.stringify({
-                            name: this.state.passengerData?.name,
+                            name: this.state.passengerData?.name || null,
                             surname: this.state.passengerData?.surname,
                             phone: this.state.passengerData?.phone,
-                            date_of_birth: this.state.passengerData?.dateOfBirth,
+                            date_of_birth: this.state.passengerData?.dateOfBirth || null,
                             trip_id: this.parseNumber(this.state.passengerData?.trip),
+    
                             note: this.state.passengerData?.note
                         })
                     }
@@ -88,6 +92,9 @@ class AddPassengerModal extends React.Component {
                     return
                 case 'trip not exists':
                     this.setState({ isTripExists: true })
+                    return
+                case 'seat_taken':
+                    this.setState({ isSeatTaken: true })
                     return
             }
 
@@ -129,19 +136,20 @@ class AddPassengerModal extends React.Component {
 
     parseNumber = (v) => v === '' ? null : Number(v)
 
+    setIsSeatTaken = (value) => {
+        this.setState({ isSeatTaken: value })
+    }
+
     validateForm = () => {
-        let { name, surname, phone, dateOfBirth } = this.state.passengerData
+        let { surname, phone } = this.state.passengerData
         const errors = {}
 
-        if (!name.trim()) errors.name = "Імʼя обовʼязкове"
         if (!surname.trim()) errors.surname = "Прізвище обовʼязкове"
         if (!phone.trim()) errors.phone = "Телефон обовʼязковий"
 
         if (phone && !/^\+380\d{9}$/.test(phone)) {
             errors.phone = "Формат: +380XXXXXXXXX"
         }
-
-        if (!dateOfBirth) errors.dateOfBirth = "Дата народження обовʼязкова"
 
         this.setState({ errors })
 
@@ -194,6 +202,10 @@ class AddPassengerModal extends React.Component {
                     <MessageModal header="Поїздка не існує" body='Поїздка з цим номером не існує' action={this.setIsTripExists} />
                 )}
 
+                {this.state.isSeatTaken && (
+                    <MessageModal header="Місце зайняте" body='Це місце вже зайняте в даній поїздці' action={this.setIsSeatTaken} />
+                )}
+
                 <div className="modal-wrapper">
                     <div className="add-passanger-modal">
                         <div className="header">
@@ -204,7 +216,7 @@ class AddPassengerModal extends React.Component {
                             <form id="passenger-info">
                                 {/* Імʼя */}
                                 <div className="form-group">
-                                    <label htmlFor="name">Ім'я <span>*</span></label>
+                                    <label htmlFor="name">Ім'я</label>
                                     <input
                                         className={`inter-font ${errors.name ? 'not-valid' : ''}`}
                                         onChange={this.handleChange}
@@ -249,7 +261,7 @@ class AddPassengerModal extends React.Component {
 
                                 {/* Дата народження */}
                                 <div className="form-group">
-                                    <label htmlFor="date-of-birth">Дата народження <span>*</span></label>
+                                    <label htmlFor="date-of-birth">Дата народження</label>
                                     <input
                                         className={`inter-font ${errors.dateOfBirth ? 'not-valid' : ''}`}
                                         onChange={this.handleChange}
@@ -273,7 +285,6 @@ class AddPassengerModal extends React.Component {
                                         id="trip"
                                         placeholder="3"
                                     />
-                                    {/* {errors.phone && <div className="error-popup">{errors.phone}</div>} */}
                                 </div>
 
                                 {/* Замітка */}

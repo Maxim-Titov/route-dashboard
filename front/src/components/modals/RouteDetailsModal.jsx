@@ -13,7 +13,7 @@ class RouteDetailsModal extends React.Component {
                 { id: 'from_fixed', label: this.props.from, fixed: true }
             ],
             rows: [
-                { id: 'to_fixed', name: this.props.to, fixed: true, prices: { 'from_fixed': '' } }
+                { id: 'to_fixed', name: this.props.to, fixed: true, prices: { 'from_fixed': { uah: '', pln: '' } } }
             ],
 
             renderMessage: false
@@ -64,14 +64,17 @@ class RouteDetailsModal extends React.Component {
 
             rows.forEach(row => {
                 columns.forEach(col => {
-                    row.prices[col.id] = ''
+                    row.prices[col.id] = { uah: '', pln: '' }
                 })
             })
 
             data.forEach(p => {
                 const row = rows.find(r => r.id === p.to_city_id)
                 if (row) {
-                    row.prices[p.from_city_id] = p.price
+                    row.prices[p.from_city_id] = {
+                        uah: p.price ?? '',
+                        pln: p.price_pln ?? ''
+                    }
                 }
             })
 
@@ -92,21 +95,23 @@ class RouteDetailsModal extends React.Component {
 
             columns.forEach(col => {
 
-                const price = row.prices[col.id]
+                if (!Number.isInteger(col.id) || !Number.isInteger(row.id)) return
 
-                if (price !== '' && price !== null && Number.isInteger(col.id) && Number.isInteger(row.id)) {
+                const cell = row.prices[col.id]
+                const uah = cell?.uah
+                const pln = cell?.pln
 
+                const hasUah = uah !== '' && uah !== null && uah !== undefined && Number(uah) > 0
+                const hasPln = pln !== '' && pln !== null && pln !== undefined && Number(pln) > 0
+
+                if (hasUah || hasPln) {
                     pricing.push({
-
                         route_id: this.props.id,
-
                         from_city_id: col.id,
                         to_city_id: row.id,
-
-                        price: Number(price)
-
+                        price: hasUah ? Number(uah) : null,
+                        price_pln: hasPln ? Number(pln) : null
                     })
-
                 }
 
             })
@@ -200,7 +205,7 @@ class RouteDetailsModal extends React.Component {
             const prices = {}
 
             prev.columns.forEach(col => {
-                prices[col.id] = ''
+                prices[col.id] = { uah: '', pln: '' }
             })
 
             return {
@@ -230,7 +235,7 @@ class RouteDetailsModal extends React.Component {
                 ...row,
                 prices: {
                     ...row.prices,
-                    [id]: ''
+                    [id]: { uah: '', pln: '' }
                 }
             }))
         }))
@@ -309,7 +314,7 @@ class RouteDetailsModal extends React.Component {
 
                 const prices = { ...row.prices }
 
-                prices[city.id] = prices[oldId] || ''
+                prices[city.id] = prices[oldId] || { uah: '', pln: '' }
                 delete prices[oldId]
 
                 return { ...row, prices }
@@ -325,7 +330,7 @@ class RouteDetailsModal extends React.Component {
 
     }
 
-    updatePrice = (rowId, colId, value) => {
+    updatePrice = (rowId, colId, currency, value) => {
 
         this.setState(prev => ({
 
@@ -336,7 +341,10 @@ class RouteDetailsModal extends React.Component {
                         ...row,
                         prices: {
                             ...row.prices,
-                            [colId]: value
+                            [colId]: {
+                                ...row.prices[colId],
+                                [currency]: value
+                            }
                         }
                     }
                     : row
@@ -430,14 +438,30 @@ class RouteDetailsModal extends React.Component {
 
                                                     {this.state.columns.map(col => (
                                                         <td key={col.id}>
-                                                            <input
-                                                                type="number"
-                                                                placeholder="₴"
-                                                                value={row.prices[col.id]}
-                                                                onChange={(e) =>
-                                                                    this.updatePrice(row.id, col.id, e.target.value)
-                                                                }
-                                                            />
+                                                            <div className="price-cell">
+                                                                <div className="price-input">
+                                                                    <span className="currency-badge uah">₴</span>
+                                                                    <input
+                                                                        type="number"
+                                                                        placeholder="0"
+                                                                        value={row.prices[col.id]?.uah ?? ''}
+                                                                        onChange={(e) =>
+                                                                            this.updatePrice(row.id, col.id, 'uah', e.target.value)
+                                                                        }
+                                                                    />
+                                                                </div>
+                                                                <div className="price-input">
+                                                                    <span className="currency-badge pln">zł</span>
+                                                                    <input
+                                                                        type="number"
+                                                                        placeholder="0"
+                                                                        value={row.prices[col.id]?.pln ?? ''}
+                                                                        onChange={(e) =>
+                                                                            this.updatePrice(row.id, col.id, 'pln', e.target.value)
+                                                                        }
+                                                                    />
+                                                                </div>
+                                                            </div>
                                                         </td>
                                                     ))}
 

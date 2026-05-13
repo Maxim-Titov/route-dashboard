@@ -799,6 +799,40 @@
                                 }
                             }
                         }
+
+                        .seat-edit {
+                            display: flex;
+                            align-items: center;
+                            gap: 8px;
+                            margin-top: 6px;
+                            padding-left: 2px;
+
+                            label {
+                                font-size: $text-sm;
+                                color: $muted-foreground;
+                                white-space: nowrap;
+                            }
+
+                            input {
+                                width: 72px;
+                                padding: 4px 8px;
+                                background-color: $input-background;
+                                border: 1px solid $border;
+                                border-radius: $radius;
+                                font-size: $text-sm;
+                                color: $foreground;
+
+                                &:focus {
+                                    outline: none;
+                                    border-color: $primary;
+                                    box-shadow: 0 0 0 2px rgba($primary, .3);
+                                }
+
+                                &::placeholder {
+                                    color: rgba($muted-foreground, .5);
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -899,6 +933,39 @@
                         tr {
                             td {
                                 padding: .5rem;
+
+                                .price-cell {
+                                    display: flex;
+                                    gap: 4px;
+                                    width: 100%;
+
+                                    .price-input {
+                                        display: flex;
+                                        align-items: center;
+                                        gap: 5px;
+
+                                        .currency-badge {
+                                            font-size: $font-size;
+                                            font-weight: 600;
+                                            min-width: 14px;
+                                            text-align: center;
+                                            flex-shrink: 0;
+
+                                            &.uah {
+                                                color: $primary;
+                                            }
+
+                                            &.pln {
+                                                color: $secondary;
+                                            }
+                                        }
+
+                                        input {
+                                            width: 100px;
+                                            padding: 5px 8px;
+                                        }
+                                    }
+                                }
                             }
 
                             &.empty-row {

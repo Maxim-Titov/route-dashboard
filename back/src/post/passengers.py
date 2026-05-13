@@ -1,6 +1,6 @@
 from src.db.connection import get_connection
 
-def post_add_passenger(name, surname, phone, date_of_birth, trip_id=None, note=None):
+def post_add_passenger(name, surname, phone, date_of_birth, trip_id=None, note=None, seat_number=None):
     conn = get_connection()
     cursor = conn.cursor(dictionary=True)
 
@@ -33,10 +33,18 @@ def post_add_passenger(name, surname, phone, date_of_birth, trip_id=None, note=N
             if not is_trip:
                 return 'trip not exists'
 
+            if seat_number:
+                cursor.execute(
+                    "SELECT id FROM trip_passengers WHERE trip_id = %s AND seat_number = %s",
+                    (trip_id, seat_number)
+                )
+                if cursor.fetchone():
+                    return 'seat_taken'
+
             cursor.execute("""
-                INSERT INTO trip_passengers (trip_id, passenger_id)
-                VALUES (%s, %s)
-            """, (trip_id, passenger_id))
+                INSERT INTO trip_passengers (trip_id, passenger_id, seat_number)
+                VALUES (%s, %s, %s)
+            """, (trip_id, passenger_id, seat_number))
 
         if note:
             cursor.execute("""
@@ -77,7 +85,7 @@ def post_edit_passenger(id, name, surname, phone, date_of_birth, note=None):
                 phone = %s,
                 date_of_birth = %s
             WHERE id = %s
-        """, (name, surname, phone, date_of_birth, id))
+        """, (name or None, surname, phone, date_of_birth or None, id))
 
         if note:
             cursor.execute("""
@@ -94,6 +102,39 @@ def post_edit_passenger(id, name, surname, phone, date_of_birth, note=None):
         conn.rollback()
         raise e
 
+    finally:
+        cursor.close()
+        conn.close()
+
+def post_update_passenger_seat(passenger_id, trip_id, seat_number):
+    conn = get_connection()
+    cursor = conn.cursor(dictionary=True)
+    try:
+        cursor.execute(
+            "SELECT id FROM trip_passengers WHERE trip_id = %s AND passenger_id = %s",
+            (trip_id, passenger_id)
+        )
+        if not cursor.fetchone():
+            return 'not_found'
+
+        if seat_number:
+            cursor.execute(
+                "SELECT id FROM trip_passengers WHERE trip_id = %s AND seat_number = %s AND passenger_id != %s",
+                (trip_id, seat_number, passenger_id)
+            )
+            if cursor.fetchone():
+                return 'seat_taken'
+
+        cursor.execute(
+            "UPDATE trip_passengers SET seat_number = %s WHERE trip_id = %s AND passenger_id = %s",
+            (seat_number, trip_id, passenger_id)
+        )
+        conn.commit()
+        return True
+
+    except Exception as e:
+        conn.rollback()
+        raise e
     finally:
         cursor.close()
         conn.close()

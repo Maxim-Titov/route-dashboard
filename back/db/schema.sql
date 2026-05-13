@@ -152,6 +152,7 @@ CREATE TABLE IF NOT EXISTS trip_passengers (
     passenger_id BIGINT UNSIGNED,
     city_id BIGINT UNSIGNED NULL,
     station_id BIGINT UNSIGNED NULL,
+    seat_number INT DEFAULT NULL,
 
     FOREIGN KEY (trip_id) REFERENCES trips(id) ON DELETE CASCADE,
     FOREIGN KEY (passenger_id) REFERENCES passengers(id) ON DELETE CASCADE,
@@ -209,6 +210,7 @@ CREATE TABLE IF NOT EXISTS pricing (
     to_city_id BIGINT UNSIGNED NOT NULL,
 
     price INT UNSIGNED NOT NULL,
+    price_pln INT DEFAULT NULL,
 
     CHECK (from_city_id <> to_city_id),
 

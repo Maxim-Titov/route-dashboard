@@ -22,7 +22,7 @@ def post_get_ticket_price(trip_id, passenger_id, city_id):
         to_city_id = row["city_id"]
 
         cursor.execute("""
-            SELECT price
+            SELECT price, price_pln
             FROM pricing
             WHERE route_id = %s
                 AND to_city_id = %s
@@ -33,4 +33,10 @@ def post_get_ticket_price(trip_id, passenger_id, city_id):
         cursor.close()
         conn.close()
 
-    return price["price"] if price else None
+    if not price:
+        return None
+
+    return {
+        "price": price["price"],
+        "price_pln": price["price_pln"]
+    }

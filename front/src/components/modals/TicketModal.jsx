@@ -30,7 +30,10 @@ class TicketModal extends React.Component {
     }
 
     render() {
-        const { passenger, data, from_station, price } = this.props.ticketData
+        const { passenger, data, from_station, price: priceData } = this.props.ticketData
+        const priceUah = priceData?.price
+        const pricePln = priceData?.price_pln
+        const seatNumber = from_station?.seat_number
 
         return (
             <div className="modal-wrapper">
@@ -59,6 +62,9 @@ class TicketModal extends React.Component {
                                     <p style={{ borderBottom: "1px dashed black", alignItems: "center", display: 'grid', gridTemplateColumns: '150px 1fr' }}><b>Час:</b> <span style={{ color: '#3D4551' }}>{this.props.formatTimeFromSeconds(data.time)}</span></p>
                                     <p style={{ borderBottom: "1px dashed black", alignItems: "center", display: 'grid', gridTemplateColumns: '150px 1fr' }}><b>Відправлення:</b> <span style={{ color: '#3D4551' }}>{data.from} <span>{data.from_station_name} ({data.from_station_address})</span></span></p>
                                     <p style={{ borderBottom: "1px dashed black", alignItems: "center", display: 'grid', gridTemplateColumns: '150px 1fr' }}><b>Посадка:</b> <span style={{ color: '#3D4551' }}>{from_station.city} <span>{from_station.station} ({from_station.station_address})</span></span></p>
+                                    {seatNumber && (
+                                        <p style={{ borderBottom: "1px dashed black", alignItems: "center", display: 'grid', gridTemplateColumns: '150px 1fr' }}><b>Місце №:</b> <span style={{ color: '#3D4551', fontWeight: 'bold' }}>{seatNumber}</span></p>
+                                    )}
                                     <p style={{ borderBottom: "1px dashed black", alignItems: "center", display: 'grid', gridTemplateColumns: '150px 1fr' }}><b>Прибуття:</b> <span style={{ color: '#3D4551' }}>{data.to} <span>{data.to_station_name} ({data.to_station_address})</span></span></p>
                                 </div>
 
@@ -87,8 +93,22 @@ class TicketModal extends React.Component {
                                 </div>
 
                                 <div className="ticket-footer-summary" style={{ width: 'fit-content' }}>
-                                    <p style={{ borderBottom: "1px dashed black", display: 'grid', gridTemplateColumns: '200px 1fr' }}><b>Ціна квитка:</b> {price}</p>
-                                    <p style={{ borderBottom: "1px dashed black", display: 'grid', gridTemplateColumns: '200px 1fr' }}><b>До оплати при посадці:</b> {price}</p>
+                                    <p style={{ borderBottom: "1px dashed black", display: 'grid', gridTemplateColumns: '200px 1fr', gap: 16 }}>
+                                        <b>Ціна квитка:</b>
+                                        <span style={{ display: 'flex', gap: 12 }}>
+                                            {priceUah != null && <span>{priceUah} <b>₴</b></span>}
+                                            {pricePln != null && <span>{pricePln} <b>zł</b></span>}
+                                            {priceUah == null && pricePln == null && <span>—</span>}
+                                        </span>
+                                    </p>
+                                    <p style={{ borderBottom: "1px dashed black", display: 'grid', gridTemplateColumns: '200px 1fr', gap: 16 }}>
+                                        <b>До оплати при посадці:</b>
+                                        <span style={{ display: 'flex', gap: 12 }}>
+                                            {priceUah != null && <span>{priceUah} <b>₴</b></span>}
+                                            {pricePln != null && <span>{pricePln} <b>zł</b></span>}
+                                            {priceUah == null && pricePln == null && <span>—</span>}
+                                        </span>
+                                    </p>
                                 </div>
                             </div>
                         </div>

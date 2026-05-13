@@ -146,7 +146,7 @@ def post_get_route_prices(route_id):
     cursor = conn.cursor(dictionary=True)
 
     cursor.execute("""
-        SELECT pricing.route_id, pricing.from_city_id, pricing.to_city_id, pricing.price, from_city_name.city AS from_city_name, to_city_name.city AS to_city_name
+        SELECT pricing.route_id, pricing.from_city_id, pricing.to_city_id, pricing.price, pricing.price_pln, from_city_name.city AS from_city_name, to_city_name.city AS to_city_name
         FROM pricing
 
         JOIN cities AS from_city_name ON pricing.from_city_id = from_city_name.id
@@ -192,22 +192,26 @@ def post_update_pricing(pricing):
 
         for p in pricing:
 
-            if p.price <= 0:
+            uah = p.price if p.price and p.price > 0 else None
+            pln = p.price_pln if p.price_pln and p.price_pln > 0 else None
+
+            if not uah and not pln:
                 continue
 
             insert_data.append((
                 p.route_id,
                 p.from_city_id,
                 p.to_city_id,
-                p.price
+                uah,
+                pln
             ))
 
         if insert_data:
 
             cursor.executemany("""
                 INSERT INTO pricing
-                (route_id, from_city_id, to_city_id, price)
-                VALUES (%s,%s,%s,%s)
+                (route_id, from_city_id, to_city_id, price, price_pln)
+                VALUES (%s,%s,%s,%s,%s)
             """, insert_data)
 
         conn.commit()
