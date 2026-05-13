@@ -8,12 +8,16 @@ class PassengerDetailsModal extends React.Component {
         super(props)
 
         this.state = {
-            tripsList: []
+            tripsList: [],
+            loyaltyList: []
         }
     }
 
     async componentDidMount() {
-        await this.fetchPassengerTrips()
+        await Promise.all([
+            this.fetchPassengerTrips(),
+            this.fetchLoyalty()
+        ])
     }
 
     fetchPassengerTrips = async () => {
@@ -22,20 +26,29 @@ class PassengerDetailsModal extends React.Component {
                 `${import.meta.env.VITE_API_URL}/passengers/trips`,
                 {
                     method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        passenger_id: this.props.id
-                    })
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ passenger_id: this.props.id })
                 }
             )
-
             const data = await res.json()
+            this.setState({ tripsList: data })
+        } catch (err) {
+            console.error(err)
+        }
+    }
 
-            this.setState({
-                tripsList: data
-            })
+    fetchLoyalty = async () => {
+        try {
+            const res = await fetch(
+                `${import.meta.env.VITE_API_URL}/routes/loyalty/passenger`,
+                {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ passenger_id: this.props.id })
+                }
+            )
+            const data = await res.json()
+            this.setState({ loyaltyList: data })
         } catch (err) {
             console.error(err)
         }
@@ -113,6 +126,42 @@ class PassengerDetailsModal extends React.Component {
                             </div>
                         </div>
 
+                        {this.state.loyaltyList.length > 0 && (
+                            <div className="loyalty-card">
+                                <div className="title">
+                                    <p>Програма лояльності</p>
+                                </div>
+
+                                <div className="info">
+                                    {this.state.loyaltyList.map((item, index) => {
+                                        const filled = item.ride_count % 8
+                                        const nextBonus = item.rides_until_bonus === 0 ? 8 : item.rides_until_bonus
+                                        return (
+                                            <div key={index} className="loyalty-route-item">
+                                                <p className="loyalty-route-name">{item.from_city} ➝ {item.to_city}</p>
+                                                <div className="loyalty-stamps">
+                                                    {Array.from({ length: 8 }).map((_, i) => (
+                                                        <div
+                                                            key={i}
+                                                            className={`stamp ${i < filled ? 'filled' : ''} ${i === 7 ? 'bonus' : ''}`}
+                                                        >
+                                                            {i === 7 ? '★' : i + 1}
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                                <p className="loyalty-hint">
+                                                    {nextBonus === 8
+                                                        ? 'Наступна поїздка безкоштовна!'
+                                                        : `До безкоштовної: ${nextBonus} ${nextBonus === 1 ? 'поїздка' : nextBonus < 5 ? 'поїздки' : 'поїздок'}`
+                                                    }
+                                                </p>
+                                            </div>
+                                        )
+                                    })}
+                                </div>
+                            </div>
+                        )}
+
                         <div className="trips-card">
                             <div className="title">
                                 <p>Поїздки</p>
@@ -124,9 +173,10 @@ class PassengerDetailsModal extends React.Component {
                                 ) : (
                                     <ul>
                                         {this.state.tripsList.map((trip, index) => (
-                                            <li key={index}>
+                                            <li key={index} className={trip.is_bonus_ride ? 'bonus-trip' : ''}>
                                                 <p>
                                                     <span className="id">#{trip.id}</span> <span className="trip-route">{trip.city_from} ➝ {trip.city_to}</span>
+                                                    {trip.is_bonus_ride && <span className="bonus-label">★ Безкоштовна</span>}
                                                 </p>
                                                 <p className="date">{new Date(trip.date).toLocaleDateString('uk-UA', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
                                                 <p className="time">{this.formatTimeFromSeconds(trip.time)}</p>

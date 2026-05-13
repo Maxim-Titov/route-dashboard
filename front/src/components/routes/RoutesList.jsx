@@ -1,5 +1,5 @@
 import React from "react"
-import { Info, Trash2 } from 'lucide-react'
+import { Info, Trash2, Star } from 'lucide-react'
 
 import RouteDetailsModal from "../modals/RouteDetailsModal"
 import DeleteRouteModal from "../modals/DeleteRouteModal"
@@ -20,6 +20,50 @@ class RoutesList extends React.Component {
 
             isFail: false,
             failMessage: ''
+        }
+    }
+
+    toggleLoyalty = async (routeId, currentValue) => {
+        try {
+            let res = await fetch(
+                `${import.meta.env.VITE_API_URL}/routes/loyalty/toggle`,
+                {
+                    method: "POST",
+                    credentials: "include",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${localStorage.getItem("token")}`
+                    },
+                    body: JSON.stringify({ route_id: routeId, enabled: !currentValue })
+                }
+            )
+
+            if (res.status === 401) {
+                const refreshRes = await fetch(`${import.meta.env.VITE_API_URL}/auth/refresh`, {
+                    method: "POST",
+                    credentials: "include"
+                })
+                if (!refreshRes.ok) return
+                const data = await refreshRes.json()
+                localStorage.setItem("token", data.access_token)
+
+                res = await fetch(
+                    `${import.meta.env.VITE_API_URL}/routes/loyalty/toggle`,
+                    {
+                        method: "POST",
+                        credentials: "include",
+                        headers: {
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${localStorage.getItem("token")}`
+                        },
+                        body: JSON.stringify({ route_id: routeId, enabled: !currentValue })
+                    }
+                )
+            }
+
+            await this.props.fetchRoutes()
+        } catch (err) {
+            console.error(err)
         }
     }
 
@@ -128,7 +172,8 @@ class RoutesList extends React.Component {
             id: route.id,
             from: route.from_city,
             to: route.to_city,
-            trips_count: route.trips_count
+            trips_count: route.trips_count,
+            loyalty_enabled: route.loyalty_enabled
         }));
 
         return (
@@ -139,6 +184,16 @@ class RoutesList extends React.Component {
                             #{route.id} {route.from} → {route.to}
 
                             <div className="actions">
+                                <div
+                                    className={`icon-wrapper loyalty ${route.loyalty_enabled ? 'active' : ''} ${this.props.user?.role === 'user' ? 'forbidden' : ''}`}
+                                    title={route.loyalty_enabled ? 'Лояльність увімкнена' : 'Увімкнути лояльність'}
+                                    onClick={() => {
+                                        if (this.props.user?.role === 'user') return
+                                        this.toggleLoyalty(route.id, route.loyalty_enabled)
+                                    }}
+                                >
+                                    <Star />
+                                </div>
                                 <div className="icon-wrapper info" onClick={async () => {
                                     this.setRoute(
                                         route.id,
@@ -165,6 +220,9 @@ class RoutesList extends React.Component {
                         <div className="content">
                             <div className="details">
                                 <p><span>Кількість поїздок:</span> {route.trips_count}</p>
+                                {route.loyalty_enabled === 1 && (
+                                    <p className="loyalty-badge">Програма лояльності активна</p>
+                                )}
                             </div>
                         </div>
                     </div>

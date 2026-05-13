@@ -247,6 +247,7 @@ class TripsList extends React.Component {
 
         const trips = tripsList.map((trip) => ({
             id: trip.id,
+            route_id: trip.route_id,
             from: trip.from_city,
             to: trip.to_city,
             from_station_name: trip.from_station_name,
@@ -321,6 +322,7 @@ class TripsList extends React.Component {
                                             trip.id,
                                             `#${trip.id} ${trip.from} → ${trip.to}`,
                                             {
+                                                route_id: trip.route_id,
                                                 from: trip.from,
                                                 to: trip.to,
                                                 from_station_name: trip.from_station_name,

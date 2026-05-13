@@ -5,7 +5,8 @@ def get_routes():
     cursor = conn.cursor(dictionary=True)
     try:
         cursor.execute("""
-            SELECT routes.id, from_city.city AS from_city, to_city.city AS to_city, COUNT(trips.id) AS trips_count
+            SELECT routes.id, from_city.city AS from_city, to_city.city AS to_city,
+                   COUNT(trips.id) AS trips_count, routes.loyalty_enabled
             FROM routes
 
             JOIN cities AS from_city ON routes.from_city_id = from_city.id

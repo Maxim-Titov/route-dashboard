@@ -55,6 +55,8 @@ class AddTripModal extends React.Component {
                     },
                     body: JSON.stringify({
                         route_id: this.parseNumber(this.state.tripData.route_id),
+                        from_city_id: this.state.tripData.from_id,
+                        to_city_id: this.state.tripData.to_id,
                         from_station_id: this.state.tripData.from_station_id,
                         to_station_id: this.state.tripData.to_station_id,
                         date: this.state.tripData?.date,
@@ -91,6 +93,8 @@ class AddTripModal extends React.Component {
                         },
                         body: JSON.stringify({
                             route_id: this.parseNumber(this.state.tripData.route_id),
+                            from_city_id: this.state.tripData.from_id,
+                            to_city_id: this.state.tripData.to_id,
                             from_station_id: this.state.tripData.from_station_id,
                             to_station_id: this.state.tripData.to_station_id,
                             date: this.state.tripData?.date,

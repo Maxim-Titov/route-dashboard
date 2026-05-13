@@ -81,6 +81,13 @@ class addRouteRequest(BaseModel):
 class deleteRouteRequest(BaseModel):
     route_id: int
 
+class toggleLoyaltyRequest(BaseModel):
+    route_id: int
+    enabled: bool
+
+class passengerLoyaltyRequest(BaseModel):
+    passenger_id: int
+
 class filterRoutesRequest(BaseModel):
     sort_by: Literal['asc', 'desc'] = 'desc'
     trips_count_from: int | None = Field(None, ge=0, le=120)
@@ -112,9 +119,11 @@ class getTripsRequest(BaseModel):
     user_id: int
 
 class addTripRequest(BaseModel):
-    route_id: int
-    from_station_id: int
-    to_station_id: int
+    route_id: int | None = None
+    from_city_id: int | None = None
+    to_city_id: int | None = None
+    from_station_id: int | None = None
+    to_station_id: int | None = None
     date: str
     time: str
     max_passengers: int | None = 0
@@ -124,9 +133,11 @@ class addTripRequest(BaseModel):
 
 class editTripRequest(BaseModel):
     trip_id: int
-    route_id: int
-    from_station_id: int
-    to_station_id: int
+    route_id: int | None = None
+    from_city_id: int | None = None
+    to_city_id: int | None = None
+    from_station_id: int | None = None
+    to_station_id: int | None = None
     date: str
     time: str
     max_passengers: int | None = 0
@@ -412,6 +423,18 @@ async def delete_route(req: deleteRouteRequest, user=Depends(get_current_user)):
 
     return {"success": True, "message": success}
 
+@app.post("/routes/loyalty/toggle")
+async def toggle_loyalty(req: toggleLoyaltyRequest, user=Depends(get_current_user)):
+    if user["role"] != "admin":
+        raise HTTPException(403)
+
+    success = post_toggle_loyalty(req.route_id, req.enabled)
+    return {"success": success}
+
+@app.post("/routes/loyalty/passenger")
+async def get_passenger_loyalty(req: passengerLoyaltyRequest):
+    return post_get_passenger_loyalty(req.passenger_id)
+
 @app.post("/routes/filter")
 async def filter_routes(req: filterRoutesRequest):
     if req.trips_count_from and req.trips_count_to and req.trips_count_from > req.trips_count_to:
@@ -440,7 +463,7 @@ async def add_trip(req: addTripRequest, user=Depends(get_current_user)):
     
     max_passengers = 0 if req.max_passengers == None else req.max_passengers
 
-    success = post_add_trip(req.route_id, req.from_station_id, req.to_station_id, req.date, req.time, max_passengers, req.passenger_ids, req.passenger_stations, req.stations)
+    success = post_add_trip(req.route_id, req.from_city_id, req.to_city_id, req.from_station_id, req.to_station_id, req.date, req.time, max_passengers, req.passenger_ids, req.passenger_stations, req.stations)
 
     if success == 'added':
         return {"success": True, "message": success}
@@ -452,7 +475,7 @@ async def edit_trip(req: editTripRequest, user=Depends(get_current_user)):
     if user["role"] != "admin":
         raise HTTPException(403)
     
-    success = post_edit_trip(req.trip_id, req.route_id, req.from_station_id, req.to_station_id, req.date, req.time, req.max_passengers, req.passenger_ids, req.passenger_stations, req.stations, req.status)
+    success = post_edit_trip(req.trip_id, req.route_id, req.from_city_id, req.to_city_id, req.from_station_id, req.to_station_id, req.date, req.time, req.max_passengers, req.passenger_ids, req.passenger_stations, req.stations, req.status)
 
     if not success or success != 'edited':
         return {"success": False, "message": success}

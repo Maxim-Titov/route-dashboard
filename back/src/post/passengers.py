@@ -290,11 +290,13 @@ def post_passenger_trips(passenger_id):
         cursor.execute("""
             SELECT
                 t.id,
+                t.route_id,
                 cf.city AS city_from,
                 ct.city AS city_to,
                 t.date,
                 t.time,
-                t.status
+                t.status,
+                tp.is_bonus_ride
             FROM trip_passengers tp
             JOIN trips t ON tp.trip_id = t.id
             JOIN routes r ON t.route_id = r.id

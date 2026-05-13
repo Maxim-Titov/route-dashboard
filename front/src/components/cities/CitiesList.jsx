@@ -165,7 +165,7 @@ class CitiesList extends React.Component {
                     this.state.failMessage === "city has routes" && (
                         <MessageModal
                             header="Місто використовується"
-                            body="Щоб видалити місто, воно не повинно використовуватись у маршрутах"
+                            body="Щоб видалити місто, воно не повинно використовуватись у поїздках"
                             action={this.setIsFail}
                         />
                     )}

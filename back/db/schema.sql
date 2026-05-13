@@ -54,7 +54,7 @@ CREATE TABLE IF NOT EXISTS city_stations (
     station_name VARCHAR(255) NOT NULL,
     station_address VARCHAR(500) NOT NULL,
 
-    FOREIGN KEY (city_id) REFERENCES cities(id)
+    FOREIGN KEY (city_id) REFERENCES cities(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
 -- ============================
@@ -65,6 +65,7 @@ CREATE TABLE IF NOT EXISTS routes (
 
     from_city_id BIGINT UNSIGNED NOT NULL,
     to_city_id BIGINT UNSIGNED NOT NULL,
+    loyalty_enabled BOOLEAN NOT NULL DEFAULT FALSE,
 
     CHECK (from_city_id <> to_city_id),
 
@@ -83,7 +84,9 @@ CREATE TABLE IF NOT EXISTS routes (
 CREATE TABLE IF NOT EXISTS trips (
     id BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
 
-    route_id BIGINT UNSIGNED NOT NULL,
+    route_id BIGINT UNSIGNED NULL,
+    from_city_id BIGINT UNSIGNED NULL,
+    to_city_id BIGINT UNSIGNED NULL,
     from_city_station_id BIGINT UNSIGNED NULL,
     to_city_station_id BIGINT UNSIGNED NULL,
     user_id BIGINT UNSIGNED NULL,
@@ -95,6 +98,8 @@ CREATE TABLE IF NOT EXISTS trips (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
     FOREIGN KEY (route_id) REFERENCES routes(id),
+    FOREIGN KEY (from_city_id) REFERENCES cities(id),
+    FOREIGN KEY (to_city_id) REFERENCES cities(id),
     FOREIGN KEY (from_city_station_id) REFERENCES city_stations(id),
     FOREIGN KEY (to_city_station_id) REFERENCES city_stations(id),
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
@@ -153,6 +158,7 @@ CREATE TABLE IF NOT EXISTS trip_passengers (
     city_id BIGINT UNSIGNED NULL,
     station_id BIGINT UNSIGNED NULL,
     seat_number INT DEFAULT NULL,
+    is_bonus_ride BOOLEAN NOT NULL DEFAULT FALSE,
 
     FOREIGN KEY (trip_id) REFERENCES trips(id) ON DELETE CASCADE,
     FOREIGN KEY (passenger_id) REFERENCES passengers(id) ON DELETE CASCADE,
@@ -223,4 +229,18 @@ CREATE TABLE IF NOT EXISTS pricing (
     INDEX idx_route (route_id),
     INDEX idx_from (from_city_id),
     INDEX idx_to (to_city_id)
+) ENGINE=InnoDB;
+
+-- ============================
+--  Таблиця passenger_loyalty
+-- ============================
+CREATE TABLE IF NOT EXISTS passenger_loyalty (
+    passenger_id BIGINT UNSIGNED NOT NULL,
+    route_id BIGINT UNSIGNED NOT NULL,
+
+    ride_count INT UNSIGNED NOT NULL DEFAULT 0,
+    
+    PRIMARY KEY (passenger_id, route_id),
+    FOREIGN KEY (passenger_id) REFERENCES passengers(id) ON DELETE CASCADE,
+    FOREIGN KEY (route_id) REFERENCES routes(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;

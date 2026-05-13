@@ -795,7 +795,7 @@ h5 {
 }
 .routes-wrapper .container .routes-list {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 1.5rem;
 }
 .routes-wrapper .container .routes-list .card {
@@ -843,6 +843,13 @@ h5 {
 .routes-wrapper .container .routes-list .card .header .actions .icon-wrapper.trash svg {
   color: #EF9A9A;
 }
+.routes-wrapper .container .routes-list .card .header .actions .icon-wrapper.loyalty svg {
+  color: #6B7280;
+}
+.routes-wrapper .container .routes-list .card .header .actions .icon-wrapper.loyalty.active svg {
+  color: #F59E0B;
+  fill: #F59E0B;
+}
 .routes-wrapper .container .routes-list .card .details {
   display: flex;
   flex-direction: column;
@@ -856,6 +863,17 @@ h5 {
 }
 .routes-wrapper .container .routes-list .card .details p span {
   color: #6B7280;
+}
+.routes-wrapper .container .routes-list .card .details .loyalty-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: #92400E;
+  background-color: #FEF3C7;
+  border: 1px solid #FDE68A;
+  border-radius: 6px;
+  padding: 2px 8px;
 }
 
 @media (max-width: 425px) {
@@ -3095,6 +3113,7 @@ aside .navigation nav ul li svg {
 .city-details-modal .body .passenger-info-card,
 .city-details-modal .body .note-card,
 .city-details-modal .body .trips-card,
+.city-details-modal .body .loyalty-card,
 .city-details-modal .body .table-card,
 .city-details-modal .body .user-card,
 .route-details-modal .body .stations-card,
@@ -3103,6 +3122,7 @@ aside .navigation nav ul li svg {
 .route-details-modal .body .passenger-info-card,
 .route-details-modal .body .note-card,
 .route-details-modal .body .trips-card,
+.route-details-modal .body .loyalty-card,
 .route-details-modal .body .table-card,
 .route-details-modal .body .user-card,
 .trip-details-modal .body .stations-card,
@@ -3111,6 +3131,7 @@ aside .navigation nav ul li svg {
 .trip-details-modal .body .passenger-info-card,
 .trip-details-modal .body .note-card,
 .trip-details-modal .body .trips-card,
+.trip-details-modal .body .loyalty-card,
 .trip-details-modal .body .table-card,
 .trip-details-modal .body .user-card,
 .passenger-details-modal .body .stations-card,
@@ -3119,6 +3140,7 @@ aside .navigation nav ul li svg {
 .passenger-details-modal .body .passenger-info-card,
 .passenger-details-modal .body .note-card,
 .passenger-details-modal .body .trips-card,
+.passenger-details-modal .body .loyalty-card,
 .passenger-details-modal .body .table-card,
 .passenger-details-modal .body .user-card {
   background-color: #F5F7FA;
@@ -3134,6 +3156,7 @@ aside .navigation nav ul li svg {
 .city-details-modal .body .passenger-info-card:hover,
 .city-details-modal .body .note-card:hover,
 .city-details-modal .body .trips-card:hover,
+.city-details-modal .body .loyalty-card:hover,
 .city-details-modal .body .table-card:hover,
 .city-details-modal .body .user-card:hover,
 .route-details-modal .body .stations-card:hover,
@@ -3142,6 +3165,7 @@ aside .navigation nav ul li svg {
 .route-details-modal .body .passenger-info-card:hover,
 .route-details-modal .body .note-card:hover,
 .route-details-modal .body .trips-card:hover,
+.route-details-modal .body .loyalty-card:hover,
 .route-details-modal .body .table-card:hover,
 .route-details-modal .body .user-card:hover,
 .trip-details-modal .body .stations-card:hover,
@@ -3150,6 +3174,7 @@ aside .navigation nav ul li svg {
 .trip-details-modal .body .passenger-info-card:hover,
 .trip-details-modal .body .note-card:hover,
 .trip-details-modal .body .trips-card:hover,
+.trip-details-modal .body .loyalty-card:hover,
 .trip-details-modal .body .table-card:hover,
 .trip-details-modal .body .user-card:hover,
 .passenger-details-modal .body .stations-card:hover,
@@ -3158,6 +3183,7 @@ aside .navigation nav ul li svg {
 .passenger-details-modal .body .passenger-info-card:hover,
 .passenger-details-modal .body .note-card:hover,
 .passenger-details-modal .body .trips-card:hover,
+.passenger-details-modal .body .loyalty-card:hover,
 .passenger-details-modal .body .table-card:hover,
 .passenger-details-modal .body .user-card:hover {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -3168,6 +3194,7 @@ aside .navigation nav ul li svg {
 .city-details-modal .body .passenger-info-card .title,
 .city-details-modal .body .note-card .title,
 .city-details-modal .body .trips-card .title,
+.city-details-modal .body .loyalty-card .title,
 .city-details-modal .body .table-card .title,
 .city-details-modal .body .user-card .title,
 .route-details-modal .body .stations-card .title,
@@ -3176,6 +3203,7 @@ aside .navigation nav ul li svg {
 .route-details-modal .body .passenger-info-card .title,
 .route-details-modal .body .note-card .title,
 .route-details-modal .body .trips-card .title,
+.route-details-modal .body .loyalty-card .title,
 .route-details-modal .body .table-card .title,
 .route-details-modal .body .user-card .title,
 .trip-details-modal .body .stations-card .title,
@@ -3184,6 +3212,7 @@ aside .navigation nav ul li svg {
 .trip-details-modal .body .passenger-info-card .title,
 .trip-details-modal .body .note-card .title,
 .trip-details-modal .body .trips-card .title,
+.trip-details-modal .body .loyalty-card .title,
 .trip-details-modal .body .table-card .title,
 .trip-details-modal .body .user-card .title,
 .passenger-details-modal .body .stations-card .title,
@@ -3192,6 +3221,7 @@ aside .navigation nav ul li svg {
 .passenger-details-modal .body .passenger-info-card .title,
 .passenger-details-modal .body .note-card .title,
 .passenger-details-modal .body .trips-card .title,
+.passenger-details-modal .body .loyalty-card .title,
 .passenger-details-modal .body .table-card .title,
 .passenger-details-modal .body .user-card .title {
   color: #6B7280;
@@ -3644,6 +3674,106 @@ aside .navigation nav ul li svg {
   flex-direction: column;
   gap: 4px;
 }
+.city-details-modal .body .loyalty-card,
+.route-details-modal .body .loyalty-card,
+.trip-details-modal .body .loyalty-card,
+.passenger-details-modal .body .loyalty-card {
+  background-color: #F5F7FA;
+  border-radius: 0.75rem;
+  padding: 1rem;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  transition: box-shadow 0.2s ease;
+  margin-bottom: 1.5rem;
+}
+.city-details-modal .body .loyalty-card:hover,
+.route-details-modal .body .loyalty-card:hover,
+.trip-details-modal .body .loyalty-card:hover,
+.passenger-details-modal .body .loyalty-card:hover {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+.city-details-modal .body .loyalty-card .title,
+.route-details-modal .body .loyalty-card .title,
+.trip-details-modal .body .loyalty-card .title,
+.passenger-details-modal .body .loyalty-card .title {
+  color: #6B7280;
+  font-size: clamp(0.75rem, 0.7rem + 0.2vw, 0.875rem);
+  margin-bottom: 0.5rem;
+}
+.city-details-modal .body .loyalty-card .loyalty-route-item,
+.route-details-modal .body .loyalty-card .loyalty-route-item,
+.trip-details-modal .body .loyalty-card .loyalty-route-item,
+.passenger-details-modal .body .loyalty-card .loyalty-route-item {
+  margin-bottom: 1rem;
+}
+.city-details-modal .body .loyalty-card .loyalty-route-item:last-child,
+.route-details-modal .body .loyalty-card .loyalty-route-item:last-child,
+.trip-details-modal .body .loyalty-card .loyalty-route-item:last-child,
+.passenger-details-modal .body .loyalty-card .loyalty-route-item:last-child {
+  margin-bottom: 0;
+}
+.city-details-modal .body .loyalty-card .loyalty-route-item .loyalty-route-name,
+.route-details-modal .body .loyalty-card .loyalty-route-item .loyalty-route-name,
+.trip-details-modal .body .loyalty-card .loyalty-route-item .loyalty-route-name,
+.passenger-details-modal .body .loyalty-card .loyalty-route-item .loyalty-route-name {
+  font-size: clamp(0.75rem, 0.7rem + 0.2vw, 0.875rem);
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+.city-details-modal .body .loyalty-card .loyalty-route-item .loyalty-stamps,
+.route-details-modal .body .loyalty-card .loyalty-route-item .loyalty-stamps,
+.trip-details-modal .body .loyalty-card .loyalty-route-item .loyalty-stamps,
+.passenger-details-modal .body .loyalty-card .loyalty-route-item .loyalty-stamps {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 0.4rem;
+}
+.city-details-modal .body .loyalty-card .loyalty-route-item .loyalty-stamps .stamp,
+.route-details-modal .body .loyalty-card .loyalty-route-item .loyalty-stamps .stamp,
+.trip-details-modal .body .loyalty-card .loyalty-route-item .loyalty-stamps .stamp,
+.passenger-details-modal .body .loyalty-card .loyalty-route-item .loyalty-stamps .stamp {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  border: 1.5px solid rgba(0, 0, 0, 0.06);
+  background-color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  color: #6B7280;
+  transition: background-color 0.15s ease;
+}
+.city-details-modal .body .loyalty-card .loyalty-route-item .loyalty-stamps .stamp.filled,
+.route-details-modal .body .loyalty-card .loyalty-route-item .loyalty-stamps .stamp.filled,
+.trip-details-modal .body .loyalty-card .loyalty-route-item .loyalty-stamps .stamp.filled,
+.passenger-details-modal .body .loyalty-card .loyalty-route-item .loyalty-stamps .stamp.filled {
+  background-color: #A3C4F3;
+  border-color: #A3C4F3;
+  color: #fff;
+}
+.city-details-modal .body .loyalty-card .loyalty-route-item .loyalty-stamps .stamp.bonus,
+.route-details-modal .body .loyalty-card .loyalty-route-item .loyalty-stamps .stamp.bonus,
+.trip-details-modal .body .loyalty-card .loyalty-route-item .loyalty-stamps .stamp.bonus,
+.passenger-details-modal .body .loyalty-card .loyalty-route-item .loyalty-stamps .stamp.bonus {
+  border-color: #F59E0B;
+  color: #F59E0B;
+}
+.city-details-modal .body .loyalty-card .loyalty-route-item .loyalty-stamps .stamp.bonus.filled,
+.route-details-modal .body .loyalty-card .loyalty-route-item .loyalty-stamps .stamp.bonus.filled,
+.trip-details-modal .body .loyalty-card .loyalty-route-item .loyalty-stamps .stamp.bonus.filled,
+.passenger-details-modal .body .loyalty-card .loyalty-route-item .loyalty-stamps .stamp.bonus.filled {
+  background-color: #F59E0B;
+  border-color: #F59E0B;
+  color: #fff;
+}
+.city-details-modal .body .loyalty-card .loyalty-route-item .loyalty-hint,
+.route-details-modal .body .loyalty-card .loyalty-route-item .loyalty-hint,
+.trip-details-modal .body .loyalty-card .loyalty-route-item .loyalty-hint,
+.passenger-details-modal .body .loyalty-card .loyalty-route-item .loyalty-hint {
+  font-size: 12px;
+  color: #6B7280;
+}
 .city-details-modal .body .trips-card ul,
 .route-details-modal .body .trips-card ul,
 .trip-details-modal .body .trips-card ul,
@@ -3670,6 +3800,16 @@ aside .navigation nav ul li svg {
 .passenger-details-modal .body .trips-card ul li {
   display: flex;
   gap: 3.5rem;
+  align-items: baseline;
+}
+.city-details-modal .body .trips-card ul li.bonus-trip,
+.route-details-modal .body .trips-card ul li.bonus-trip,
+.trip-details-modal .body .trips-card ul li.bonus-trip,
+.passenger-details-modal .body .trips-card ul li.bonus-trip {
+  background-color: #FFFBEB;
+  border-radius: 6px;
+  padding: 4px 6px;
+  margin: 0 -6px;
 }
 .city-details-modal .body .trips-card ul li p:nth-child(2), .city-details-modal .body .trips-card ul li p:last-child,
 .route-details-modal .body .trips-card ul li p:nth-child(2),
@@ -3679,6 +3819,17 @@ aside .navigation nav ul li svg {
 .passenger-details-modal .body .trips-card ul li p:nth-child(2),
 .passenger-details-modal .body .trips-card ul li p:last-child {
   font-size: clamp(0.75rem, 0.7rem + 0.2vw, 0.875rem);
+}
+.city-details-modal .body .trips-card ul li p .bonus-label,
+.route-details-modal .body .trips-card ul li p .bonus-label,
+.trip-details-modal .body .trips-card ul li p .bonus-label,
+.passenger-details-modal .body .trips-card ul li p .bonus-label {
+  font-size: 11px;
+  color: #D97706;
+  background-color: #FEF3C7;
+  border-radius: 4px;
+  padding: 1px 5px;
+  margin-left: 6px;
 }
 .city-details-modal .body .user-card .user-info .driver,
 .route-details-modal .body .user-card .user-info .driver,

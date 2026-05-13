@@ -12,9 +12,9 @@ def post_get_trips(user_id):
                 SELECT trips.id, trips.route_id, from_city.city AS from_city, to_city.city AS to_city, from_station.station_name AS from_station_name, to_station.station_name AS to_station_name, from_station.station_address AS from_station_address, to_station.station_address AS to_station_address, COUNT(trip_passengers.trip_id) AS passengers_count, max_passengers_count, date, time, status, users.name AS user_name, users.surname AS user_surname, users.login AS user_login
                 FROM trips
 
-                JOIN routes ON routes.id = trips.route_id
-                JOIN cities AS from_city ON from_city.id = routes.from_city_id
-                JOIN cities AS to_city ON to_city.id = routes.to_city_id
+                LEFT JOIN routes ON routes.id = trips.route_id
+                LEFT JOIN cities AS from_city ON from_city.id = trips.from_city_id
+                LEFT JOIN cities AS to_city ON to_city.id = trips.to_city_id
                 LEFT JOIN city_stations AS from_station ON from_station.id = trips.from_city_station_id
                 LEFT JOIN city_stations AS to_station ON to_station.id = trips.to_city_station_id
                 LEFT JOIN trip_passengers ON trip_passengers.trip_id = trips.id
@@ -28,9 +28,9 @@ def post_get_trips(user_id):
                 SELECT trips.id, trips.route_id, from_city.city AS from_city, to_city.city AS to_city, from_station.station_name AS from_station_name, to_station.station_name AS to_station_name, from_station.station_address AS from_station_address, to_station.station_address AS to_station_address, COUNT(trip_passengers.trip_id) AS passengers_count, max_passengers_count, date, time, status, users.name AS user_name, users.surname AS user_surname, users.login AS user_login
                 FROM trips
 
-                JOIN routes ON routes.id = trips.route_id
-                JOIN cities AS from_city ON from_city.id = routes.from_city_id
-                JOIN cities AS to_city ON to_city.id = routes.to_city_id
+                LEFT JOIN routes ON routes.id = trips.route_id
+                LEFT JOIN cities AS from_city ON from_city.id = trips.from_city_id
+                LEFT JOIN cities AS to_city ON to_city.id = trips.to_city_id
                 LEFT JOIN city_stations AS from_station ON from_station.id = trips.from_city_station_id
                 LEFT JOIN city_stations AS to_station ON to_station.id = trips.to_city_station_id
                 LEFT JOIN trip_passengers ON trip_passengers.trip_id = trips.id
@@ -48,27 +48,51 @@ def post_get_trips(user_id):
 
     return trips
 
-def post_add_trip(route_id, from_station_id, to_station_id, date, time, max_passengers, passenger_ids, passenger_stations, stations):
+def _get_loyalty_status(cursor, route_id):
+    if route_id is None:
+        return False
+    cursor.execute("SELECT loyalty_enabled FROM routes WHERE id = %s", (route_id,))
+    row = cursor.fetchone()
+    return bool(row and row['loyalty_enabled'])
+
+def _get_ride_count(cursor, passenger_id, route_id):
+    cursor.execute(
+        "SELECT ride_count FROM passenger_loyalty WHERE passenger_id = %s AND route_id = %s",
+        (passenger_id, route_id)
+    )
+    row = cursor.fetchone()
+    return row['ride_count'] if row else 0
+
+def _increment_loyalty(cursor, passenger_id, route_id):
+    cursor.execute("""
+        INSERT INTO passenger_loyalty (passenger_id, route_id, ride_count)
+        VALUES (%s, %s, 1)
+        ON DUPLICATE KEY UPDATE ride_count = ride_count + 1
+    """, (passenger_id, route_id))
+
+def _decrement_loyalty(cursor, passenger_id, route_id):
+    cursor.execute("""
+        UPDATE passenger_loyalty
+        SET ride_count = GREATEST(ride_count - 1, 0)
+        WHERE passenger_id = %s AND route_id = %s
+    """, (passenger_id, route_id))
+
+def post_add_trip(route_id, from_city_id, to_city_id, from_station_id, to_station_id, date, time, max_passengers, passenger_ids, passenger_stations, stations):
     conn = get_connection()
     cursor = conn.cursor(dictionary=True)
 
     try:
-        cursor.execute("""
-            SELECT id
-            FROM routes
-            WHERE id = %s
-        """, (route_id,))
-
-        route = cursor.fetchone()
-        if not route:
-            return 'route not exists'
-
-        route_id = route['id']
+        if route_id is not None:
+            cursor.execute("SELECT id FROM routes WHERE id = %s", (route_id,))
+            route = cursor.fetchone()
+            if not route:
+                return 'route not exists'
+            route_id = route['id']
 
         cursor.execute("""
-            INSERT INTO trips (route_id, from_city_station_id, to_city_station_id, max_passengers_count, date, time)
-            VALUES (%s, %s, %s, %s, %s, %s)
-        """, (route_id, from_station_id, to_station_id, max_passengers, date, time))
+            INSERT INTO trips (route_id, from_city_id, to_city_id, from_city_station_id, to_city_station_id, max_passengers_count, date, time)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+        """, (route_id, from_city_id, to_city_id, from_station_id, to_station_id, max_passengers, date, time))
 
         trip_id = cursor.lastrowid
 
@@ -77,21 +101,28 @@ def post_add_trip(route_id, from_station_id, to_station_id, date, time, max_pass
             if len(seats) != len(set(seats)):
                 return 'duplicate_seats'
 
-        i = 0
+        loyalty_active = _get_loyalty_status(cursor, route_id)
+
         for i in range(len(passenger_ids)):
+            pid = passenger_ids[i]
             seat = passenger_stations[i].get("seat_number") if passenger_stations else None
-            if passenger_stations == None:
+            is_bonus = False
+
+            if loyalty_active:
+                ride_count = _get_ride_count(cursor, pid, route_id)
+                is_bonus = (ride_count % 8 == 7)
+                _increment_loyalty(cursor, pid, route_id)
+
+            if passenger_stations is None:
                 cursor.execute("""
-                    INSERT INTO trip_passengers (trip_id, passenger_id)
-                    VALUES (%s, %s)
-                """, (trip_id, passenger_ids[i]))
+                    INSERT INTO trip_passengers (trip_id, passenger_id, is_bonus_ride)
+                    VALUES (%s, %s, %s)
+                """, (trip_id, pid, is_bonus))
             else:
                 cursor.execute("""
-                    INSERT INTO trip_passengers (trip_id, passenger_id, city_id, station_id, seat_number)
-                    VALUES (%s, %s, %s, %s, %s)
-                """, (trip_id, passenger_ids[i], passenger_stations[i].get("city_id"), passenger_stations[i].get("station_id"), seat))
-
-            i += 1
+                    INSERT INTO trip_passengers (trip_id, passenger_id, city_id, station_id, seat_number, is_bonus_ride)
+                    VALUES (%s, %s, %s, %s, %s, %s)
+                """, (trip_id, pid, passenger_stations[i].get("city_id"), passenger_stations[i].get("station_id"), seat, is_bonus))
 
         for station in stations:
             cursor.execute("""
@@ -111,27 +142,38 @@ def post_add_trip(route_id, from_station_id, to_station_id, date, time, max_pass
         cursor.close()
         conn.close()
 
-def post_edit_trip(trip_id, route_id, from_station_id, to_station_id, date, time, max_passengers, passenger_ids, passenger_stations, stations, status):
+def post_edit_trip(trip_id, route_id, from_city_id, to_city_id, from_station_id, to_station_id, date, time, max_passengers, passenger_ids, passenger_stations, stations, status):
     conn = get_connection()
     cursor = conn.cursor(dictionary=True)
 
     try:
-        cursor.execute("""
-            SELECT id
-            FROM routes
-            WHERE id = %s
-        """, (route_id,))
+        if route_id is not None:
+            cursor.execute("SELECT id FROM routes WHERE id = %s", (route_id,))
+            route = cursor.fetchone()
+            if not route:
+                return 'route not exists'
+            route_id = route['id']
 
-        route = cursor.fetchone()
-        if not route:
-            return 'route not exists'
+        # Отримуємо старий маршрут і пасажирів для відкату лояльності
+        cursor.execute("SELECT route_id FROM trips WHERE id = %s", (trip_id,))
+        old_trip = cursor.fetchone()
+        old_route_id = old_trip['route_id'] if old_trip else None
 
-        route_id = route['id']
+        if old_route_id and _get_loyalty_status(cursor, old_route_id):
+            cursor.execute(
+                "SELECT passenger_id FROM trip_passengers WHERE trip_id = %s",
+                (trip_id,)
+            )
+            old_passengers = [r['passenger_id'] for r in cursor.fetchall()]
+            for pid in old_passengers:
+                _decrement_loyalty(cursor, pid, old_route_id)
 
         cursor.execute("""
             UPDATE trips
             SET
                 route_id = %s,
+                from_city_id = %s,
+                to_city_id = %s,
                 from_city_station_id = %s,
                 to_city_station_id = %s,
                 max_passengers_count = %s,
@@ -139,7 +181,7 @@ def post_edit_trip(trip_id, route_id, from_station_id, to_station_id, date, time
                 time = %s,
                 status = %s
             WHERE id = %s
-        """, (route_id, from_station_id, to_station_id, max_passengers, date, time, status, trip_id))
+        """, (route_id, from_city_id, to_city_id, from_station_id, to_station_id, max_passengers, date, time, status, trip_id))
 
         cursor.execute(
             "DELETE FROM trip_passengers WHERE trip_id = %s",
@@ -151,21 +193,28 @@ def post_edit_trip(trip_id, route_id, from_station_id, to_station_id, date, time
             if len(seats) != len(set(seats)):
                 return 'duplicate_seats'
 
-        i = 0
+        loyalty_active = _get_loyalty_status(cursor, route_id)
+
         for i in range(len(passenger_ids)):
+            pid = passenger_ids[i]
             seat = passenger_stations[i].get("seat_number") if passenger_stations else None
-            if passenger_stations == None:
+            is_bonus = False
+
+            if loyalty_active:
+                ride_count = _get_ride_count(cursor, pid, route_id)
+                is_bonus = (ride_count % 8 == 7)
+                _increment_loyalty(cursor, pid, route_id)
+
+            if passenger_stations is None:
                 cursor.execute("""
-                    INSERT INTO trip_passengers (trip_id, passenger_id)
-                    VALUES (%s, %s)
-                """, (trip_id, passenger_ids[i]))
+                    INSERT INTO trip_passengers (trip_id, passenger_id, is_bonus_ride)
+                    VALUES (%s, %s, %s)
+                """, (trip_id, pid, is_bonus))
             else:
                 cursor.execute("""
-                    INSERT INTO trip_passengers (trip_id, passenger_id, city_id, station_id, seat_number)
-                    VALUES (%s, %s, %s, %s, %s)
-                """, (trip_id, passenger_ids[i], passenger_stations[i].get("city_id"), passenger_stations[i].get("station_id"), seat))
-
-            i += 1
+                    INSERT INTO trip_passengers (trip_id, passenger_id, city_id, station_id, seat_number, is_bonus_ride)
+                    VALUES (%s, %s, %s, %s, %s, %s)
+                """, (trip_id, pid, passenger_stations[i].get("city_id"), passenger_stations[i].get("station_id"), seat, is_bonus))
 
         cursor.execute(
             "DELETE FROM trip_stations WHERE trip_id = %s",
@@ -234,7 +283,9 @@ def post_trip_passengers(id):
         passengers = cursor.fetchall()
 
         cursor.execute("""
-            SELECT trip_passengers.city_id, cities.city, trip_passengers.station_id, city_stations.station_name AS station, city_stations.station_address, trip_passengers.seat_number
+            SELECT trip_passengers.city_id, cities.city, trip_passengers.station_id,
+                   city_stations.station_name AS station, city_stations.station_address,
+                   trip_passengers.seat_number, trip_passengers.is_bonus_ride
             FROM trip_passengers
             LEFT JOIN cities ON cities.id = trip_passengers.city_id
             LEFT JOIN city_stations ON city_stations.id = trip_passengers.station_id

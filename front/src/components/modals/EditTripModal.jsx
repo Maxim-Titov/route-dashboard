@@ -11,27 +11,29 @@ class EditTripModal extends React.Component {
     constructor(props) {
         super(props)
 
+        const data = props.data || {}
+
         this.state = {
             tripData: {
-                route_id: '',
+                route_id: data.route_id ?? '',
 
-                from: '',
+                from: data.from || '',
                 from_id: null,
-                from_station: '',
+                from_station: data.from_station_name || '',
                 from_station_id: null,
 
-                to: '',
+                to: data.to || '',
                 to_id: null,
-                to_station: '',
+                to_station: data.to_station_name || '',
                 to_station_id: null,
 
-                date: '',
-                time: '',
-                passengers: [],
-                maxPassengers: '',
-                passengerStations: [],
-                stations: [],
-                status: 'planned'
+                date: data.date || '',
+                time: data.time || '',
+                passengers: data.passengers || [],
+                maxPassengers: data.maxPassengers || '',
+                passengerStations: data.passengerStations || [],
+                stations: data.stations || [],
+                status: data.status || 'planned'
             },
 
             errors: {},
@@ -43,36 +45,35 @@ class EditTripModal extends React.Component {
     }
 
     async componentDidMount() {
-        const tripData = { ...this.props.data }
+        const data = this.props.data
 
-        const fromCity = await this.searchCityByName(tripData.from)
-        const toCity = await this.searchCityByName(tripData.to)
+        const fromCity = await this.searchCityByName(data.from)
+        const toCity = await this.searchCityByName(data.to)
 
-        tripData.from = fromCity?.city || ''
-        tripData.from_id = fromCity?.id || null
+        this.setState(prev => ({
+            tripData: {
+                ...prev.tripData,
+                from_id: fromCity?.id || null,
+                to_id: toCity?.id || null,
+            }
+        }))
 
-        tripData.to = toCity?.city || ''
-        tripData.to_id = toCity?.id || null
+        const fromStation = await this.searchStationByName(fromCity?.id, data.from_station_name)
+        const toStation = await this.searchStationByName(toCity?.id, data.to_station_name)
 
-        const fromStation = await this.searchStationByName(
-            tripData.from_id,
-            this.props.data.from_station_name
-        )
+        this.setState(prev => ({
+            tripData: {
+                ...prev.tripData,
+                from_station_id: fromStation?.id || null,
+                to_station_id: toStation?.id || null,
+            }
+        }))
 
-        const toStation = await this.searchStationByName(
-            tripData.to_id,
-            this.props.data.to_station_name
-        )
+        const stations = await this.formatStations(data.stations)
 
-        tripData.from_station = fromStation?.station_name || this.props.data.from_station_name || ''
-        tripData.from_station_id = fromStation?.id || null
-
-        tripData.to_station = toStation?.station_name || this.props.data.to_station_name || ''
-        tripData.to_station_id = toStation?.id || null
-
-        tripData.stations = await this.formatStations(tripData.stations)
-
-        this.setState({ tripData })
+        this.setState(prev => ({
+            tripData: { ...prev.tripData, stations }
+        }))
     }
 
     searchCityByName = async (name) => {
@@ -128,6 +129,8 @@ class EditTripModal extends React.Component {
                 body: JSON.stringify({
                     trip_id: this.props.id,
                     route_id: this.parseNumber(this.state.tripData.route_id),
+                    from_city_id: this.state.tripData.from_id,
+                    to_city_id: this.state.tripData.to_id,
                     from_station_id: this.state.tripData.from_station_id,
                     to_station_id: this.state.tripData.to_station_id,
                     date: this.state.tripData.date,

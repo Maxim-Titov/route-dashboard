@@ -55,6 +55,45 @@ def post_add_route(from_city, to_city):
         cursor.close()
         conn.close()
 
+def post_toggle_loyalty(route_id, enabled):
+    conn = get_connection()
+    cursor = conn.cursor()
+    try:
+        cursor.execute(
+            "UPDATE routes SET loyalty_enabled = %s WHERE id = %s",
+            (enabled, route_id)
+        )
+        conn.commit()
+        return cursor.rowcount > 0
+    except Exception:
+        conn.rollback()
+        raise
+    finally:
+        cursor.close()
+        conn.close()
+
+def post_get_passenger_loyalty(passenger_id):
+    conn = get_connection()
+    cursor = conn.cursor(dictionary=True)
+    try:
+        cursor.execute("""
+            SELECT
+                pl.route_id,
+                cf.city AS from_city,
+                ct.city AS to_city,
+                pl.ride_count,
+                (7 - (pl.ride_count % 8)) AS rides_until_bonus
+            FROM passenger_loyalty pl
+            JOIN routes r ON r.id = pl.route_id
+            JOIN cities cf ON cf.id = r.from_city_id
+            JOIN cities ct ON ct.id = r.to_city_id
+            WHERE pl.passenger_id = %s
+        """, (passenger_id,))
+        return cursor.fetchall()
+    finally:
+        cursor.close()
+        conn.close()
+
 def post_delete_route(id):
     conn = get_connection()
     cursor = conn.cursor()
