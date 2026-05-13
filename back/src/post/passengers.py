@@ -24,7 +24,6 @@ def post_add_passenger(name, surname, phone, date_of_birth, trip_id=None, note=N
             passenger_id = cursor.lastrowid
         else:
             cursor.execute("SELECT id FROM passengers WHERE phone = %s", (phone,))
-
             passenger_id = cursor.fetchone()["id"]
 
         if trip_id:
@@ -33,7 +32,7 @@ def post_add_passenger(name, surname, phone, date_of_birth, trip_id=None, note=N
 
             if not is_trip:
                 return 'trip not exists'
-        
+
             cursor.execute("""
                 INSERT INTO trip_passengers (trip_id, passenger_id)
                 VALUES (%s, %s)
@@ -102,71 +101,65 @@ def post_edit_passenger(id, name, surname, phone, date_of_birth, note=None):
 def post_delete_passenger(id):
     conn = get_connection()
     cursor = conn.cursor()
+    try:
+        cursor.execute("SELECT id FROM passengers WHERE id = %s", (id, ))
+        row = cursor.fetchone()
 
-    cursor.execute("SELECT id FROM passengers WHERE id = %s", (id, ))
-
-    row = cursor.fetchone()
-
-    if row:
-        cursor.execute("DELETE FROM passengers WHERE id = %s", (id, ))
-
-        conn.commit()
-
-    cursor.close()
-    conn.close()
+        if row:
+            cursor.execute("DELETE FROM passengers WHERE id = %s", (id, ))
+            conn.commit()
+    except Exception:
+        conn.rollback()
+        raise
+    finally:
+        cursor.close()
+        conn.close()
 
 def post_search_passengers(name=None, surname=None, phone=None):
     conn = get_connection()
     cursor = conn.cursor(dictionary=True)
+    try:
+        if phone:
+            cursor.execute("""
+                SELECT id, first_name, last_name, phone
+                FROM passengers
+                WHERE phone LIKE %s
+                LIMIT 20
+            """, (phone + '%',))
+            return cursor.fetchall()
 
-    if phone:
-        cursor.execute("""
+        conditions = []
+        params = []
+
+        if name:
+            if not surname:
+                conditions.append("first_name LIKE %s OR last_name LIKE %s")
+                params.append(name + '%')
+                params.append(name + '%')
+            else:
+                print(surname)
+                conditions.append("first_name LIKE %s")
+                params.append(name + '%')
+
+        if surname:
+            conditions.append("last_name LIKE %s")
+            params.append(surname + '%')
+
+        if not conditions:
+            return []
+
+        sql = f"""
             SELECT id, first_name, last_name, phone
             FROM passengers
-            WHERE phone LIKE %s
+            WHERE {' OR '.join(conditions)}
             LIMIT 20
-        """, (phone + '%',))
+        """
 
-        res = cursor.fetchall()
+        cursor.execute(sql, params)
+        return cursor.fetchall()
+    finally:
         cursor.close()
         conn.close()
-        return res
-
-    conditions = []
-    params = []
-
-    if name:
-        if not surname:
-            conditions.append("first_name LIKE %s OR last_name LIKE %s")
-            params.append(name + '%')
-            params.append(name + '%')
-        else:
-            print(surname)
-            conditions.append("first_name LIKE %s")
-            params.append(name + '%')
-
-    if surname:
-        conditions.append("last_name LIKE %s")
-        params.append(surname + '%')
-
-    if not conditions:
-        cursor.close()
-        conn.close()
-        return []
-
-    sql = f"""
-        SELECT id, first_name, last_name, phone
-        FROM passengers
-        WHERE {' OR '.join(conditions)}
-        LIMIT 20
-    """
-
-    cursor.execute(sql, params)
-    res = cursor.fetchall()
-
-    cursor.close()
-    conn.close()
-    return res
 
 def post_filter_passengers(
     sort_by='desc',
@@ -209,9 +202,6 @@ def post_filter_passengers(
 
     params = []
 
-    # ---------------------------
-    # AGE FILTERS (INDEX FRIENDLY)
-    # ---------------------------
     if age_from:
         query += """
             AND p.date_of_birth <= DATE_SUB(CURDATE(), INTERVAL %s YEAR)
@@ -224,9 +214,6 @@ def post_filter_passengers(
         """
         params.append(age_to)
 
-    # ---------------------------
-    # CITY FILTERS
-    # ---------------------------
     if city_from:
         query += " AND cf.city = %s"
         params.append(city_from)
@@ -235,9 +222,6 @@ def post_filter_passengers(
         query += " AND ct.city = %s"
         params.append(city_to)
 
-    # ---------------------------
-    # TRIP / ROUTE FILTERS
-    # ---------------------------
     if trip_id:
         query += " AND tp.trip_id = %s"
         params.append(trip_id)
@@ -247,44 +231,40 @@ def post_filter_passengers(
         params.append(route_id)
 
     query += " GROUP BY p.id, p.first_name, p.last_name, p.phone, cf.city, ct.city, nt.note"
-
-    # ---------------------------
-    # SORTING
-    # ---------------------------
     query += f" ORDER BY t.created_at {sort_order}"
 
-    cursor.execute(query, params)
-    result = cursor.fetchall()
-
-    cursor.close()
-    conn.close()
+    try:
+        cursor.execute(query, params)
+        result = cursor.fetchall()
+    finally:
+        cursor.close()
+        conn.close()
 
     return result
 
 def post_passenger_trips(passenger_id):
     conn = get_connection()
     cursor = conn.cursor(dictionary=True)
-
-    cursor.execute("""
-        SELECT
-            t.id,
-            cf.city AS city_from,
-            ct.city AS city_to,
-            t.date,
-            t.time,
-            t.status
-        FROM trip_passengers tp
-        JOIN trips t ON tp.trip_id = t.id
-        JOIN routes r ON t.route_id = r.id
-        JOIN cities cf ON r.from_city_id = cf.id
-        JOIN cities ct ON r.to_city_id = ct.id
-        WHERE tp.passenger_id = %s
-        ORDER BY t.date DESC
-    """, (passenger_id, ))
-
-    trips = cursor.fetchall()
-
-    cursor.close()
-    conn.close()
+    try:
+        cursor.execute("""
+            SELECT
+                t.id,
+                cf.city AS city_from,
+                ct.city AS city_to,
+                t.date,
+                t.time,
+                t.status
+            FROM trip_passengers tp
+            JOIN trips t ON tp.trip_id = t.id
+            JOIN routes r ON t.route_id = r.id
+            JOIN cities cf ON r.from_city_id = cf.id
+            JOIN cities ct ON r.to_city_id = ct.id
+            WHERE tp.passenger_id = %s
+            ORDER BY t.date DESC
+        """, (passenger_id, ))
+        trips = cursor.fetchall()
+    finally:
+        cursor.close()
+        conn.close()
 
     return trips

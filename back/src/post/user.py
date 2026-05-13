@@ -12,39 +12,38 @@ def post_register(req):
 
     if not settings["access"]["allow_registration"]:
         raise HTTPException(403, "Registration disabled")
-    
+
     role = 'admin' if req.is_admin else 'user'
 
     conn = get_connection()
     cursor = conn.cursor(dictionary=True)
+    try:
+        cursor.execute(
+            "SELECT id FROM users WHERE login = %s",
+            (req.login,)
+        )
 
-    # перевірка логіну
-    cursor.execute(
-        "SELECT id FROM users WHERE login = %s",
-        (req.login,)
-    )
-    
-    if cursor.fetchone():
+        if cursor.fetchone():
+            raise HTTPException(status_code=409, detail="Login already exists")
+
+        hashed_password = hash_password(req.password)
+
+        cursor.execute(
+            """
+            INSERT INTO users (login, password, name, surname, role)
+            VALUES (%s, %s, %s, %s, %s)
+            """,
+            (req.login, hashed_password, req.name, req.surname, role)
+        )
+
+        conn.commit()
+        user_id = cursor.lastrowid
+    except Exception:
+        conn.rollback()
+        raise
+    finally:
         cursor.close()
         conn.close()
-        raise HTTPException(status_code=409, detail="Login already exists")
-
-    hashed_password = hash_password(req.password)
-
-    cursor.execute(
-        """
-        INSERT INTO users (login, password, name, surname, role)
-        VALUES (%s, %s, %s, %s, %s)
-        """,
-        (req.login, hashed_password, req.name, req.surname, role)
-    )
-
-    conn.commit()
-
-    user_id = cursor.lastrowid
-
-    cursor.close()
-    conn.close()
 
     token = create_access_token(
         {
@@ -71,20 +70,18 @@ def post_login(req):
 
     conn = get_connection()
     cursor = conn.cursor(dictionary=True)
-
-    cursor.execute(
-        "SELECT id, password, role, name, surname FROM users WHERE login = %s",
-        (req.login,)
-    )
-    user = cursor.fetchone()
-
-    if not user or not verify_password(req.password, user["password"]):
+    try:
+        cursor.execute(
+            "SELECT id, password, role, name, surname FROM users WHERE login = %s",
+            (req.login,)
+        )
+        user = cursor.fetchone()
+    finally:
         cursor.close()
         conn.close()
-        raise HTTPException(status_code=401, detail="Invalid credentials")
 
-    cursor.close()
-    conn.close()
+    if not user or not verify_password(req.password, user["password"]):
+        raise HTTPException(status_code=401, detail="Invalid credentials")
 
     access_token = create_access_token(
         {
@@ -115,7 +112,7 @@ def post_login(req):
         key="refresh_token",
         value=refresh_token,
         httponly=True,
-        secure=True,  # 👉 True в проді
+        secure=True,
         samesite="none"
     )
 
@@ -131,7 +128,7 @@ def post_edit_user(user_id, login, name, surname, is_admin):
 
         if not user:
             return 'not_found'
-        
+
         role = 'admin' if is_admin else 'user'
 
         cursor.execute("""
@@ -158,11 +155,14 @@ def post_edit_user(user_id, login, name, surname, is_admin):
 def post_delete_user(user_id):
     conn = get_connection()
     cursor = conn.cursor()
-
-    cursor.execute("DELETE FROM users WHERE id = %s", (user_id,))
-    conn.commit()
-
-    cursor.close()
-    conn.close()
+    try:
+        cursor.execute("DELETE FROM users WHERE id = %s", (user_id,))
+        conn.commit()
+    except Exception:
+        conn.rollback()
+        raise
+    finally:
+        cursor.close()
+        conn.close()
 
     return "deleted"

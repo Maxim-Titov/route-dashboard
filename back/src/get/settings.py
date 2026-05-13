@@ -5,12 +5,12 @@ import json
 def get_settings():
     conn = get_connection()
     cursor = conn.cursor(dictionary=True)
-
-    cursor.execute("SELECT `type`, `value` FROM settings")
-    rows = cursor.fetchall()
-
-    cursor.close()
-    conn.close()
+    try:
+        cursor.execute("SELECT `type`, `value` FROM settings")
+        rows = cursor.fetchall()
+    finally:
+        cursor.close()
+        conn.close()
 
     settings = {}
     for row in rows:
@@ -21,12 +21,12 @@ def get_settings():
 def get_load_settings():
     conn = get_connection()
     cursor = conn.cursor(dictionary=True)
-
-    cursor.execute("SELECT `type`, `value` FROM settings")
-    rows = cursor.fetchall()
-
-    cursor.close()
-    conn.close()
+    try:
+        cursor.execute("SELECT `type`, `value` FROM settings")
+        rows = cursor.fetchall()
+    finally:
+        cursor.close()
+        conn.close()
 
     settings = {}
     for row in rows:
