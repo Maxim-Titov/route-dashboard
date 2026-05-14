@@ -34,6 +34,7 @@ class TicketModal extends React.Component {
         const priceUah = priceData?.price
         const pricePln = priceData?.price_pln
         const seatNumber = from_station?.seat_number
+        const isFree = from_station?.is_bonus_ride
 
         return (
             <div className="modal-wrapper">
@@ -55,7 +56,6 @@ class TicketModal extends React.Component {
 
                             <div className="ticket-body">
                                 <div className="ticket-body-data" style={{ width: 'fit-content' }}>
-                                    <p style={{ borderBottom: "1px dashed black", alignItems: "center", display: 'grid', gridTemplateColumns: '150px 1fr' }}><b>Квиток №:</b> <span style={{ color: '#3D4551' }}>123456</span></p>
                                     <p style={{ borderBottom: "1px dashed black", alignItems: "center", display: 'grid', gridTemplateColumns: '150px 1fr' }}><b>Пасажир:</b> <span style={{ color: '#3D4551' }}>{passenger.first_name} {passenger.last_name}</span></p>
                                     <p style={{ borderBottom: "1px dashed black", alignItems: "center", display: 'grid', gridTemplateColumns: '150px 1fr' }}><b>Рейс:</b> <span style={{ color: '#3D4551' }}>{data.from} → {data.to}</span></p>
                                     <p style={{ borderBottom: "1px dashed black", alignItems: "center", display: 'grid', gridTemplateColumns: '150px 1fr' }}><b>Дата:</b> <span style={{ color: '#3D4551' }}>{new Date(data.date).toLocaleDateString('uk-UA', { day: 'numeric', month: 'numeric', year: 'numeric' })}</span></p>
@@ -96,17 +96,27 @@ class TicketModal extends React.Component {
                                     <p style={{ borderBottom: "1px dashed black", display: 'grid', gridTemplateColumns: '200px 1fr', gap: 16 }}>
                                         <b>Ціна квитка:</b>
                                         <span style={{ display: 'flex', gap: 12 }}>
-                                            {priceUah != null && <span>{priceUah} <b>₴</b></span>}
-                                            {pricePln != null && <span>{pricePln} <b>zł</b></span>}
-                                            {priceUah == null && pricePln == null && <span>—</span>}
+                                            {isFree
+                                                ? <span style={{ color: '#2e7d32', fontWeight: 'bold' }}>БЕЗКОШТОВНО</span>
+                                                : <>
+                                                    {priceUah != null && <span>{priceUah} <b>₴</b></span>}
+                                                    {pricePln != null && <span>{pricePln} <b>zł</b></span>}
+                                                    {priceUah == null && pricePln == null && <span>—</span>}
+                                                </>
+                                            }
                                         </span>
                                     </p>
                                     <p style={{ borderBottom: "1px dashed black", display: 'grid', gridTemplateColumns: '200px 1fr', gap: 16 }}>
                                         <b>До оплати при посадці:</b>
                                         <span style={{ display: 'flex', gap: 12 }}>
-                                            {priceUah != null && <span>{priceUah} <b>₴</b></span>}
-                                            {pricePln != null && <span>{pricePln} <b>zł</b></span>}
-                                            {priceUah == null && pricePln == null && <span>—</span>}
+                                            {isFree
+                                                ? <span style={{ color: '#2e7d32', fontWeight: 'bold' }}>0 ₴ / 0 zł</span>
+                                                : <>
+                                                    {priceUah != null && <span>{priceUah} <b>₴</b></span>}
+                                                    {pricePln != null && <span>{pricePln} <b>zł</b></span>}
+                                                    {priceUah == null && pricePln == null && <span>—</span>}
+                                                </>
+                                            }
                                         </span>
                                     </p>
                                 </div>

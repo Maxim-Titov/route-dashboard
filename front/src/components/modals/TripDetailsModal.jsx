@@ -248,7 +248,7 @@ class TripDetailsModal extends React.Component {
                                     <ul key={index} className="passenger">
                                         <li>
                                             <p>
-                                                <span>{passenger.first_name} {passenger.last_name}</span>
+                                                <span>{passenger.first_name} {passenger.last_name}{data.passengerStations[index]?.is_bonus_ride ? <span className="bonus-label"> ★ Безкоштовно</span> : ''}</span>
                                                 <span>{formatPhone(passenger.phone)}</span>
 
                                                 <button className="inter-font" onClick={async () => {
