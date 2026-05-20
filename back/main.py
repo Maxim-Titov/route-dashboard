@@ -537,8 +537,7 @@ async def add_passenger(req: addPassengerRequest, user=Depends(get_current_user)
     if user["role"] != "admin":
         raise HTTPException(403)
     
-    if req.phone.replace('+', '').isdigit():
-        phone = ''.join(filter(str.isdigit, req.phone))
+    phone = ''.join(filter(str.isdigit, req.phone))
 
     note = None if req.note == '' else req.note
     res = post_add_passenger(req.name, req.surname, phone, req.date_of_birth, req.trip_id, note, req.seat_number)
@@ -550,8 +549,7 @@ async def edit_passenger(req: editPassengerRequest, user=Depends(get_current_use
     if user["role"] != "admin":
         raise HTTPException(403)
     
-    if req.phone.replace('+', '').isdigit():
-        phone = ''.join(filter(str.isdigit, req.phone))
+    phone = ''.join(filter(str.isdigit, req.phone))
 
     note = None if req.note == '' else req.note
     res = post_edit_passenger(req.passenger_id, req.name, req.surname, phone, req.date_of_birth, note)

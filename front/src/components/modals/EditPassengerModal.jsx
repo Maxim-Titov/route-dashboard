@@ -39,7 +39,7 @@ class EditPassengerModal extends React.Component {
                         name: this.state.passengerData?.name,
                         surname: this.state.passengerData?.surname,
                         phone: this.state.passengerData?.phone,
-                        date_of_birth: this.state.passengerData?.dateOfBirth,
+                        date_of_birth: this.state.passengerData?.dateOfBirth || null,
                         note: this.state.passengerData?.note
                     })
                 }
@@ -72,7 +72,7 @@ class EditPassengerModal extends React.Component {
                             name: this.state.passengerData?.name,
                             surname: this.state.passengerData?.surname,
                             phone: this.state.passengerData?.phone,
-                            date_of_birth: this.state.passengerData?.dateOfBirth,
+                            date_of_birth: this.state.passengerData?.dateOfBirth || null,
                             note: this.state.passengerData?.note
                         })
                     }
@@ -115,8 +115,8 @@ class EditPassengerModal extends React.Component {
         if (!surname.trim()) errors.surname = "Прізвище обовʼязкове"
         if (!phone.trim()) errors.phone = "Телефон обовʼязковий"
 
-        if (phone && !/^(\+?380\d{9})$/.test(phone)) {
-            errors.phone = "Формат: +380XXXXXXXXX або 380XXXXXXXXX"
+        if (phone && !/^(\+?380\d{9}|\+?48\d{9})$/.test(phone)) {
+            errors.phone = "Формат: +380XXXXXXXXX або +48XXXXXXXXX"
         }
 
         this.setState({ errors })
@@ -204,7 +204,7 @@ class EditPassengerModal extends React.Component {
                                     type="text"
                                     name="phone"
                                     id="phone"
-                                    placeholder="380123456789"
+                                    placeholder="+380XXXXXXXXX / +48XXXXXXXXX"
                                 />
                             </div>
 

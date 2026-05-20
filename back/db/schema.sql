@@ -130,7 +130,7 @@ CREATE TABLE IF NOT EXISTS trip_stations (
 CREATE TABLE IF NOT EXISTS passengers (
     id BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
 
-    first_name VARCHAR(255) NOT NULL,
+    first_name VARCHAR(255) NULL,
     last_name VARCHAR(255) NOT NULL,
     phone VARCHAR(20) NOT NULL UNIQUE,
     date_of_birth DATE NULL,
