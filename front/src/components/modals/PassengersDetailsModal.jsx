@@ -176,7 +176,7 @@ class PassengerDetailsModal extends React.Component {
                                             <li key={index} className={trip.is_bonus_ride ? 'bonus-trip' : ''}>
                                                 <p>
                                                     <span className="id">#{trip.id}</span> <span className="trip-route">{trip.city_from} ➝ {trip.city_to}</span>
-                                                    {trip.is_bonus_ride && <span className="bonus-label">★ Безкоштовна</span>}
+                                                    {trip.is_bonus_ride ? <span className="bonus-label">★ Безкоштовна</span> : ''}
                                                 </p>
                                                 <p className="date">{new Date(trip.date).toLocaleDateString('uk-UA', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
                                                 <p className="time">{this.formatTimeFromSeconds(trip.time)}</p>
