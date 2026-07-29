@@ -79,6 +79,26 @@ CREATE TABLE IF NOT EXISTS routes (
 ) ENGINE=InnoDB;
 
 -- ============================
+--  Таблиця route_cities
+-- ============================
+CREATE TABLE IF NOT EXISTS route_cities (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+
+    route_id BIGINT UNSIGNED NOT NULL,
+    city_id BIGINT UNSIGNED NOT NULL,
+
+    type ENUM('from','to') NOT NULL,
+
+    sort_order INT NOT NULL,
+
+    FOREIGN KEY (route_id) REFERENCES routes(id) ON DELETE CASCADE,
+    FOREIGN KEY (city_id) REFERENCES cities(id),
+
+    UNIQUE(route_id, city_id, type),
+    INDEX(route_id, type, sort_order)
+) ENGINE=InnoDB;
+
+-- ============================
 --  Таблиця trips
 -- ============================
 CREATE TABLE IF NOT EXISTS trips (

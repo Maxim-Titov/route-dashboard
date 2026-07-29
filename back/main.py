@@ -18,8 +18,8 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    # allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
-    allow_origins=["https://autoservicetourdashboard.onrender.com"],
+    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
+    # allow_origins=["https://autoservicetourdashboard.onrender.com"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -106,6 +106,9 @@ class getRoutePrices(BaseModel):
     route_id: int
 
 class updatePricingRequest(BaseModel):
+    route_id: int
+    rows: List[dict]
+    columns: List[dict]
     pricing: List[PricingItem]
 
 class StationItem(BaseModel):
@@ -408,8 +411,14 @@ async def get_route_prices(req: getRoutePrices):
 async def update_pricing(req: updatePricingRequest, user=Depends(get_current_user)):
     if user["role"] != "admin":
         raise HTTPException(403)
-    
-    return post_update_pricing(req.pricing)
+
+    post_update_route_order(req.route_id, req.columns, req.rows)
+    post_update_pricing(req.route_id, req.pricing)
+
+    return {
+        "success": True,
+        "message": "pricing updated"
+    }
 
 @app.post("/routes/delete")
 async def delete_route(req: deleteRouteRequest, user=Depends(get_current_user)):

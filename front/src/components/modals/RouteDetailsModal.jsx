@@ -1,7 +1,12 @@
 import React from "react"
 import { X, Plus, Save } from 'lucide-react'
 
-import CitySearchInput from "../CitySearchInput"
+import { SortableContext, useSortable, verticalListSortingStrategy, horizontalListSortingStrategy, arrayMove } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+
+import DndProvider from "../../../providers/DndProvider";
+import SortableRow from "../routes/SortableRow";
+import SortableColumn from "../routes/SortableColumn";
 import MessageModal from "./MessageModal"
 
 class RouteDetailsModal extends React.Component {
@@ -16,7 +21,11 @@ class RouteDetailsModal extends React.Component {
                 { id: 'to_fixed', name: this.props.to, fixed: true, prices: { 'from_fixed': { uah: '', pln: '' } } }
             ],
 
-            renderMessage: false
+            renderMessage: false,
+
+            isDragging: false,
+            dragStartIndex: null,
+            dragOverIndex: null
         }
     }
 
@@ -43,42 +52,37 @@ class RouteDetailsModal extends React.Component {
 
             const data = await res.json()
 
-            const columnsMap = {}
-            const rowsMap = {}
+            const columns = data.columns
 
-            data.forEach(p => {
-                columnsMap[p.from_city_id] = p.from_city_name
-                rowsMap[p.to_city_id] = p.to_city_name
-            })
-
-            const columns = Object.entries(columnsMap).map(([id, name]) => ({
-                id: Number(id),
-                label: name
-            }))
-
-            const rows = Object.entries(rowsMap).map(([id, name]) => ({
-                id: Number(id),
-                name,
+            const rows = data.rows.map(row => ({
+                ...row,
                 prices: {}
             }))
 
             rows.forEach(row => {
                 columns.forEach(col => {
-                    row.prices[col.id] = { uah: '', pln: '' }
+                    row.prices[col.id] = {
+                        uah: "",
+                        pln: ""
+                    }
                 })
             })
 
-            data.forEach(p => {
-                const row = rows.find(r => r.id === p.to_city_id)
+            data.pricing.forEach(price => {
+                const row = rows.find(r => r.id === price.to_city_id)
+
                 if (row) {
-                    row.prices[p.from_city_id] = {
-                        uah: p.price ?? '',
-                        pln: p.price_pln ?? ''
+                    row.prices[price.from_city_id] = {
+                        uah: price.price ?? "",
+                        pln: price.price_pln ?? ""
                     }
                 }
             })
 
-            this.setState({ columns, rows })
+            this.setState({
+                columns,
+                rows
+            })
 
         } catch (err) {
             console.error(err)
@@ -128,7 +132,12 @@ class RouteDetailsModal extends React.Component {
                         "Content-Type": "application/json",
                         Authorization: `Bearer ${localStorage.getItem("token")}`
                     },
-                    body: JSON.stringify({ pricing })
+                    body: JSON.stringify({
+                        route_id: this.props.id,
+                        columns: this.state.columns,
+                        rows: this.state.rows,
+                        pricing
+                    })
                 }
             )
 
@@ -154,7 +163,12 @@ class RouteDetailsModal extends React.Component {
                             "Content-Type": "application/json",
                             Authorization: `Bearer ${localStorage.getItem("token")}`
                         },
-                        body: JSON.stringify({ pricing })
+                        body: JSON.stringify({
+                            route_id: this.props.id,
+                            columns: this.state.columns,
+                            rows: this.state.rows,
+                            pricing
+                        })
                     }
                 )
             }
@@ -197,6 +211,10 @@ class RouteDetailsModal extends React.Component {
 
     setRenderMessage = (value) => {
         this.setState({ renderMessage: value })
+    }
+
+    setIsDragging = (value) => {
+        this.setState({ isDragging: value })
     }
 
     addRow = () => {
@@ -353,6 +371,55 @@ class RouteDetailsModal extends React.Component {
         }))
     }
 
+    handleDragEnd = ({ active, over }) => {
+        if (!over || active.id === over.id) return;
+
+        const rowOld = this.state.rows.findIndex(r => r.id === active.id);
+
+        if (rowOld !== -1) {
+            const rowNew = this.state.rows.findIndex(r => r.id === over.id);
+
+            this.setState(prev => ({
+                rows: arrayMove(prev.rows, rowOld, rowNew)
+            }));
+
+            return;
+        }
+
+        const colOld = this.state.columns.findIndex(c => c.id === active.id);
+
+        if (colOld !== -1) {
+            const colNew = this.state.columns.findIndex(c => c.id === over.id);
+
+            this.setState(prev => {
+
+                const columns = arrayMove(prev.columns, colOld, colNew);
+
+                const rows = prev.rows.map(row => {
+
+                    const prices = {};
+
+                    columns.forEach(col => {
+                        prices[col.id] = row.prices[col.id] ?? {
+                            uah: "",
+                            pln: ""
+                        };
+                    });
+
+                    return {
+                        ...row,
+                        prices
+                    };
+                });
+
+                return {
+                    columns,
+                    rows
+                };
+            });
+        }
+    };
+
     render() {
         const { id, name } = this.props
 
@@ -378,118 +445,77 @@ class RouteDetailsModal extends React.Component {
                                 </div>
 
                                 <div className="table-wrapper">
-                                    <table className="route-table">
-                                        <thead>
-                                            <tr>
-                                                <th>Зупинка</th>
+                                    <DndProvider onDragEnd={this.handleDragEnd}>
+                                        <table className="route-table">
+                                            <SortableContext
+                                                items={this.state.columns.map(c => c.id)}
+                                                strategy={horizontalListSortingStrategy}
+                                            >
+                                                <thead>
+                                                    <tr>
+                                                        <th>Зупинка</th>
 
-                                                {this.state.columns.map(col => (
-                                                    <th key={col.id}>
-                                                        <div className="column-header">
-                                                            <CitySearchInput
-                                                                placeholder="Місто"
-                                                                value={col.label}
-                                                                onChange={(value) => this.updateColumnLabel(col.id, value)}
-                                                                onSelect={(city) => this.selectColumnCity(col.id, city)}
+                                                        {this.state.columns.map(col => (
+                                                            <SortableColumn
+                                                                key={col.id}
+                                                                column={col}
+                                                                updateColumnLabel={this.updateColumnLabel}
+                                                                selectColumnCity={this.selectColumnCity}
+                                                                removeColumn={this.removeColumn}
                                                             />
+                                                        ))}
 
-                                                            {!col.fixed && (
-                                                                <button
-                                                                    className="remove"
-                                                                    onClick={() => this.removeColumn(col.id)}
-                                                                >
-                                                                    <X />
-                                                                </button>
-                                                            )}
-                                                        </div>
-                                                    </th>
-                                                ))}
+                                                        <th>
+                                                            <button
+                                                                className="add"
+                                                                onClick={this.addColumn}
+                                                            >
+                                                                <Plus size={16} />
+                                                            </button>
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+                                            </SortableContext>
 
-                                                <th>
-                                                    <button
-                                                        className="add"
-                                                        onClick={this.addColumn}
-                                                    >
-                                                        <Plus size={16} />
-                                                    </button>
-                                                </th>
-                                            </tr>
-                                        </thead>
+                                            <SortableContext
+                                                items={this.state.rows.map(r => r.id)}
+                                                strategy={verticalListSortingStrategy}
+                                            >
+                                                <tbody>
+                                                    {this.state.rows.length === 0 && (
+                                                        <tr className="empty-row">
+                                                            <td colSpan={this.state.columns.length + 2}>
+                                                                Поки що немає жодної зупинки
+                                                            </td>
+                                                        </tr>
+                                                    )}
 
-                                        <tbody>
-                                            {this.state.rows.length === 0 && (
-                                                <tr className="empty-row">
-                                                    <td colSpan={this.state.columns.length + 2}>
-                                                        Поки що немає жодної зупинки
-                                                    </td>
-                                                </tr>
-                                            )}
-
-                                            {this.state.rows.map(row => (
-                                                <tr key={row.id}>
-                                                    <td>
-                                                        <CitySearchInput
-                                                            placeholder="Назва зупинки"
-                                                            value={row.name}
-                                                            onChange={(value) => this.updateRowName(row.id, value)}
-                                                            onSelect={(city) => this.selectRowCity(row.id, city)}
+                                                    {this.state.rows.map(row => (
+                                                        <SortableRow
+                                                            key={row.id}
+                                                            row={row}
+                                                            columns={this.state.columns}
+                                                            updatePrice={this.updatePrice}
+                                                            updateRowName={this.updateRowName}
+                                                            selectRowCity={this.selectRowCity}
+                                                            removeRow={this.removeRow}
                                                         />
-                                                    </td>
-
-                                                    {this.state.columns.map(col => (
-                                                        <td key={col.id}>
-                                                            <div className="price-cell">
-                                                                <div className="price-input">
-                                                                    <span className="currency-badge uah">₴</span>
-                                                                    <input
-                                                                        type="number"
-                                                                        placeholder="0"
-                                                                        value={row.prices[col.id]?.uah ?? ''}
-                                                                        onChange={(e) =>
-                                                                            this.updatePrice(row.id, col.id, 'uah', e.target.value)
-                                                                        }
-                                                                    />
-                                                                </div>
-                                                                <div className="price-input">
-                                                                    <span className="currency-badge pln">zł</span>
-                                                                    <input
-                                                                        type="number"
-                                                                        placeholder="0"
-                                                                        value={row.prices[col.id]?.pln ?? ''}
-                                                                        onChange={(e) =>
-                                                                            this.updatePrice(row.id, col.id, 'pln', e.target.value)
-                                                                        }
-                                                                    />
-                                                                </div>
-                                                            </div>
-                                                        </td>
                                                     ))}
 
-                                                    <td className="actions">
-                                                        {!row.fixed && (
+                                                    <tr>
+                                                        <td>
                                                             <button
-                                                                className="remove"
-                                                                onClick={() => this.removeRow(row.id)}
+                                                                className="add"
+                                                                onClick={this.addRow}
                                                             >
-                                                                <X size={16} />
+                                                                <Plus size={16} />
                                                             </button>
-                                                        )}
-                                                    </td>
-                                                </tr>
-                                            ))}
-
-                                            <tr>
-                                                <td>
-                                                    <button
-                                                        className="add"
-                                                        onClick={this.addRow}
-                                                    >
-                                                        <Plus size={16} />
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </SortableContext>
+                                        </table>
+                                    </DndProvider>
                                 </div>
                             </div>
                         </div>
@@ -507,12 +533,14 @@ class RouteDetailsModal extends React.Component {
                                 <p>Зберегти</p>
                             </button>
                         </div>
-                    </div>
-                </div>
+                    </div >
+                </div >
 
-                {this.state.renderMessage && (
-                    <MessageModal header="Успішно" body="Ціни маршруту успішно збережено" action={this.setRenderMessage} />
-                )}
+                {
+                    this.state.renderMessage && (
+                        <MessageModal header="Успішно" body="Ціни маршруту успішно збережено" action={this.setRenderMessage} />
+                    )
+                }
             </>
         )
     }

@@ -44,8 +44,19 @@ def post_add_route(from_city, to_city):
             VALUES (%s, %s)
         """, (from_city_id, to_city_id))
 
+        route_id = cursor.lastrowid
+
+        cursor.executemany("""
+            INSERT INTO route_cities
+            (route_id, city_id, type, sort_order)
+            VALUES (%s, %s, %s, %s)
+        """, [
+            (route_id, from_city_id, "from", 0),
+            (route_id, to_city_id, "to", 0)
+        ])
+
         conn.commit()
-        return cursor.lastrowid
+        return route_id
 
     except Exception:
         conn.rollback()
@@ -98,23 +109,41 @@ def post_delete_route(id):
     conn = get_connection()
     cursor = conn.cursor()
 
-    cursor.execute("SELECT COUNT(*) FROM trips WHERE route_id = %s", (id,))
+    try:
+        cursor.execute(
+            "SELECT COUNT(*) FROM trips WHERE route_id=%s",
+            (id,)
+        )
 
-    trips_count = cursor.fetchone()[0]
+        if cursor.fetchone()[0] > 0:
+            return "route has trips"
 
-    if trips_count > 0:
+        cursor.execute(
+            "DELETE FROM pricing WHERE route_id=%s",
+            (id,)
+        )
+
+        cursor.execute(
+            "DELETE FROM route_cities WHERE route_id=%s",
+            (id,)
+        )
+
+        cursor.execute(
+            "DELETE FROM routes WHERE id=%s",
+            (id,)
+        )
+
+        conn.commit()
+
+        return "deleted"
+
+    except:
+        conn.rollback()
+        raise
+
+    finally:
         cursor.close()
         conn.close()
-
-        return "route has trips"
-
-    cursor.execute("DELETE FROM routes WHERE id = %s", (id,))
-    conn.commit()
-
-    cursor.close()
-    conn.close()
-
-    return "deleted"
 
 def post_filter_routes(
     sort_by='desc',
@@ -184,23 +213,67 @@ def post_get_route_prices(route_id):
     conn = get_connection()
     cursor = conn.cursor(dictionary=True)
 
+    # cursor.execute("""
+    #     SELECT pricing.route_id, pricing.from_city_id, pricing.to_city_id, pricing.price, pricing.price_pln, from_city_name.city AS from_city_name, to_city_name.city AS to_city_name
+    #     FROM pricing
+
+    #     JOIN cities AS from_city_name ON pricing.from_city_id = from_city_name.id
+    #     JOIN cities AS to_city_name ON pricing.to_city_id = to_city_name.id
+
+    #     WHERE pricing.route_id = %s
+    # """, (route_id, ))
+    # pricing = cursor.fetchall()
+
     cursor.execute("""
-        SELECT pricing.route_id, pricing.from_city_id, pricing.to_city_id, pricing.price, pricing.price_pln, from_city_name.city AS from_city_name, to_city_name.city AS to_city_name
+        SELECT rc.city_id, rc.type, rc.sort_order, c.city
+        FROM route_cities rc
+
+        JOIN cities c ON c.id=rc.city_id
+
+        WHERE rc.route_id=%s
+
+        ORDER BY rc.type, rc.sort_order;
+    """, (route_id,))
+
+    cities = cursor.fetchall()
+
+    cursor.execute("""
+        SELECT from_city_id, to_city_id, price, price_pln
         FROM pricing
 
-        JOIN cities AS from_city_name ON pricing.from_city_id = from_city_name.id
-        JOIN cities AS to_city_name ON pricing.to_city_id = to_city_name.id
+        WHERE route_id=%s;
+    """, (route_id,))
 
-        WHERE pricing.route_id = %s
-    """, (route_id, ))
     pricing = cursor.fetchall()
+
+    columns = [
+        {
+            "id": c["city_id"],
+            "label": c["city"]
+        }
+        for c in cities
+        if c["type"] == "from"
+    ]
+
+    rows = [
+        {
+            "id": c["city_id"],
+            "name": c["city"]
+        }
+        for c in cities
+        if c["type"] == "to"
+    ]
 
     cursor.close()
     conn.close()
 
-    return pricing
+    return {
+        "columns": columns,
+        "rows": rows,
+        "pricing": pricing
+    }
 
-def post_update_pricing(pricing):
+def post_update_pricing(route_id, pricing):
     conn = get_connection()
     cursor = conn.cursor()
 
@@ -208,8 +281,6 @@ def post_update_pricing(pricing):
 
         if not pricing:
             return {"success": False, "message": "empty pricing"}
-
-        route_id = pricing[0].route_id
 
         # --- перевірка route ---
         cursor.execute(
@@ -271,5 +342,51 @@ def post_update_pricing(pricing):
 
     finally:
 
+        cursor.close()
+        conn.close()
+
+def post_update_route_order(route_id, columns, rows):
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    try:
+        # Видаляємо всі міста маршруту
+        cursor.execute("""
+            DELETE FROM route_cities
+            WHERE route_id = %s
+        """, (route_id,))
+
+        # Додаємо міста відправлення
+        for order, city in enumerate(columns):
+            cursor.execute("""
+                INSERT INTO route_cities
+                (route_id, city_id, type, sort_order)
+                VALUES (%s, %s, 'from', %s)
+            """, (
+                route_id,
+                city["id"],
+                order
+            ))
+
+        # Додаємо міста прибуття
+        for order, city in enumerate(rows):
+            cursor.execute("""
+                INSERT INTO route_cities
+                (route_id, city_id, type, sort_order)
+                VALUES (%s, %s, 'to', %s)
+            """, (
+                route_id,
+                city["id"],
+                order
+            ))
+
+        conn.commit()
+        return True
+
+    except Exception:
+        conn.rollback()
+        raise
+
+    finally:
         cursor.close()
         conn.close()

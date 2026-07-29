@@ -2980,6 +2980,23 @@ aside .navigation nav ul li svg {
   margin-left: 16px;
   text-align: center;
 }
+.route-details-modal table th {
+  position: relative;
+}
+.route-details-modal table th .drag-handler {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.route-details-modal table tr td:not(:last-child) {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+.route-details-modal table tr td:not(:last-child):first-child {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 
 .city-details-modal,
 .route-details-modal,

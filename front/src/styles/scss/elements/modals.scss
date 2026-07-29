@@ -505,6 +505,31 @@
             }
         }
     }
+
+    table {
+        th {
+            position: relative;
+
+            .drag-handler {
+                position: absolute;
+                top: 0;
+                left: 50%;
+                transform: translate(-50%, -50%);
+            }
+        }
+
+        tr {
+            td:not(:last-child) {
+                border-bottom: 1px solid $border;
+
+                &:first-child {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                }
+            }
+        }
+    }
 }
 
 .city-details-modal,
@@ -1089,6 +1114,7 @@
                     }
 
                     p {
+
                         &:nth-child(2),
                         &:last-child {
                             font-size: $text-sm;
