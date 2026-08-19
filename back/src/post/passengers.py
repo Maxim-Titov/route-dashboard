@@ -202,6 +202,22 @@ def post_search_passengers(name=None, surname=None, phone=None):
         cursor.close()
         conn.close()
 
+def post_search_passengers_with_id(passenger_id):
+    conn = get_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    try:
+        cursor.execute("""
+            SELECT id, first_name, last_name, phone
+            FROM passengers
+            WHERE id = %s
+        """, (passenger_id,))
+        
+        return cursor.fetchone()
+    finally:
+        cursor.close()
+        conn.close()
+
 def post_filter_passengers(
     sort_by='desc',
     age_from=None,

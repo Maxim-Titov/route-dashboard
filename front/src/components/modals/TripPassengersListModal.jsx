@@ -1,10 +1,11 @@
 import React from "react"
-import { Save, X } from 'lucide-react'
+import { Save, X, Plus } from 'lucide-react'
 
 import SearchPanel from "../SearchPanel"
 import MessageModal from "./MessageModal"
 import CitySearchInput from "../CitySearchInput"
 import StationSearchInput from "../StationSearchInput"
+import AddPassengerModal from "./AddPassangerModal"
 
 class TripPassengersListModal extends React.Component {
     constructor(props) {
@@ -17,7 +18,8 @@ class TripPassengersListModal extends React.Component {
                 city: '',
                 station_id: null,
                 station: '',
-                seat_number: null
+                seat_number: null,
+                isAddingPassenger: false
             })),
             tempMaxPassengers: props.maxPassengers || '',
             isError: false
@@ -28,6 +30,10 @@ class TripPassengersListModal extends React.Component {
 
     setIsError = (value) => {
         this.setState({ isError: value })
+    }
+
+    setIsAddingPassenger = (value) => {
+        this.setState({ isAddingPassenger: value })
     }
 
     handleMaxPassengersChange = (e) => {
@@ -151,6 +157,8 @@ class TripPassengersListModal extends React.Component {
 
                 <div className="additional-modal-wrapper">
                     <div className="trip-passenger-list-modal">
+                        {this.state.isAddingPassenger && <AddPassengerModal id={this.props.id} onAdd={this.handlePassengerSelect} setRenderPassengersModal={this.setIsAddingPassenger} handlePassengerSelect={this.handlePassengerSelect} fetchTripsCount={this.props.fetchTripsCount} fetchPassengers={this.props.fetchPassengers} fetchPassengersCount={this.props.fetchPassengersCount} />}
+
                         <div className="header">
                             <h2>Пасажири</h2>
                         </div>
@@ -171,7 +179,13 @@ class TripPassengersListModal extends React.Component {
                                 </div>
 
                                 <div className={`form-group search ${maxPassengersCount > 0 ? 'active' : ''}`}>
-                                    <SearchPanel onSelect={this.handlePassengerSelect} />
+                                    <div className="search-pad">
+                                        <SearchPanel onSelect={this.handlePassengerSelect} />
+
+                                        <button type="button" onClick={() => this.setIsAddingPassenger(true)} className="add-passenger-button">
+                                            <Plus />
+                                        </button>
+                                    </div>
 
                                     {this.state.tempPassengers.length > 0 && (
                                         <ul className="selected-passengers">

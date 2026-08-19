@@ -13,7 +13,7 @@ class AddPassengerModal extends React.Component {
                 surname: '',
                 phone: '',
                 dateOfBirth: '',
-                trip: '',
+                trip: this.props.id || '',
 
                 note: ''
             },
@@ -77,7 +77,7 @@ class AddPassengerModal extends React.Component {
                             phone: this.state.passengerData?.phone,
                             date_of_birth: this.state.passengerData?.dateOfBirth || null,
                             trip_id: this.parseNumber(this.state.passengerData?.trip),
-    
+
                             note: this.state.passengerData?.note
                         })
                     }
@@ -97,6 +97,56 @@ class AddPassengerModal extends React.Component {
                     this.setState({ isSeatTaken: true })
                     return
             }
+
+            return data
+        } catch (err) {
+            console.error(err)
+        }
+    }
+
+    searchPassengerById = async (passengerId) => {
+        try {
+            let res = await fetch(
+                `${import.meta.env.VITE_API_URL}/passengers/searchwithid`,
+                {
+                    method: "POST",
+                    credentials: "include",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${localStorage.getItem("token")}`
+                    },
+                    body: JSON.stringify({ passenger_id: this.parseNumber(passengerId) })
+                }
+            )
+
+            if (res.status === 401) {
+                const refreshRes = await fetch(`${import.meta.env.VITE_API_URL}/auth/refresh`, {
+                    method: "POST",
+                    credentials: "include"
+                })
+
+                if (!refreshRes.ok) {
+                    return null
+                }
+
+                const data = await refreshRes.json()
+                localStorage.setItem("token", data.access_token)
+
+                res = await fetch(
+                    `${import.meta.env.VITE_API_URL}/passengers/searchwithid`,
+                    {
+                        method: "POST",
+                        credentials: "include",
+                        headers: {
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${localStorage.getItem("token")}`
+                        },
+                        body: JSON.stringify({ passenger_id: this.parseNumber(passengerId) })
+                    }
+                )
+            }
+
+            const data = await res.json()
 
             return data
         } catch (err) {
@@ -168,6 +218,17 @@ class AddPassengerModal extends React.Component {
             this.props.fetchTripsCount(),
             this.props.fetchPassengersCount(),
         ])
+
+        if (this.props.handlePassengerSelect) {
+            this.props.handlePassengerSelect({
+                id: result.result,
+                first_name: this.state.passengerData.name,
+                last_name: this.state.passengerData.surname,
+                phone: this.state.passengerData.phone,
+                date_of_birth: this.state.passengerData.dateOfBirth,
+                note: this.state.passengerData.note
+            })
+        }
 
         this.props.setRenderPassengersModal(false)
     }

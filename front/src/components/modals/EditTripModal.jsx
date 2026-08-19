@@ -294,9 +294,13 @@ class EditTripModal extends React.Component {
             <>
                 {this.state.isRenderTripPassengersModal && (
                     <TripPassengersListModal
+                        id={this.props.id}
                         passengers={tripData.passengers}
                         maxPassengers={tripData.maxPassengers}
                         passengerStations={tripData.passengerStations}
+                        fetchTripsCount={this.props.fetchTripsCount}
+                        fetchPassengers={this.props.fetchPassengers}
+                        fetchPassengersCount={this.props.fetchPassengersCount}
                         onSave={this.applyPassengersData}
                         setIsRenderTripPassengersModal={(v) => this.setState({ isRenderTripPassengersModal: v })}
                     />

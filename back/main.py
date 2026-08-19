@@ -18,8 +18,8 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
-    # allow_origins=["https://autoservicetourdashboard.onrender.com"],
+    # allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
+    allow_origins=["https://autoservicetourdashboard.onrender.com"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -205,6 +205,9 @@ class updateSeatRequest(BaseModel):
 
 class searchPassengersRequest(BaseModel):
     q: str = Field(..., min_length=2)
+
+class searchPassengersWithIdRequest(BaseModel):
+    passenger_id: int
 
 class filterPassengersRequest(BaseModel):
     sort_by: Literal['asc', 'desc'] = 'desc'
@@ -607,6 +610,10 @@ async def search_passengers(req: searchPassengersRequest):
         )
 
     return res
+
+@app.post("/passengers/searchwithid")
+def search_passengers_with_id(req: searchPassengersWithIdRequest):
+    return post_search_passengers_with_id(req.passenger_id)
 
 @app.post("/passengers/filter")
 def filter_passengers(req: filterPassengersRequest):

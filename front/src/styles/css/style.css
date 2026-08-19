@@ -2783,6 +2783,15 @@ aside .navigation nav ul li svg {
   opacity: 0.3;
   transition: opacity 200ms ease;
 }
+.trip-passenger-list-modal .body form .form-group.search .search-pad {
+  display: flex;
+  gap: 10px;
+}
+.trip-passenger-list-modal .body form .form-group.search .search-pad .add-passenger-button {
+  width: 42px;
+  height: 42px;
+  padding: 0;
+}
 .trip-passenger-list-modal .body form .form-group.active {
   pointer-events: all;
   opacity: 1;

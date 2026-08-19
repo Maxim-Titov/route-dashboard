@@ -283,6 +283,17 @@
                     pointer-events: none;
                     opacity: .3;
                     transition: opacity 200ms ease;
+
+                    .search-pad {
+                        display: flex;
+                        gap: $gutterS;
+
+                        .add-passenger-button {
+                            width: 42px;
+                            height: 42px;
+                            padding: 0;
+                        }
+                    }
                 }
 
                 &.active {
